@@ -15,6 +15,6 @@
 	</insert>
 
 	<select id="getUserSearchOk" resultType="com.spring.javaclassS.vo.UserVO">
-		select * from user where idx like CONCAT('%',#{keyword},'%') or mid like CONCAT('%',#{keyword},'%') or name like CONCAT('%',#{keyword},'%') or age like CONCAT('%',#{keyword},'%') or address like CONCAT('%',#{keyword},'%');
+		select * from user where mid like CONCAT('%',#{keyword},'%') or name like CONCAT('%',#{keyword},'%') or age like CONCAT('%',#{keyword},'%') or address like CONCAT('%',#{keyword},'%');
 	</select>
 </mapper>
