@@ -2,11 +2,18 @@ package com.spring.javaclassS.service;
 
 import java.util.ArrayList;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.spring.javaclassS.dao.DbTestDAO;
+import com.spring.javaclassS.dao.StudyDAO;
 
 @Service
 public class StudyServiceImpl implements StudyService {
 
+	@Autowired  // db값 얘가 안가져 오고 dao 시킴
+	StudyDAO studyDAO;
+	
 	@Override
 	public String[] getCityStringArray(String dodo) {
 		String[] strArray = new String[100];
@@ -122,6 +129,11 @@ public class StudyServiceImpl implements StudyService {
 		}
 		
 		return vos;
+	}
+
+	@Override
+	public ArrayList<String> getUserMidList() {
+		return studyDAO.getUserMidList();
 	}
 	
 }

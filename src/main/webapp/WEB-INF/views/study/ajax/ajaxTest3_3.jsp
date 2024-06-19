@@ -56,7 +56,7 @@
   <jsp:include page="/WEB-INF/views/include/slide2.jsp" />
 <p><br><p>
 <div class="container">
-	<h2>ajaxTest3_2.jsp(ArrayList 처리)</h2>
+	<h2>ajaxTest3_3.jsp(HashMap 처리)</h2>
 	<hr>
 	<form>
 		<h3>도시를 선택하세요</h3>

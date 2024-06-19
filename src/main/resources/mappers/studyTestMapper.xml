@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 새로운 방법은 구현객체를 만들지 않고 구현객체를 관리하는 인터페이스 이름을 넣어줌, 경로.클래스명 -->
+<mapper namespace="com.spring.javaclassS.dao.StudyDAO">
+
+	<select id="getUserArrayList" resultType="com.spring.javaclassS.vo.UserVO">
+		select name from user order by name;
+	</select>
+</mapper>

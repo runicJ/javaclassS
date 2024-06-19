@@ -5,11 +5,13 @@ import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.spring.javaclassS.service.StudyService;
+import com.spring.javaclassS.vo.UserVO;
 
 @Controller
 @RequestMapping("/study")
@@ -81,4 +83,14 @@ public class StudyController {
 		
 		return map;
 	}
+	
+	@ResponseBody  // 이걸 붙이면서 무조건 문자가 아닌 객체로 가져갈 수 있게됨
+	@RequestMapping(value = "/ajax/ajaxTest3_4", method = RequestMethod.GET)
+	public String ajaxTest3_4Get(Model model) {
+		ArrayList<String> vos = studyService.getUserMidList();
+		model.addAttribute("vos", vos);
+		
+		return "study/ajax/ajaxTest3_4";
+	}
+	
 }
