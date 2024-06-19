@@ -30,8 +30,18 @@ public class UserServiceImpl implements UserService {  // 인터페이스 구현
 		return userDAO.setUserInputOk(vo);
 	}
 
+//	@Override
+//	public List<UserVO> getUserSearchOk(String keyword) {
+//		return userDAO.getUserSearchOk(keyword);
+//	}
+
 	@Override
-	public List<UserVO> getUserSearchOk(String keyword) {
-		return userDAO.getUserSearchOk(keyword);
+	public List<UserVO> getUserIdSearch(String mid) {
+		return userDAO.getUserIdSearch(mid);
+	}
+
+	@Override
+	public int setUserUpdateOk(UserVO vo) {
+		return userDAO.setUserUpdateOk(vo);
 	}
 }

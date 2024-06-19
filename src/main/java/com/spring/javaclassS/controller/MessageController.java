@@ -24,6 +24,14 @@ public class MessageController {
 			model.addAttribute("msg", "회원 자료가 삭제 실패~");
 			model.addAttribute("url", "/user/userList");
 		}
+		else if(msgFlag.equals("dbTestDeleteOk")) {
+			model.addAttribute("msg", "회원 자료가 삭제 되었습니다.");
+			model.addAttribute("url", "/dbTest/dbTestList");
+		}
+		else if(msgFlag.equals("dbTestDeleteNo")) {
+			model.addAttribute("msg", "회원 자료가 삭제 실패~");
+			model.addAttribute("url", "/dbTest/dbTestList");
+		}
 		else if(msgFlag.equals("userInputOk")) {
 			model.addAttribute("msg", "회원 정보가 등록되었습니다.~");
 			model.addAttribute("url", "/user/userList");
@@ -36,8 +44,30 @@ public class MessageController {
 			model.addAttribute("msg", "검색어와 관련된 회원이 존재하지 않습니다.");
 			model.addAttribute("url", "/user/userList");
 		}
-
-		
+		else if(msgFlag.equals("userUpdateOk")) {
+			model.addAttribute("msg", "회원 정보를 수정하였습니다.");
+			model.addAttribute("url", "/user/userList");
+		}
+		else if(msgFlag.equals("userUpdateNo")) {
+			model.addAttribute("msg", "회원 정보 실패~~");
+			model.addAttribute("url", "/user/userList");
+		}		
+		else if(msgFlag.equals("dbTestInputOk")) {
+			model.addAttribute("msg", "회원 가입 성공~");
+			model.addAttribute("url", "/dbTest/dbTestList");
+		}
+		else if(msgFlag.equals("dbTestInputNo")) {
+			model.addAttribute("msg", "회원 가입 실패~");
+			model.addAttribute("url", "/dbTest/dbTestList");
+		}
+		else if(msgFlag.equals("dbTestUpdateOk")) {
+			model.addAttribute("msg", "회원 정보를 수정하였습니다.");
+			model.addAttribute("url", "/dbTest/dbTestList");
+		}
+		else if(msgFlag.equals("dbTestUpdateNo")) {
+			model.addAttribute("msg", "회원 정보 수정 실패~~");
+			model.addAttribute("url", "/dbTest/dbTestList");
+		}
 		
 		return "include/message";
 	}

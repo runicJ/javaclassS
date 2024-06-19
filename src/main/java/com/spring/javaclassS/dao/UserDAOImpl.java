@@ -30,10 +30,19 @@ public class UserDAOImpl implements UserDAO {
 		return sqlSession.insert("userNS.setUserInputOk", vo);
 	}
 
-	@Override
-	public List<UserVO> getUserSearchOk(String keyword) {
-		List<UserVO> vos = sqlSession.selectList("userNS.getUserSearchOk", keyword);
-		return vos;
-	}
+//	@Override
+//	public List<UserVO> getUserSearchOk(String keyword) {
+//		List<UserVO> vos = sqlSession.selectList("userNS.getUserSearchOk", keyword);
+//		return vos;
+//	}
 	
+	@Override
+	public List<UserVO> getUserIdSearch(String mid) {
+		return sqlSession.selectList("userNS.getUserIdSearch", mid);
+	}
+
+	@Override
+	public int setUserUpdateOk(UserVO vo) {
+		return sqlSession.update("userNS.setUserUpdateOk", vo);
+	}
 }
