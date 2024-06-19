@@ -3,7 +3,14 @@
 <!-- 새로운 방법은 구현객체를 만들지 않고 구현객체를 관리하는 인터페이스 이름을 넣어줌, 경로.클래스명 -->
 <mapper namespace="com.spring.javaclassS.dao.StudyDAO">
 
-	<select id="getUserArrayList" resultType="com.spring.javaclassS.vo.UserVO">
-		select name from user order by name;
-	</select>
+    <select id="getUserMidMap" resultType="com.spring.javaclassS.vo.UserVO">
+        select * from user order by name;
+    </select>
+
+	<!--
+    <select id="getUserMidInfo" parameterType="string" resultType="com.spring.javaclassS.vo.UserVO">
+        select * from user where id = #{mid}
+    </select>
+    -->
+    
 </mapper>

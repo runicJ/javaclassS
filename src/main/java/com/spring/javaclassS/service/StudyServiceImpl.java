@@ -1,12 +1,17 @@
 package com.spring.javaclassS.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.spring.javaclassS.dao.DbTestDAO;
 import com.spring.javaclassS.dao.StudyDAO;
+import com.spring.javaclassS.vo.UserVO;
 
 @Service
 public class StudyServiceImpl implements StudyService {
@@ -131,9 +136,20 @@ public class StudyServiceImpl implements StudyService {
 		return vos;
 	}
 
-	@Override
-	public ArrayList<String> getUserMidList() {
-		return studyDAO.getUserMidList();
-	}
+    HashMap<String, UserVO> userMidMap = new HashMap<>();
+    
+    @Override
+    public HashMap<String, UserVO> getUserMidMap() {
+        ArrayList<UserVO> users = studyDAO.getUserMidMap();
+        for (UserVO user : users) {
+            userMidMap.put(user.getMid(), user);
+        }
+        return userMidMap;
+    }
+
+    @Override
+    public UserVO getUserMidInfo(String mid) {
+        return userMidMap.get(mid);
+    }
 	
 }
