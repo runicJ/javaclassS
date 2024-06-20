@@ -15,6 +15,18 @@
 		select * from user where mid = #{mid};
 	</select>
 	
+	<select id="getDbtestMidList" resultType="String">
+		select mid from user order by mid;
+	</select>
+	
+	<select id="getDbtestAddressList" resultType="String">
+		select address from user group by address order by address;
+	</select>
+	
+	<select id="getUserAddressCheck" resultType="com.spring.javaclassS.vo.UserVO">
+		select * from user where address=#{address} order by address;
+	</select>
+	
 	<delete id="setDbTestDelete">
 		delete from user where idx = #{idx};
 	</delete>

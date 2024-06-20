@@ -13,4 +13,40 @@
     </select>
     -->
     
+	<select id="getUserMidSearch" resultType="com.spring.javaclassS.vo.UserVO">
+		select * from user where mid = #{mid};
+	</select>
+	
+	<select id="getUserMidList" resultType="com.spring.javaclassS.vo.UserVO">
+		select * from user where mid like concat('%', #{mid}, '%') order by mid;
+	</select>
+
+    <select id="getListCrimeData" resultType="com.spring.javaclassS.vo.CrimeVO">
+        SELECT * FROM crime WHERE year = #{year} ORDER BY police;
+    </select>
+
+    <select id="getPoliceCrimeData" resultType="com.spring.javaclassS.vo.CrimeVO">
+        SELECT * FROM crime WHERE police = #{police} AND year = #{year} ORDER BY police;
+    </select>
+
+    <select id="getPoliceCheck" resultType="com.spring.javaclassS.vo.CrimeVO">
+        SELECT * FROM crime WHERE police = #{police} ORDER BY year;
+    </select>
+
+    <select id="getYearPoliceCheckA" resultType="com.spring.javaclassS.vo.CrimeVO">
+        SELECT * FROM crime WHERE police = #{police} AND year = #{year} ORDER BY police;
+    </select>
+
+    <select id="getYearPoliceCheckD" resultType="com.spring.javaclassS.vo.CrimeVO">
+        SELECT * FROM crime WHERE police = #{police} AND year = #{year} ORDER BY police DESC;
+    </select>
+	
+	<insert id="setSaveCrimeData">
+		insert into crime values (default,#{vo.year},#{vo.police},#{vo.robbery},#{vo.theft},#{vo.murder},#{vo.violence})
+	</insert>
+	
+	 
+    <delete id="setDeleteCrimeData">
+        delete from crime where year = #{year};
+    </delete>
 </mapper>
