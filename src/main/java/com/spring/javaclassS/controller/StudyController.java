@@ -83,14 +83,4 @@ public class StudyController {
 		
 		return map;
 	}
-	
-	@ResponseBody  // 이걸 붙이면서 무조건 문자가 아닌 객체로 가져갈 수 있게됨
-	@RequestMapping(value = "/ajax/ajaxTest3_4", method = RequestMethod.GET)
-	public String ajaxTest3_4Get(Model model) {
-		ArrayList<String> vos = studyService.getUserMidList();
-		model.addAttribute("vos", vos);
-		
-		return "study/ajax/ajaxTest3_4";
-	}
-	
 }
