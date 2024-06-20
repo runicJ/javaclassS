@@ -6,11 +6,13 @@ import java.util.HashMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.spring.javaclassS.service.StudyService;
+import com.spring.javaclassS.vo.CrimeVO;
 import com.spring.javaclassS.vo.UserVO;
 
 @Controller
@@ -83,4 +85,80 @@ public class StudyController {
 		
 		return map;
 	}
+	
+    @RequestMapping(value = "/ajax/ajaxTest3_4", method = RequestMethod.GET)
+    public String ajaxTest3_4Get(Model model) {
+    	HashMap<String, UserVO> userMap = studyService.getUserMidMap();
+        model.addAttribute("userMap", userMap);
+        return "study/ajax/ajaxTest3_4";
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/ajax/ajaxTest3_4/{mid}", method = RequestMethod.GET)
+    public UserVO ajaxTest3_4Post(@PathVariable String mid) {
+        return studyService.getUserMidInfo(mid);
+    }
+    
+  	@RequestMapping(value = "/ajax/ajaxTest3_4_2", method = RequestMethod.GET)
+  	public String ajaxTest3_4_2Get(Model model) {
+  		ArrayList<String> midVos = studyService.getDbtestMidList();
+  		model.addAttribute("midVos", midVos);
+  		
+  		ArrayList<String> addressVos = studyService.getDbtestAddressList();
+  		model.addAttribute("addressVos", addressVos);
+  		return "study/ajax/ajaxTest3_4_2";
+  	}
+  	
+  	@ResponseBody
+  	@RequestMapping(value = "/ajax/ajaxTest3_4_2", method = RequestMethod.POST, produces="application/text; charset=utf-8")
+  	public String ajaxTest3_4_2Post(String mid) {
+  		UserVO vo = studyService.getUserIdCheck(mid);
+  		String str = "<h3>회원정보</h3>";
+  		str += "아이디 : " + vo.getMid() + "<br>";
+  		str += "성명 : " + vo.getName() + "<br>";
+  		str += "나이 : " + vo.getAge() + "<br>";
+  		str += "주소 : " + vo.getAddress();
+  		return str;
+  	}
+    
+    @ResponseBody
+    @RequestMapping(value = "/ajax/ajaxTest4-1", method = RequestMethod.POST)
+    public UserVO ajaxTest4_1Post(String mid) {
+    	return studyService.getUserMidSearch(mid);
+    }
+    
+    @ResponseBody
+    @RequestMapping(value = "/ajax/ajaxTest4-2", method = RequestMethod.POST)
+    public ArrayList<UserVO> ajaxTest4_2Post(String mid) {
+    	return studyService.getUserMidList(mid);
+    }
+    
+    @RequestMapping(value = "/restapi/restapi", method = RequestMethod.GET)
+    public String restapiGet() {
+    	return "study/restapi/restapi";
+    }
+    
+    @RequestMapping(value = "/restapi/restapiTest1/{message}", method = RequestMethod.GET)
+    public String restapiTest1Get(@PathVariable String message) {
+    	System.out.println("message : " + message);
+    	return "message : " + message;  // /views/message : Hello Springframework.jsp 404 발생
+    }
+    
+  	@RequestMapping(value = "/restapi/restapiTest4", method = RequestMethod.GET)
+  	public String restapiTest4Get() {
+  		return "study/restapi/restapiTest4";
+  	}
+  	
+  	@ResponseBody  // ajax
+  	@RequestMapping(value = "/restapi/saveCrimeData", method = RequestMethod.POST)
+  	public void saveCrimeDataPost(CrimeVO vo) {
+  		studyService.setSaveCrimeData(vo);
+  	}
+  	
+  	@ResponseBody  // ajax
+  	@RequestMapping(value = "/restapi/deleteCrimeData", method = RequestMethod.GET)
+  	public String setDeleteCrimeData(int	year) {
+  		return "study/restapi/restapiTest4";
+  	}
+
 }

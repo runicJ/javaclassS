@@ -41,6 +41,80 @@
     		}
     	});
     }
+    
+    function fCheck1() {
+    	let mid = document.getElementById("mid").value;
+    	if(mid.trim() == "") {
+    		alert("아이디를 입력하세요!");
+    		document.getElementById("mid").focus();
+    		return false;
+    	}
+    	$.ajax({
+    		url : "${ctp}/study/ajax/ajaxTest4-1",
+    		type : "post",
+    		data : {mid : mid},
+    		success:function(vo) {
+    			console.log(vo);
+					let str = '<h5>vo로 전송된 자료 출력</h5>';
+					if(vo != '') {
+    				str += '아이디 : ' + vo.mid + '<br/>';
+    				str += '성명 : ' + vo.name + '<br/>';
+    				str += '나이 : ' + vo.age + '<br/>';
+    				str += '주소 : ' + vo.address + '<br/>';
+					}
+					else {
+						str += "<b>찾고자 하는 자료가 없습니다.</b>"
+					}
+    			$("#demo3").html(str);
+    		},
+    		error:function() {
+    			alert("전송오류!");
+    		}
+    	});
+    }
+    
+    function fCheck2() {
+			let mid = document.getElementById("mid").value;
+			if(mid.trim() == "") {
+				alert("아이디를 입력하세요!");
+				document.getElementById("mid").focus();
+				return false;
+			}
+			$.ajax({
+	    		url : "${ctp}/study/ajax/ajaxTest4-2",
+	    		type : "post",
+	    		data : {mid : mid},
+	    		success:function(vos) {
+	    			console.log(vos);
+						let str = '<h5>vos로 전송된 자료 출력</h5>';
+						if(vos != '') {
+							str += '<table class="table table-bordered table-hover text-center">';
+							str += '<tr class="table-secondary">';
+							str += '<th>아이디</th><th>성명</th><th>나이</th><th>주소</th>';
+							str += '</tr>';
+							for(let i=0; i<vos.length; i++) {
+								str += '<tr>';
+		    				str += '<td>' + vos[i].mid + '</td>';
+		    				str += '<td>' + vos[i].name + '</td>';
+		    				str += '<td>' + vos[i].age + '</td>';
+		    				str += '<td>' + vos[i].address + '</td>';
+		    				str += '</tr>';
+							}
+							/* str += '<tr><td colspan="4" class="p-0 m-0"></td></tr>' */
+							str += '</table>'
+						}
+						else {
+							str += "<b>찾고자 하는 자료가 없습니다.</b>"
+						}
+	    			$("#demo3").html(str);
+	    		},
+	    		error:function() {
+	    			alert("전송오류!");
+	    		}
+	    	});
+    }
+    
+		
   </script>
 </head>
 <body>
@@ -64,7 +138,15 @@
 		<a href="${ctp}/study/ajax/ajaxTest3_2" class="btn btn-info mr-2">ArrayList</a>
 		<a href="${ctp}/study/ajax/ajaxTest3_3" class="btn btn-info mr-2">Map형식</a>
 		<a href="${ctp}/study/ajax/ajaxTest3_4" class="btn btn-info mr-2">DB 성명으로 자료검색</a>
+		<a href="${ctp}/study/ajax/ajaxTest3-4" class="btn btn-info mr-2">DB 성명으로 자료검색</a>
 	</div>
+	<hr>
+	<div> 아이디 : 
+		<input type="text" name="mid" id="mid" class="form-control mb-3" autofocus />
+		<input type="button" value="아이디일치(vo)" onclick="fCheck1()" class="btn btn-info mr-2 mb-2" />
+		<input type="button" value="아이디부분일치(vos)" onclick="fCheck2()" class="btn btn-info mr-2 mb-2" />
+	</div>
+	<div id="demo3"></div>
 </div>
 <p><br><p>
   <jsp:include page="/WEB-INF/views/include/footer.jsp" />

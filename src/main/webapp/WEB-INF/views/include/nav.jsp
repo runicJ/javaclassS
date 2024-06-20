@@ -16,7 +16,8 @@
       <div class="w3-dropdown-content w3-bar-block w3-card-4">
         <a href="${ctp}/user/userList" class="w3-bar-item w3-button">UserList</a>
         <a href="${ctp}/dbTest/dbTestList" class="w3-bar-item w3-button">DB Test</a>
-        <a href="${ctp}/study/ajax/ajaxForm" class="w3-bar-item w3-button">Ajax</a>
+        <a href="${ctp}/study/ajax/ajaxForm" class="w3-bar-item w3-button">Ajax Test</a>
+        <a href="${ctp}/study/restapi/restapi" class="w3-bar-item w3-button">REST API</a>
         <a href="${ctp}/password/password" class="w3-bar-item w3-button">암호화</a>
       </div>
     </div>
