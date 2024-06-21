@@ -1,6 +1,6 @@
 show tables;  /* 1 */
 
-create table member2 (
+create table member3 (
   idx       int not null auto_increment,/* 회원 고유번호 */
   mid       varchar(30) not null,				/* 회원 아이디(중복불허) */
   pwd       varchar(100) not null,			/* 회원 비밀번호(SHA256 암호화 처리) */
@@ -30,15 +30,15 @@ create table member2 (
   unique(mid)
 );
 
-desc member2;
+desc member3;
 
-insert into member2 value (default,'admin','1234','관리맨','관리자','남자',default,'010-1234-4567','050/서울시/그린아파트/100동/101호','abc@atom.com','http://www.atom.com','학생','등산',default,'관리자입니다.',default,default,default,0,default,default,default,default);
+insert into member3 value (default,'admin','1234','관리맨','관리자','남자',default,'010-1234-4567','050/서울시/그린아파트/100동/101호','abc@atom.com','http://www.atom.com','학생','등산',default,'관리자입니다.',default,default,default,0,default,default,default,default);
 
-select * from member2;
+select * from member3;
 
-ALTER TABLE member2 AUTO_INCREMENT = 1;
+ALTER TABLE member3 AUTO_INCREMENT = 1;
 
-select lastDate, now(), timestampdiff(day, lastDate, now()) as deleteDiff from member2;  /* 날짜비교(시간단위로 비교해줌) 뒤에서 앞을 뺌(now()-lastDate) // dateadd */
+select lastDate, now(), timestampdiff(day, lastDate, now()) as deleteDiff from member3;  /* 날짜비교(시간단위로 비교해줌) 뒤에서 앞을 뺌(now()-lastDate) // dateadd */
 
 /* 실시간 DB채팅 테이블 설계 */
 create table memberChat(

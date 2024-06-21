@@ -4,11 +4,11 @@
 mybatis-config.xml
 log4j.xml
 
-lecture
-target
-pom.properties
-.classpath
-MANIFEST.MF
+/*lecture*/
+//target
+//pom.properties
+//.classpath
+//MANIFEST.MF
 
 ### Eclipse ###
 .metadata

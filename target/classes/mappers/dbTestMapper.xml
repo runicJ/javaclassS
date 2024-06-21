@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 새로운 방법은 구현객체를 만들지 않고 구현객체를 관리하는 인터페이스 이름을 넣어줌, 경로.클래스명 -->
+<mapper namespace="com.spring.javaclassS.dao.DbTestDAO">
+
+	<select id="getDbTestList" resultType="com.spring.javaclassS.vo.UserVO">
+		select * from user order by idx desc;
+	</select>
+	
+	<select id="getDbTestSearch" resultType="com.spring.javaclassS.vo.UserVO">
+		select * from user where mid like concat('%', #{mid},'%') order by idx desc;
+	</select>
+	
+	<select id="getUserIdCheck" resultType="com.spring.javaclassS.vo.UserVO">
+		select * from user where mid = #{mid};
+	</select>
+	
+	<select id="getDbtestMidList" resultType="String">
+		select mid from user order by mid;
+	</select>
+	
+	<select id="getDbtestAddressList" resultType="String">
+		select address from user group by address order by address;
+	</select>
+	
+	<select id="getUserAddressCheck" resultType="com.spring.javaclassS.vo.UserVO">
+		select * from user where address=#{address} order by address;
+	</select>
+	
+	<delete id="setDbTestDelete">
+		delete from user where idx = #{idx};
+	</delete>
+	
+	<!-- 여기선 파라미터 타입 빼고함 -->
+	<insert id="setDbTestInputOk">
+		insert into user values (default, #{vo.mid}, #{vo.name}, #{vo.age}, #{vo.address})
+	</insert>
+	
+	<!-- <update id="setDbTestUpdateOk" parameterType="com.spring.javaclassS.vo.UserVO"> vo. 안쓰고 싶으면 -->
+	<update id="setDbTestUpdateOk">
+		update user set mid=#{vo.mid}, name=#{vo.name}, age=#{vo.age}, address=#{vo.address} where idx=#{vo.idx}
+	</update>
+	
+</mapper>
