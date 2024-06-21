@@ -8,9 +8,9 @@
     <a class="w3-bar-item w3-button w3-padding-large w3-hide-medium w3-hide-large w3-right" href="javascript:void(0)" onclick="myFunction()" title="Toggle Navigation Menu"><i class="fa fa-bars"></i></a>
     <%-- <a href="${ctp}/" class="w3-bar-item w3-button w3-padding-large">HOME</a> --%>
     <a href="http://192.168.50.57:9090/javaclassS/" class="w3-bar-item w3-button w3-padding-large">HOME</a>
-    <a href="${ctp}guest/guestList" class="w3-bar-item w3-button w3-padding-large w3-hide-small">Guest</a>
-    <a href="${ctp}board/boardList" class="w3-bar-item w3-button w3-padding-large w3-hide-small">Board</a>
-    <a href="${ctp}pds/pdsList" class="w3-bar-item w3-button w3-padding-large w3-hide-small">Pds</a>
+    <a href="${ctp}/guest/guestList" class="w3-bar-item w3-button w3-padding-large w3-hide-small">Guest</a>
+    <a href="${ctp}/board/boardList" class="w3-bar-item w3-button w3-padding-large w3-hide-small">Board</a>
+    <a href="${ctp}/pds/pdsList" class="w3-bar-item w3-button w3-padding-large w3-hide-small">Pds</a>
     <div class="w3-dropdown-hover w3-hide-small">
       <button class="w3-padding-large w3-button" title="More">Stydy1 <i class="fa fa-caret-down"></i></button>     
       <div class="w3-dropdown-content w3-bar-block w3-card-4">
@@ -19,6 +19,7 @@
         <a href="${ctp}/study/ajax/ajaxForm" class="w3-bar-item w3-button">Ajax Test</a>
         <a href="${ctp}/study/restapi/restapi" class="w3-bar-item w3-button">REST API</a>
         <a href="${ctp}/password/password" class="w3-bar-item w3-button">암호화</a>
+        <a href="${ctp}/study/mail/mailForm" class="w3-bar-item w3-button">메일연습</a>
       </div>
     </div>
     <a href="javascript:void(0)" class="w3-padding-large w3-hover-red w3-hide-small w3-right"><i class="fa fa-search"></i></a>

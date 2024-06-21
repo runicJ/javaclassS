@@ -33,5 +33,21 @@ public interface StudyService {
 
 	public void setSaveCrimeData(CrimeVO vo);
 
+//	public int setDeleteCrimeData(int year);
+//
+//	public String getListCrimeData(int year);
+//
+//	public String getPoliceCrimeDate(String police, int year);
+//
+//	public String getPoliceCheck(String police);
+//	
+//	public String getYearPoliceCheck(String police, int year, String sort);
+	
+	public void setDeleteCrimeDate(int year);
 
+	public ArrayList<CrimeVO> getListCrimeDate(int year);
+
+	public ArrayList<CrimeVO> getYearPoliceCheck(int year, String police, String yearOrder);
+
+	public CrimeVO getAnalyzeTotal(int year, String police);
 }

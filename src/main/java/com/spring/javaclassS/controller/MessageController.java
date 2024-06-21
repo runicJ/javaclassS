@@ -68,6 +68,18 @@ public class MessageController {
 			model.addAttribute("msg", "회원 정보 수정 실패~~");
 			model.addAttribute("url", "/dbTest/dbTestList");
 		}
+		else if(msgFlag.equals("mailSendOk")) {
+			model.addAttribute("msg", "메일이 성공적으로 발송되었습니다!");
+			model.addAttribute("url", "/study/mail/mailForm");
+		}
+		else if(msgFlag.equals("guestInputOk")) {
+			model.addAttribute("msg", "방명록에 글이 등록되었습니다.");
+			model.addAttribute("url", "/guest/guestList");
+		}
+		else if(msgFlag.equals("guestInputNo")) {
+			model.addAttribute("msg", "방명륵 글 등록 실패!");
+			model.addAttribute("url", "/guest/guestInput");
+		}
 		
 		return "include/message";
 	}

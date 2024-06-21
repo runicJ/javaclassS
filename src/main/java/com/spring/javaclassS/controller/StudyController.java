@@ -3,9 +3,17 @@ package com.spring.javaclassS.controller;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -13,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.spring.javaclassS.service.StudyService;
 import com.spring.javaclassS.vo.CrimeVO;
+import com.spring.javaclassS.vo.MailVO;
 import com.spring.javaclassS.vo.UserVO;
 
 @Controller
@@ -21,6 +30,9 @@ public class StudyController {
 	
 	@Autowired
 	StudyService studyService;
+	
+	@Autowired
+	JavaMailSender mailSender;
 	
 	@RequestMapping(value = "/ajax/ajaxForm", method = RequestMethod.GET)
 	public String ajaxFormGet() {
@@ -155,10 +167,111 @@ public class StudyController {
   		studyService.setSaveCrimeData(vo);
   	}
   	
-  	@ResponseBody  // ajax
-  	@RequestMapping(value = "/restapi/deleteCrimeData", method = RequestMethod.GET)
-  	public String setDeleteCrimeData(int	year) {
+  	/*
+    @ResponseBody
+    @RequestMapping(value = "/restapi/deleteCrimeData", method = RequestMethod.GET)
+    public int deleteCrimeDataGet(@RequestParam int year) {
+        return studyService.setDeleteCrimeData(year);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/restapi/listCrimeData", method = RequestMethod.POST)
+    public String listCrimeDataPost(@RequestParam int year) {
+        return studyService.getListCrimeData(year);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/restapi/policeCrimeData", method = RequestMethod.POST)
+    public String policeCrimeDatePost(@RequestParam String police, @RequestParam int year) {
+        return studyService.getPoliceCrimeDate(police, year);
+    }
+    
+    @ResponseBody
+    @RequestMapping(value = "/restapi/policeCheck", method = RequestMethod.POST)
+    public String policeCheckPost(@RequestParam String police) {
+        return studyService.getPoliceCheck(police);
+    }
+
+     @ResponseBody
+     @RequestMapping(value = "/restapi/yearPoliceCheck", method = RequestMethod.POST)
+     public String yearSortPoliceCheckPOST(@RequestParam String police, @RequestParam int year, @RequestParam String sort) {
+         return studyService.getYearPoliceCheck(police, year, sort);
+     }
+     */
+  	
+  	@ResponseBody
+  	@RequestMapping(value = "/restapi/deleteCrimeDate", method = RequestMethod.POST)
+  	public void deleteCrimeDatePost(int year) {
+  		studyService.setDeleteCrimeDate(year);
+  	}
+  	
+  	@ResponseBody
+  	@RequestMapping(value = "/restapi/listCrimeDate", method = RequestMethod.POST)
+  	public ArrayList<CrimeVO> listCrimeDatePost(int year) {
+  		return studyService.getListCrimeDate(year);
+  	}
+  	
+  	@RequestMapping(value = "/restapi/yearPoliceCheck", method = RequestMethod.POST)
+  	public String yearPoliceCheckPost(int year, String police, String yearOrder, Model model) {
+  		ArrayList<CrimeVO> vos = studyService.getYearPoliceCheck(year, police, yearOrder);
+  		model.addAttribute("vos", vos);
+  		
+  		CrimeVO analyzeVo = studyService.getAnalyzeTotal(year, police);
+  		model.addAttribute("analyzeVo", analyzeVo);
+  		
+  		model.addAttribute("year", year);
+  		model.addAttribute("police", police);
+  		model.addAttribute("totalCnt", analyzeVo.getTotMurder()+analyzeVo.getTotRobbery()+analyzeVo.getTotTheft()+analyzeVo.getTotViolence());
+  		
   		return "study/restapi/restapiTest4";
   	}
+  	
+  	@RequestMapping(value = "/mail/mailForm", method = RequestMethod.GET)
+  	public String mailFormGet() {
+  		return "study//mail/mailForm";
+  	}
+  	
+  	// 메일 전송하기
+  	@RequestMapping(value = "/mail/mailForm", method = RequestMethod.POST)
+  	public String mailFormPost(MailVO vo, HttpServletRequest request) throws MessagingException {
+  		String toMail = vo.getToMail();  // gmail에 넣는건 처리했으니 글 넣는 것 처리
+  		String title = vo.getTitle();
+  		String content = vo.getContent();
+  		
+  		// 메일 전송을 위한 객체 : MimeMessage(), MimeMessageHelper()  // 보내고, 뒤에 중간중간 작업한걸 저장하는 저장소
+  		MimeMessage message = mailSender.createMimeMessage();
+  		MimeMessageHelper messageHelper = new MimeMessageHelper(message, true, "UTF-8");  // 인코딩해서 항상 저장
+  		
+  		// 메일보관함에 작성한 메시지들의 정보를 모두 저장시킨 후 작업처리...(3개 필요한 것 밑에서 하나로 처리함(공부하라고 써놓음)
+  		messageHelper.setTo(toMail);  // 받는 사람 메일 주소 // 앞에서 받은 메일 주소로 보낼거야
+  		messageHelper.setSubject(title);  // 메일 제목  // 다 setter에 넣는 것
+  		messageHelper.setText(content);
+  		
+  		// 메시지 보관함의 내용(content)에, 발신자의 필요한 정보를 추가로 담아서 전송처리한다.
+  	  content = content.replace("\n", "<br>");  // 우리는 textarea에 내용을 담지만 보내면 웹에서 text로 봄(한줄로 출력되기에 줄바꿈 처리 위해서 첫줄 '=' 사용)
+  	  content += "<br><hr><h3>javaclass 에서 보냅니다.</h3><hr><br>";
+  	  content += "<p><img src=\"cid:main.png\" width='500px'></p>";
+  	  content += "<p>방문하기 : <a href='http://49.142.157.251:9090/javaclassJ14/Main'>javaclass</a></p>";
+  	  content += "<hr>";
+  		messageHelper.setText(content, true);  // 기존 것 무시하고 깨끗하게 갈아치워줘(위에거 3개 안써도됨)
+  	  
+  		// 본문에 기재될 그림파일의 경로를 별도로 표시시켜준다. 그 후 다시 보관함에 저장한다.(항상 편집했으면 다시 저장해야함)
+  		//FileSystemResource file = new FileSystemResource("D:\\javaclass\\springframework\\works\\javaclassS\\src\\main\\webapp\\resources\\images\\main.png");
+  		
+  		//request.getSession().getServletContext().getRealPath("/resources/images/main.png");  // '/'는 webapp
+  		FileSystemResource file = new FileSystemResource(request.getSession().getServletContext().getRealPath("/resources/images/main.png"));  // 그림이 이름이 아래와 같아야 함.
+  		messageHelper.addInline("main.png", file);  // 첨부가 아니라 본문 내용에 추가를 하겠다는 것  // 그림이면 그림파일 이름을 적어주고 다른건 파일
+  		
+  		// 첨부파일 보내기
+  		file = new FileSystemResource(request.getSession().getServletContext().getRealPath("/resources/images/paris.jpg"));
+  		messageHelper.addAttachment("paris.jpg", file);
 
+  		file = new FileSystemResource(request.getSession().getServletContext().getRealPath("/resources/images/favorite1.zip"));
+  		messageHelper.addAttachment("favorite1.zip", file);
+  		
+  		// 메일 전송하기
+  		mailSender.send(message);
+  		
+  		return "redirect:/message/mailSendOk";  // 위에서 실패하면 그냥 안감
+  	}
 }

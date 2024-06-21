@@ -174,20 +174,129 @@ public class StudyServiceImpl implements StudyService {
   		return studyDAO.getUserAddressCheck(address);
   	}
 
-		@Override
-		public UserVO getUserMidSearch(String mid) {
-			return studyDAO.getUserMidSearch(mid);
-		}
+	@Override
+	public UserVO getUserMidSearch(String mid) {
+		return studyDAO.getUserMidSearch(mid);
+	}
 
-		@Override
-		public ArrayList<UserVO> getUserMidList(String mid) {
-			return studyDAO.getUserMidList(mid);
-		}
+	@Override
+	public ArrayList<UserVO> getUserMidList(String mid) {
+		return studyDAO.getUserMidList(mid);
+	}
 
-		@Override
-		public void setSaveCrimeData(CrimeVO vo) {
-			studyDAO.setSaveCrimeData(vo);
-		}
+	@Override
+	public void setSaveCrimeData(CrimeVO vo) {
+		studyDAO.setSaveCrimeData(vo);
+	}
+    /*
+    @Override
+    public int setDeleteCrimeData(int year) {
+        return studyDAO.setDeleteCrimeData(year);
+    }
 
+    @Override
+    public String getListCrimeData(int year) {
+        List<CrimeVO> vos = studyDAO.getListCrimeData(year);
+        StringBuilder str = new StringBuilder("<table class='table table-bordered table-hover text-center'>"
+                + "<tr class='table-info'><th colspan='5' style='font-size:24pt'>" + year + "년도 강력범죄 자료</th></tr>"
+                + "<tr class='table-secondary'><th>경찰서</th><th>살인</th><th>강도</th><th>절도</th><th>폭력</th></tr>");
+        if (vos.isEmpty()) str.append("<tr><td colspan='5'>해당 년도의 자료가 없습니다.</td></tr>");
+        else {
+            for (CrimeVO v : vos) {
+                str.append("<tr><td>").append(v.getPolice()).append("</td>")
+                        .append("<td>").append(v.getMurder()).append("건</td>")
+                        .append("<td>").append(v.getRobbery()).append("건</td>")
+                        .append("<td>").append(v.getTheft()).append("건</td>")
+                        .append("<td>").append(v.getViolence()).append("건</td></tr>");
+            }
+        }
+        str.append("</table>");
+        return str.toString();
+    }
+
+    @Override
+    public String getPoliceCrimeDate(String police, int year) {
+        List<CrimeVO> vos = studyDAO.getPoliceCrimeDate(police, year);
+        StringBuilder str = new StringBuilder("<table class='table table-bordered table-hover text-center'>"
+                + "<tr class='table-info'><th colspan='5' style='font-size:24pt'>" + year + "년도 " + police + " 경찰서 강력범죄 자료</th></tr>"
+                + "<tr class='table-secondary'><th>경찰서</th><th>살인</th><th>강도</th><th>절도</th><th>폭력</th></tr>");
+        if (vos.isEmpty()) str.append("<tr><td colspan='5'>해당 년도의 자료가 없습니다.</td></tr>");
+        else {
+            for (CrimeVO v : vos) {
+                str.append("<tr><td>").append(v.getPolice()).append("</td>")
+                        .append("<td>").append(v.getMurder()).append("건</td>")
+                        .append("<td>").append(v.getRobbery()).append("건</td>")
+                        .append("<td>").append(v.getTheft()).append("건</td>")
+                        .append("<td>").append(v.getViolence()).append("건</td></tr>");
+            }
+        }
+        str.append("</table>");
+        return str.toString();
+    }
+
+    @Override
+    public String getYearPoliceCheck(String police, int year, String sort) {
+        List<CrimeVO> vos;
+        if ("a".equals(sort)) {
+            vos = studyDAO.getYearPoliceCheckA(police, year);
+        } else {
+            vos = studyDAO.getYearPoliceCheckD(police, year);
+        }
+        StringBuilder str = new StringBuilder("<table class='table table-bordered table-hover text-center'>"
+                + "<tr class='table-info'><th colspan='5' style='font-size:24pt'>" + year + "년도 " + police + "지역 강력범죄 자료</th></tr>"
+                + "<tr class='table-secondary'><th>경찰서</th><th>살인</th><th>강도</th><th>절도</th><th>폭력</th></tr>");
+        if (vos.isEmpty()) str.append("<tr><td colspan='5'>해당 년도의 자료가 없습니다.</td></tr>");
+        else {
+            for (CrimeVO v : vos) {
+                str.append("<tr><td>").append(v.getPolice()).append("</td>")
+                        .append("<td>").append(v.getMurder()).append("건</td>")
+                        .append("<td>").append(v.getRobbery()).append("건</td>")
+                        .append("<td>").append(v.getTheft()).append("건</td>")
+                        .append("<td>").append(v.getViolence()).append("건</td></tr>");
+            }
+        }
+        str.append("</table>");
+        return str.toString();
+    }
 	
+    @Override
+    public String getPoliceCheck(String police) {
+        List<CrimeVO> vos = studyDAO.getPoliceCheck(police);
+        StringBuilder str = new StringBuilder("<table class='table table-bordered table-hover text-center'>"
+                + "<tr class='table-info'><th colspan='5' style='font-size:24pt'>" + police + "지역 강력범죄 자료</th></tr>"
+                + "<tr class='table-secondary'><th>경찰서</th><th>살인</th><th>강도</th><th>절도</th><th>폭력</th></tr>");
+        if (vos.isEmpty()) str.append("<tr><td colspan='5'>해당 지역의 자료가 없습니다.</td></tr>");
+        else {
+            for (CrimeVO v : vos) {
+                str.append("<tr><td>").append(v.getPolice()).append("</td>")
+                        .append("<td>").append(v.getMurder()).append("건</td>")
+                        .append("<td>").append(v.getRobbery()).append("건</td>")
+                        .append("<td>").append(v.getTheft()).append("건</td>")
+                        .append("<td>").append(v.getViolence()).append("건</td></tr>");
+            }
+        }
+        str.append("</table>");
+        return str.toString();
+    }
+    */
+
+	@Override
+	public void setDeleteCrimeDate(int year) {
+		studyDAO.setDeleteCrimeDate(year);
+	}
+
+	@Override
+	public ArrayList<CrimeVO> getListCrimeDate(int year) {
+		return studyDAO.getListCrimeDate(year);
+	}
+
+	@Override
+	public ArrayList<CrimeVO> getYearPoliceCheck(int year, String police, String yearOrder) {
+		return studyDAO.getYearPoliceCheck(year, police, yearOrder);
+	}
+
+	@Override
+	public CrimeVO getAnalyzeTotal(int year, String police) {
+		return studyDAO.getAnalyzeTotal(year, police);
+	}
 }
