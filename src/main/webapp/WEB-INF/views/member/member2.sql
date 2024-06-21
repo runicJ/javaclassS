@@ -1,6 +1,6 @@
 show tables;  /* 1 */
 
-create table member3 (
+create table member3 (  /* 변수명 2번째 글자가 대문자가 있으면 lombok에서 문제가 생김 */
   idx       int not null auto_increment,/* 회원 고유번호 */
   mid       varchar(30) not null,				/* 회원 아이디(중복불허) */
   pwd       varchar(100) not null,			/* 회원 비밀번호(SHA256 암호화 처리) */
@@ -19,7 +19,7 @@ create table member3 (
   userInfor char(3) default '공개',				/* 회원 정보 공개여부(공개/비공개(아이디,닉네임)) */
   userDel   char(2)  default 'NO',			/* 회원 탈퇴신청여부(NO:현재 활동중, OK:탈퇴신청중(1개월보관)) */
   point		  int default 100,						/* 회원 누적포인트(가입포인트100점, 1회방문시 10포인트증가, 1일 최대 50포인트까지 허용, 물건구매시 100원당 1포인트 증가 */
-  level     int default 1,							/* 회원등급(0:관리자, 1:준회원, 2:정회원, 3:우수회원, (4:운영자)) , 99:탈퇴신청회원(안지우고 남겨둠(관리자만 볼 수 있음)) */
+  level     int default 3,							/* 회원등급(0:관리자, 1:준회원, 2:정회원, 3:우수회원), 99:비회원, 999:탈퇴신청회원(안지우고 남겨둠(관리자만 볼 수 있음)) */
   visitCnt  int default 0,							/* 총 누적 방문횟수 */
   startDate datetime default now(),			/* 최초 가입일 */
   lastDate  datetime default now(),			/* 마지막 접속일 */

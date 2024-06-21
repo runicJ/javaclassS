@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 새로운 방법은 구현객체를 만들지 않고 구현객체를 관리하는 인터페이스 이름을 넣어줌, 경로.클래스명 -->
+<mapper namespace="com.spring.javaclassS.dao.MemberDAO">
+	<select id="getMemberIdCheck" resultType="com.spring.javaclassS.vo.MemberVO">
+		select * from member3 where mid = #{mid};
+	</select>
+	
+	<select id="getMemberNickCheck" resultType="com.spring.javaclassS.vo.MemberVO">
+		select * from member3 where nickName = #{nickName};
+	</select>
+	
+	<insert id="setMemberJoinOk">
+		insert into member2 value(default,#{vo.mid},#{vo.pwd},#{vo.name},#{vo.nickName},#{vo.gender},#{vo.birthday},#{vo.tel},#{vo.address},#{vo.email},#{vo.homePage},#{vo.job},#{vo.hobby},#{vo.photo},#{vo.content},#{userInfor},#{userDel},default,default,default,default,default,default);
+	</insert>
+	
+	<update id="setMemberPasswordUpdate">
+		update member2 set pwd = #{pwd} where mid = #{mid};
+	</update>
+</mapper>

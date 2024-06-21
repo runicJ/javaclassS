@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%-- https://tadaktadak-it.tistory.com/96 // https://haaland09009.tistory.com/226 // https://velog.io/@ansalstmd/JSP8.-%EC%9C%A0%ED%9A%A8%EC%84%B1-%EA%B2%80%EC%82%AC --%>
-<c:set var="ctp" value="${pageContext.request.contextPath}"/>  <!-- certification 누구나 입장가능하도록 지워놓음 -->
+<c:set var="ctp" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,46 +9,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>memberJoin.jsp</title>
   <jsp:include page="/WEB-INF/views/include/bs4.jsp" />
-  <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>  <!-- CDN 쓰는 이유는 어차피 웹은 인터넷이 없으면 무의미 -->
-  <script src="${ctp}/js/woo.js"></script>  <!-- 다음api js파일로 만듦 -->
+  <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+  <script src="${ctp}/resources/js/woo.js"></script>
   <script>
     'use strict';
     
     let idCheckSw = 0;  // 버튼 활성화 => 1로 바꾸고 아이디 고쳐도 0으로
     let nickCheckSw = 0;  // 둘다 1이 되어 있어야 submit 되도록
     
-    /* let mid = $("#mid").val().trim();
-		let pwd = $("#pwd").val().trim();
-		let nickName = myform.nickName.value.trim();
-		let name = $("#name").val().trim();
-		let gender = myform.gender.value;
-		
-		if(mid == "") {
-			alert("아이디를 입력하세요");
-			$("#mid").focus();
-			return false;
-		}
-		else if(pwd == "") {
-			alert("비밀번호를 입력하세요");
-			$("#pwd").focus();
-			return false;
-		}  		
-		else if(nickName == "") {
-			alert("닉네임을 입력하세요");
-			$("#nickName").focus();
-			return false;
-		}  		
-		else if(name == "") {
-			alert("이름을 입력하세요");
-			$("#name").focus();
-			return false;
-		}  		
-		else if(email1 == "") {
-			alert("이메일을 입력하세요");
-			$("#email1").focus();
-			return false;
-		} */
-    
+
     function fCheck() {
     	// 유효성 검사.....(정규식-버튼체크-묶어서-담아서 submit)
     	// 아이디,닉네임,성명,이메일,홈페이지,전화번호,비밀번호 등등....
@@ -58,211 +27,6 @@
       let regNickName = /^[가-힣]+$/;					// 닉네임은 한글만 가능
       let regName = /^[가-힣a-zA-Z]+$/;				// 이름은 한글/영문 가능
       
-/*       let regMid = /^[a-zA-Z0-9_]{4,20}$/;
-		  let regPwd = /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\W_]).{4,20}$/; 
-      let regNickName = /^[a-zA-Z0-9가-힣]{2,10}$/;
-      let regName = /^[a-zA-Z가-힣]{2,10}$/; 
-      let regEmail = /^[a-zA-Z0-9]([-_]?[a-zA-Z0-9])*$/i;
-      let regHomePage = /(https?:\/\/)?([a-zA-Z\d-]+)\.([a-zA-Z\d-]{2,8})([\/\w\.-]*)*\/?$/;
-      let regTel = /\d{2,3}-\d{3,4}-\d{4}$/; */
-      
-/*       let regMid = /^[\w]{4,20}$/;
-      let regPwd = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[\W_]).{4,20}$/;
-      let regNickName = /^[가-힣\w]{2,7}$/;
-      let regName = /^[가-힣]{2,5}$/;
-      let regEmail = /^[a-zA-Z0-9]([-_]?[a-zA-Z0-9])*$/;
-      let regHomePage = /(https?:\/\/)?([a-zA-Z\d-]+)\.([a-zA-Z\d-]{2,8})([\/\w\.-]*)*\/?$/
-      let regTel = /\d{2,3}-\d{3,4}-\d{4}$/; */
-      
-/*       function fCheck() {
-        // 유효성 검사.....
-        // 아이디,닉네임,성명,이메일,홈페이지,전화번호,비밀번호 등등....
-        
-        // 검사를 끝내고 필요한 내역들을 변수에 담아 회원가입처리한다.
-        
-        let email1 = myform.email1.value.trim();
-        let email2 = myform.email2.value;
-        let email = email1 + '@' + email2;
-        
-        let tel1 = myform.tel1.value;
-        let tel2 = myform.tel2.value.trim();
-        let tel3 = myform.tel3.value.trim();
-        let tel = tel1 + '-' + tel2 + '-' + tel3;
-        
-        let postcode = myform.postcode.value + " ";
-        let roadAddress = myform.roadAddress.value + " ";
-        let detailAddress = myform.detailAddress.value + " ";
-        let extraAddress = myform.extraAddress.value + " ";
-        let address = postcode + "/" + roadAddress + "/" + detailAddress + "/" + extraAddress;
-        
-        // 정규식을 이용한 유효성 검사처리
-        let pwd = myform.pwd.value.trim();
-        let pwdReg = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&^])[A-Za-z\d@$!%*#?&^]{8,16}$/;
-        
-        let name = myform.name.value.trim();
-        let nameReg = /^[가-힣]{2,4}$/;
-        
-        let emailReg = /^[a-zA-Z0-9-_]{4,12}$/;
-        let tel2Reg = /^[\d]{3,4}$/;
-        let tel3Reg = /^[\d]{4,4}$/;
-        
-        let homePage = myform.homePage.value.trim();
-        let homePageReg = /^https?:\/\/(.+)?\.([a-zA-Z]+)?\/?([\?#].*)?$/;
-        
-        if(!pwdReg.test(pwd)){
-            document.getElementById("hidden-pwd-msg").style.display = "block";
-            myform.pwd.value = "";
-            myform.pwd.focus();
-        }
-        else if(!nameReg.test(name)){
-            document.getElementById("hidden-pwd-msg").style.display = "none";
-            document.getElementById("hidden-name-msg").style.display = "block";
-            myform.name.value = "";
-            myform.name.focus();
-        }
-        else if(!emailReg.test(email1)){
-            document.getElementById("hidden-pwd-msg").style.display = "none";
-            document.getElementById("hidden-name-msg").style.display = "none";
-            document.getElementById("hidden-email-msg").style.display = "block";
-            myform.email1.value = "";
-            myform.email1.focus();
-        }
-        else if(!tel2Reg.test(tel2)){
-            document.getElementById("hidden-pwd-msg").style.display = "none";
-            document.getElementById("hidden-name-msg").style.display = "none";
-            document.getElementById("hidden-email-msg").style.display = "none";
-            document.getElementById("hidden-tel-msg").style.display = "block";
-            myform.tel2.value = "";
-            myform.tel2.focus();
-        }
-        else if(!tel3Reg.test(tel3)){
-            document.getElementById("hidden-pwd-msg").style.display = "none";
-            document.getElementById("hidden-name-msg").style.display = "none";
-            document.getElementById("hidden-email-msg").style.display = "none";
-            document.getElementById("hidden-tel-msg").style.display = "block";
-            myform.tel3.value = "";
-            myform.tel3.focus();
-        }
-        else if(!homePageReg.test(homePage)){
-            document.getElementById("hidden-pwd-msg").style.display = "none";
-            document.getElementById("hidden-name-msg").style.display = "none";
-            document.getElementById("hidden-email-msg").style.display = "none";
-            document.getElementById("hidden-tel-msg").style.display = "none";
-            document.getElementById("hidden-homePage-msg").style.display = "block";
-            myform.homePage.value = "";
-            myform.homePage.focus();
-        }
-        else if(idCheckSw == 0){
-            alert("아이디 중복체크를 해주세요!");
-            document.getElementById("midBtn").focus();
-        }
-        else if(nickCheckSw == 0) {
-            alert("닉네임 중복체크를 해주세요!");
-            document.getElementById("nickNameBtn").focus();
-        }
-        else {
-            document.getElementById("hidden-homePage-msg").style.display = "none";
-            myform.email.value = email;
-            myform.tel.value = tel;
-            myform.address.value = address;
-            $("#mid").removeAttr("disabled");
-            $("#nickName").removeAttr("disabled");
-            
-            myform.submit();
-        }
-    }
-    
-    // 아이디 중복체크
-    function idCheck() {
-        let mid = myform.mid.value;
-        let midReg = /^[a-zA-Z0-9-_]{4,12}$/;
-        
-        if(mid.trim() == ""){
-            alert("아이디를 입력하세요!");
-            myform.mid.focus();
-        }
-        else if(!midReg.test(mid)){
-            document.getElementById("hidden-mid-msg").style.display = "block";
-            myform.mid.value = "";
-            myform.mid.focus();
-        }
-        else {
-            document.getElementById("hidden-mid-msg").style.display = "none";
-            $.ajax({
-                url : "${ctp}/MemberIdCheck.mem",
-                type : "get",
-                data : {mid : mid},
-                success : function(res) {
-                    if(res != 0){
-                        alert("이미 사용중인 아이디입니다.");
-                        myform.mid.focus();
-                    }
-                    else {
-                        let ans = confirm‎("사용 가능한 아이디입니다.\n사용하시겠습니까?");
-                        if(ans) {
-                            idCheckSw = 1;
-                            $("#mid").attr("disabled", true);
-                            $("#midBtn").attr("disabled", true);
-                        }
-                    }
-                },
-                error : function() {
-                    alert("전송 오류");
-                }
-            });
-        }
-    }
-    
-    // 닉네임 중복체크
-        function nickCheck() {
-        let nickName = myform.nickName.value;
-        let nickNameReg = /^[a-zA-Z가-힣0-9]{1,8}$/;
-        
-        if(nickName.trim() == ""){
-            alert("닉네임을 입력하세요!");
-            myform.nickName.focus();
-        }
-        else if(!nickNameReg.test(nickName)){
-            document.getElementById("hidden-nickName-msg").style.display = "block";
-            myform.nickName.value = "";
-            myform.nickName.focus();
-        }
-        else {
-            document.getElementById("hidden-nickName-msg").style.display = "none";
-            $.ajax({
-                url : "${ctp}/MemberNickCheck.mem",
-                type : "get",
-                data : {nickName : nickName},
-                success : function(res) {
-                    if(res != 0){
-                        alert("이미 사용중인 닉네임입니다.");
-                        myform.nickName.focus();
-                    }
-                    else {
-                        let ans = confirm‎("사용 가능한 닉네임입니다.\n사용하시겠습니까?");
-                        if(ans) {
-                            nickCheckSw = 1;
-                            $("#nickName").attr("disabled", true);
-                            $("#nickNameBtn").attr("disabled", true);
-                        }
-                    }
-                },
-                error : function() {
-                    alert("전송 오류");
-                }
-            });
-        }
-    }
-    
-    // 다시작성 눌렀을 때 버튼 활성화
-    function resetForm() {
-        $("#nickName").removeAttr("disabled");
-        $("#nickNameBtn").removeAttr("disabled");
-        $("#mid").removeAttr("disabled");
-        $("#midBtn").removeAttr("disabled");
-        myform.reset();
-        $("#mid").focus();
-    } */
     	
     	// 검사를 끝내고 필요한 내역들을 변수에 담아 회원가입 처리한다.
     	// 변수에 저장(위에서 해도됨)
@@ -320,6 +84,7 @@
   			tel = tel1 + "-" + tel2 + "-" + tel3;
   		}
   		
+  		/*
   		// 전송 전에 파일에 관련된 사항들을 체크해준다.=> 프론트체크
   		let fName = document.getElementById("file").value;
   		
@@ -337,8 +102,8 @@
 	  			return false;
 	  		}	  			
   		}
-  		//else return false;
-  		
+  		*/
+			  		
     	// 아이디/닉네임 중복체크
     	if(idCheckSw == 0) {
     		alert("아이디 중복체크 버튼을 눌러주세요");
@@ -349,11 +114,11 @@
     		document.getElementById("nickNameBtn").focus();
     	}
     	else {
-    		myform.email.value = email;  // hidden에 묶어서 보내는거 담기
+    		myform.email.value = email;
     		myform.tel.value = tel;
     		myform.address.value = address;
     		    		    		
-    		myform.submit();  // MemberJoinOk로 넘김
+    		myform.submit();
     	}
     }
 		
@@ -369,7 +134,7 @@
     		idCheckSw = 1;
     		
 	    	$.ajax({
-	    		url : "${ctp}/MemberIdCheck.mem",
+	    		url : "${ctp}/member/memberIdCheck",
 	    		type : "get",
 	    		data : {mid : mid},
 	    		success:function(res) {
@@ -402,7 +167,7 @@
     		nickCheckSw = 1;
     		
 	    	$.ajax({
-	    		url : "${ctp}/MemberNickCheck.mem",
+	    		url : "${ctp}/member/memberNickCheck",
 	    		type : "get",
 	    		data : {nickName : nickName},
 	    		success:function(res) {
@@ -435,20 +200,6 @@
     	});
     }
     
-/*     $(function() {
-        $("#mid").on("blur", () => {
-          idCheckSw = 0;
-          $("#midBtn").attr("disabled", false);
-        });
-
-        $("#nickName").on("blur", () => {
-          nickCheckSw = 0;
-          $("#nickNameBtn").attr("disabled", false);
-        });
-      });
-    	
-    }); */
-    
     // 선택된 사진 미리보기
     function imgCheck(e) {
     	if(e.files && e.files[0]) {
@@ -466,7 +217,8 @@
 <jsp:include page="/WEB-INF/views/include/slide2.jsp" />
 <p><br/></p>
 <div class="container">
-  <form name="myform" method="post" action="MemberJoinOk.mem" class="was-validated" enctype="multipart/form-data">  <!-- enctype="multipart/form-data" 잊지말기 -->
+  <!-- <form name="myform" method="post" class="was-validated" enctype="multipart/form-data"> -->
+  <form name="myform" method="post" class="was-validated">
     <h2>회 원 가 입</h2>
     <br/>
     <div class="form-group">
@@ -545,7 +297,7 @@
       <div class="input-group mb-1">
         <input type="text" name="postcode" id="sample6_postcode" placeholder="우편번호" class="form-control">  <!-- postcode : 내가쓰는것 // sample6_postcode : 다음api -->
         <div class="input-group-append">
-          <input type="button" onclick="sample6_execDaumPostcode()" value="우편번호 찾기" class="btn btn-secondary">  <!-- 다음api에서 찾는 함수 -->
+          <input type="button" onclick="sample6_execDaumPostcode()" value="우편번호 찾기" class="btn btn-secondary">
         </div>
       </div>
       <input type="text" name="roadAddress" id="sample6_address" size="50" placeholder="주소" class="form-control mb-1">
@@ -634,19 +386,19 @@
           <input type="radio" class="form-check-input" name="userInfor" value="비공개"/>비공개
         </label>
       </div>
-    </div>
+    </div> 
     <div  class="form-group">
       회원 사진(파일용량:2MByte이내) :
-      <input type="file" name="fName" id="file" onchange="imgCheck(this)" class="form-control-file border"/>  <!-- 사진이 바뀔때마다 미리보기 // this로 넣고 e로 체크 -->
+      <input type="file" name="fName" id="file" onchange="imgCheck(this)" class="form-control-file border"/>
       <div><img id="photoDemo" width="100px"/></div>
     </div>
     <button type="button" class="btn btn-secondary" onclick="fCheck()">회원가입</button> &nbsp;
     <button type="reset" class="btn btn-secondary">다시작성</button> &nbsp;
-    <button type="button" class="btn btn-secondary" onclick="location.href='${ctp}/MemberLogin.mem';">돌아가기</button>
+    <button type="button" class="btn btn-secondary" onclick="location.href='${ctp}/member/memberLogin';">돌아가기</button>
     
-    <input type="hidden" name="email" />  <!-- email도 한덩어리로 -->
-    <input type="hidden" name="tel" />  <!-- tel1,2,3 한덩어리로 묶어서 보내도록 -->
-    <input type="hidden" name="address" />  <!-- 6개를 묶어서 보냄 -->
+    <input type="hidden" name="email" />
+    <input type="hidden" name="tel" />
+    <input type="hidden" name="address" />
   </form>
 </div>
 <p><br/></p>
