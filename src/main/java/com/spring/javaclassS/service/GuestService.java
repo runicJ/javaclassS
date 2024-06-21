@@ -10,4 +10,8 @@ public interface GuestService {
 
 	public int setGuestInput(GuestVO vo);
 
+	public int getTotRecCnt();
+
+	public ArrayList<GuestVO> getGuestList(int startIndexNo, int pageSize);
+
 }

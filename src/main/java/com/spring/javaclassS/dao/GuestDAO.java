@@ -12,4 +12,8 @@ public interface GuestDAO {
 
 	public int setGuestInput(@Param("vo") GuestVO vo);
 
+	public int getTotRecCnt();
+
+	public ArrayList<GuestVO> getGuestList(@Param("startIndexNo") int startIndexNo, @Param("pageSize") int pageSize);
+
 }

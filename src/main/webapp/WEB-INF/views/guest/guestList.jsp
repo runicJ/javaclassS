@@ -22,14 +22,14 @@
     function delCheck(idx) {
     	let ans = confirm("현재 방문글을 삭제하시겠습니까?");
     	if(ans) {
-    		location.href = '${ctp}/GuestDelete?idx=' + idx;
+    		location.href = '${ctp}/guest/guestDelete?idx=' + idx;
     		return false;
     	}
     }
     
     function pageSizeCheck() {
     	let pageSize = document.getElementById("pageSize").value;
-    	location.href = "${ctp}/GuestList?pag=${pag}&pageSize="+pageSize;
+    	location.href = "${ctp}/guest/guestList?pag=${pag}&pageSize="+pageSize;
     }
   </script>
 </head>
@@ -45,13 +45,13 @@
       <td><a href="${ctp}/guest/guestInput" class="btn btn-success">글쓰기</a></td>
       <td class="text-right">
         <c:if test="${pag > 1}">
-          <a href="${ctp}/GuestList?pag=1&pageSize=${pageSize}" title="첫페이지">◁◁</a>
-          <a href="${ctp}/GuestList?pag=${pag-1}&pageSize=${pageSize}" title="이전페이지">◀</a>
+          <a href="${ctp}/guest/guestList?pag=1&pageSize=${pageSize}" title="첫페이지">◁◁</a>
+          <a href="${ctp}/guest/guestList?pag=${pag-1}&pageSize=${pageSize}" title="이전페이지">◀</a>
         </c:if>
         ${pag}/${totPage}
         <c:if test="${pag < totPage}">
-          <a href="${ctp}/GuestList?pag=${pag+1}&pageSize=${pageSize}" title="다음페이지">▶</a>
-          <a href="${ctp}/GuestList?pag=${totPage}&pageSize=${pageSize}" title="마지막페이지">▷▷</a>
+          <a href="${ctp}/guest/guestList?pag=${pag+1}&pageSize=${pageSize}" title="다음페이지">▶</a>
+          <a href="${ctp}/guest/guestList?pag=${totPage}&pageSize=${pageSize}" title="마지막페이지">▷▷</a>
         </c:if>
       </td>
     </tr>
@@ -115,14 +115,14 @@
 <!-- 블록페이지 시작 -->
 <div class="text-center">
   
-  <c:if test="${pag > 1}">[<a href="${ctp}/GuestList?pag=1&pageSize=${pageSize}">첫페이지</a>]</c:if>
-  <c:if test="${curBlock > 0}">[<a href="${ctp}/GuestList?pag=${(curBlock-1)*blockSize + 1}&pageSize=${pageSize}">이전블록</a>]</c:if>
+  <c:if test="${pag > 1}">[<a href="${ctp}/guest/guestList?pag=1&pageSize=${pageSize}">첫페이지</a>]</c:if>
+  <c:if test="${curBlock > 0}">[<a href="${ctp}/guest/guestList?pag=${(curBlock-1)*blockSize + 1}&pageSize=${pageSize}">이전블록</a>]</c:if>
   <c:forEach var="i" begin="${(curBlock*blockSize)+1}" end="${(curBlock*blockSize) + blockSize}" varStatus="st">
-    <c:if test="${i <= totPage && i == pag}"><a href="${ctp}/GuestList?pag=${i}&pageSize=${pageSize}">[<font color="red"><b>${i}</b></font>]</a></c:if>
-    <c:if test="${i <= totPage && i != pag}"><a href="${ctp}/GuestList?pag=${i}&pageSize=${pageSize}">[${i}]</a></c:if>
+    <c:if test="${i <= totPage && i == pag}"><a href="${ctp}/guest/guestList?pag=${i}&pageSize=${pageSize}">[<font color="red"><b>${i}</b></font>]</a></c:if>
+    <c:if test="${i <= totPage && i != pag}"><a href="${ctp}/guest/guestList?pag=${i}&pageSize=${pageSize}">[${i}]</a></c:if>
   </c:forEach>
-  <c:if test="${curBlock < lastBlock}">[<a href="${ctp}/GuestList?pag=${(curBlock+1)*blockSize+1}&pageSize=${pageSize}">다음블록</a>]</c:if>
-  <c:if test="${pag < totPage}">[<a href="${ctp}/GuestList?pag=${totPage}&pageSize=${pageSize}">마지막페이지</a>]</c:if>
+  <c:if test="${curBlock < lastBlock}">[<a href="${ctp}/guest/guestList?pag=${(curBlock+1)*blockSize+1}&pageSize=${pageSize}">다음블록</a>]</c:if>
+  <c:if test="${pag < totPage}">[<a href="${ctp}/guest/guestList?pag=${totPage}&pageSize=${pageSize}">마지막페이지</a>]</c:if>
   
 </div>
 <!-- 블록페이지 끝 -->
