@@ -203,6 +203,20 @@
 		    <version>4.2.3.RELEASE</version>
 		</dependency>
 		
+		<!-- 파일 업로드를 위한 라이브러리(2개) -->
+		<!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+		<dependency>
+		    <groupId>commons-io</groupId>
+		    <artifactId>commons-io</artifactId>
+		    <version>2.11.0</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/commons-fileupload/commons-fileupload -->
+		<dependency>
+		    <groupId>commons-fileupload</groupId>
+		    <artifactId>commons-fileupload</artifactId>
+		    <version>1.5</version>
+		</dependency>
+		
 	</dependencies>
     <build>
         <plugins>

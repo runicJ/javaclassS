@@ -1,5 +1,6 @@
 package com.spring.javaclassS.controller;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -13,11 +14,11 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.spring.javaclassS.service.StudyService;
 import com.spring.javaclassS.vo.CrimeVO;
@@ -228,7 +229,7 @@ public class StudyController {
   	
   	@RequestMapping(value = "/mail/mailForm", method = RequestMethod.GET)
   	public String mailFormGet() {
-  		return "study//mail/mailForm";
+  		return "study/mail/mailForm";
   	}
   	
   	// 메일 전송하기
@@ -274,4 +275,62 @@ public class StudyController {
   		
   		return "redirect:/message/mailSendOk";  // 위에서 실패하면 그냥 안감
   	}
+  	
+  	// 파일 업로드 연습폼 호출하기
+  	@RequestMapping(value = "/fileUpload/fileUpload", method = RequestMethod.GET)
+  	public String fileUploadGet(HttpServletRequest request, Model model) {
+  		String realPath = request.getSession().getServletContext().getRealPath("/resources/data/fileUpload");  // 정보를 꺼내는 것 끝에 / 지우기
+  		
+  		String[] files = new File(realPath).list();  // realPath의 위치를 보겠다는 것
+  		
+  		model.addAttribute("files", files);
+  		model.addAttribute("fileCount", files.length);
+  		
+  		return "study/fileUpload/fileUpload";
+  	}
+  	
+  	@RequestMapping(value = "/fileUpload/fileUpload", method = RequestMethod.POST)
+  	public String fileUploadPost(MultipartFile fName, String mid) {
+  		
+  		int res = studyService.fileUpload(fName, mid);
+  		
+  		if(res != 0) return "redirect:/message/filUploadOk";
+  		return "redirect:/message/filUploadNo";
+  	}
+  	
+  	@RequestMapping(value = "/fileUpload/fileDelete", method = RequestMethod.POST)
+  	public String fileDeletePost(HttpServletRequest request, String file) {
+  		String realPath = request.getSession().getServletContext().getRealPath("/resources/data/fileUpload/");  // 파일명으로 지우니까 마지막에 /가 있어야 함
+
+  		String res = "0";
+  		File fName = new File(realPath + file);  // 껍데기 만들어서 지움
+
+  		if(fName.exists()) {
+  			fName.delete();
+  			res = "1";
+  		}
+  		
+  		return res;
+  	}
+  	
+  	@RequestMapping(value = "/fileUpload/fileDeleteAll", method = RequestMethod.POST)
+  	public String fileDeleteAllPost(HttpServletRequest request, String file) {
+  		String realPath = request.getSession().getServletContext().getRealPath("/resources/data/fileUpload/");  // 파일명으로 지우니까 마지막에 /가 있어야 함
+  		
+  		String res = "0";
+  		File targetFolder = new File(realPath);
+  		if(!targetFolder.exists()) return "0";
+  		
+  		File[] files = targetFolder.listFiles();  // 각각의 파일에 대한 속성을 배열에 담는다. // 폴더의 파일을 하나씩 속성으로 꺼내ㅐ서 객체로 꺼냄
+  		
+  		if(files.length != 0) {
+  			for(File f : files) {
+  				if(!f.isDirectory()) f.delete();  // 파일이냐 물어보고 파일이 아니면 전부 지움 여기서 안하면 폴더까지 지움// 있냐 물어볼 필요 없음. 있으니까 들어온 것.
+  			}
+  			res = "1";
+  		}
+  		
+  		return res;
+  	}
+  	
 }

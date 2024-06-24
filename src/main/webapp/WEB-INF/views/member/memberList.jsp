@@ -39,7 +39,7 @@
   </c:if>
   <hr>
 	<div id="totalList">
-	  <h3 class="text-center">전체 회원 리스트</h3>
+	  <h3 class="text-center">전체 회원 리스트(총 ${fn:length(vos)}건)</h3>
 	  <table class="table table-hover text-center">  <!-- 페이징 처리하는 부분 // 정렬하는 부분 넣어주기 -->
 	  	<tr class="table-dark text-dark">
 	  		<th>번호</th>
@@ -56,11 +56,11 @@
 	  	</tr>
 	  	<c:forEach var="vo" items="${vos}" varStatus="st">
 	  		<c:if test="${vo.userInfor == '공개' || (vo.userInfor != '공개' && sLevel == 0)}">
-	  		<c:if test="${vo.userDel == 'OK'}"><c:set var="active" value="탈퇴신청"/></c:if>  <!-- 부트4에선 active 예약어 -->
-	  		<c:if test="${vo.userDel != 'OK'}"><c:set var="active" value="활동중"/></c:if>  <!-- 배타적 -->
+	  		<c:if test="${vo.userDel == 'OK'}"><c:set var="active" value="탈퇴신청"/></c:if> 
+	  		<c:if test="${vo.userDel != 'OK'}"><c:set var="active" value="활동중"/></c:if>
 	  		<tr>
-	  			<td>${vo.idx}</td>
-	  			<td><a href="MemberSearch.mem?mid=${vo.mid}">${vo.mid}</a></td>  <!-- 개인 회원 정보보기 링크준 것 // 해당 클릭한 아이디의 정보만 보는 것이기 때문에 쿼리스트링으로 어떤건지 보내줘야 함 -->
+	  			<td>${st.count}</td>
+	  			<td><a href="MemberSearch.mem?mid=${vo.mid}">${vo.mid}</a></td>
 	  			<td>${vo.nickName}</td>
 	  			<td>${vo.name}</td>
 	  			<td>${fn: substring(vo.birthday,0,10)}</td>  <!-- 날짜 형식으로 엄청 길게 나오니까 잘라서 보여주기 // 위에 fn 쓰려면 정의되어 있는지 확인 -->
@@ -97,7 +97,7 @@
 		  	<c:forEach var="vo" items="${vos}" varStatus="st">
 		  		<c:if test="${vo.userInfor == '비공개'}">
 		  		<tr>
-		  			<td>${vo.idx}</td>
+		  			<td>${st.ount}</td>
 		  			<td>${vo.mid}</td>
 		  			<td>${vo.nickName}</td>
 		  			<td>${vo.name}</td>

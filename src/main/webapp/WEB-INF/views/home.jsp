@@ -151,3 +151,9 @@
 	<jsp:include page="/WEB-INF/views/include/footer.jsp" />
 
 </html>
+
+
+<!-- 아이디찾기 이메일로 아이디 쏴주기
+	주소록 만들기 이메일 주소록
+	메일보내는 시간동안 스핀 넣기
+	2분안에 작성(세션?JS?) -->

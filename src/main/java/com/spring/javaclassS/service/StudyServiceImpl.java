@@ -1,13 +1,22 @@
 package com.spring.javaclassS.service;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.spring.javaclassS.dao.DbTestDAO;
 import com.spring.javaclassS.dao.StudyDAO;
@@ -298,5 +307,39 @@ public class StudyServiceImpl implements StudyService {
 	@Override
 	public CrimeVO getAnalyzeTotal(int year, String police) {
 		return studyDAO.getAnalyzeTotal(year, police);
+	}
+
+	@Override
+	public int fileUpload(MultipartFile fName, String mid) {
+		int res = 0;
+		
+		// 파일이름 중복처리를 위해 UUID객체 활용 // 파일중복체크 안해 주기에 강제로 중복됐는지 확인해야함 => 중복되면 파일이름을 붙여서 저장할 파일 만들어 넣어줌
+		UUID uid = UUID.randomUUID();
+		String oFileName = fName.getOriginalFilename();
+		String sFileName = mid + "_" + uid.toString().substring(0,8) + "_" + oFileName;
+		
+		// 서버에 파일 올리기
+		try {
+			writeFile(fName, sFileName);  // 성공적으로 파일을 올린 것
+			res = 1;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return res;
+	}
+
+	private void writeFile(MultipartFile fName, String sFileName) throws IOException {
+		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest(); 
+		String realPath = request.getSession().getServletContext().getRealPath("/resources/data/fileUpload/");  // 서버의 절대경로
+		
+		FileOutputStream fos = new FileOutputStream(realPath + sFileName);
+
+		//fos.write(fName.getBytes())
+		if(fName.getBytes().length != -1) {  // -1은 없단 얘기
+			fos.write(fName.getBytes());
+		}
+		fos.flush();
+		fos.getClass();
 	}
 }

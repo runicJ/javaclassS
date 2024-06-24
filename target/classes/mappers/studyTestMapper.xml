@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 새로운 방법은 구현객체를 만들지 않고 구현객체를 관리하는 인터페이스 이름을 넣어줌, 경로.클래스명 -->
+<mapper namespace="com.spring.javaclassS.dao.StudyDAO">
+
+    <select id="getUserMidMap" resultType="com.spring.javaclassS.vo.UserVO">
+        select * from user order by name;
+    </select>
+
+	<!--
+    <select id="getUserMidInfo" parameterType="string" resultType="com.spring.javaclassS.vo.UserVO">
+        select * from user where id = #{mid}
+    </select>
+    -->
+    
+	<select id="getUserMidSearch" resultType="com.spring.javaclassS.vo.UserVO">
+		select * from user where mid = #{mid};
+	</select>
+	
+	<select id="getUserMidList" resultType="com.spring.javaclassS.vo.UserVO">
+		select * from user where mid like concat('%', #{mid}, '%') order by mid;
+	</select>
+
+<!--     <select id="getListCrimeData" resultType="com.spring.javaclassS.vo.CrimeVO">
+        SELECT * FROM crime WHERE year = #{year} ORDER BY police;
+    </select>
+
+    <select id="getPoliceCrimeData" resultType="com.spring.javaclassS.vo.CrimeVO">
+        SELECT * FROM crime WHERE police = #{police} AND year = #{year} ORDER BY police;
+    </select>
+
+    <select id="getPoliceCheck" resultType="com.spring.javaclassS.vo.CrimeVO">
+        SELECT * FROM crime WHERE police = #{police} ORDER BY year;
+    </select>
+
+    <select id="getYearPoliceCheckA" resultType="com.spring.javaclassS.vo.CrimeVO">
+        SELECT * FROM crime WHERE police = #{police} AND year = #{year} ORDER BY police;
+    </select>
+
+    <select id="getYearPoliceCheckD" resultType="com.spring.javaclassS.vo.CrimeVO">
+        SELECT * FROM crime WHERE police = #{police} AND year = #{year} ORDER BY police DESC;
+    </select> -->
+    
+    <select id="getListCrimeDate" resultType="com.spring.javaclassS.vo.CrimeVO">
+		select * from crime where year = #{year} order by police;
+	</select>
+	
+	<select id="getYearPoliceCheck" resultType="com.spring.javaclassS.vo.CrimeVO">
+		select * from crime where year = #{year} and police like concat(#{police},'%') order by police ${yearOrder};
+	</select>
+	<!-- # { 값 }  $ { 변수 } => 동적폼 -->
+	
+	<select id="getAnalyzeTotal" resultType="com.spring.javaclassS.vo.CrimeVO">
+		select year,sum(robbery) as totRobbery,sum(murder) as totMurder,sum(theft) as totTheft,sum(violence) as totViolence,
+					 avg(robbery) as avgRobbery,avg(murder) as avgMurder,avg(theft) as avgTheft,avg(violence) as avgViolence
+					 from crime where year = #{year} and police like concat(#{police},'%');
+	</select>
+	
+	<insert id="setSaveCrimeData">
+		insert into crime values (default,#{vo.year},#{vo.police},#{vo.robbery},#{vo.theft},#{vo.murder},#{vo.violence})
+	</insert>
+	
+	 
+<!--     <delete id="setDeleteCrimeData">
+        delete from crime where year = #{year};
+    </delete> -->
+    
+    	
+	<delete id="setDeleteCrimeDate">
+	  delete from crime where year = #{year};
+	</delete>
+</mapper>

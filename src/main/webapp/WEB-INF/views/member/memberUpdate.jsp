@@ -126,12 +126,11 @@
 <jsp:include page="/WEB-INF/views/include/slide2.jsp" />s
 <p><br/></p>
 <div class="container">
-  <form name="myform" method="post" action="MemberUpdateOk.mem" class="was-validated">
+  <form name="myform" method="post" class="was-validated">
     <h2>회 원 정 보 수 정</h2>
     <br/>
     <div class="form-group">
-      아이디 :  <!-- vo, session에 있는거 필요 x -->
-      <%-- <input type="text" class="form-control" id="mid" name="mid" value="${vo.mid}" disabled /> --%>  <!-- 이렇게 하면 입력안됨!!(readonly 써야함) -->
+      아이디 :
       <input type="text" class="form-control" id="mid" name="mid" value="${vo.mid}" readonly />
     </div>
     <div class="form-group">
@@ -163,19 +162,17 @@
       <div class="form-check-inline">
         <span class="input-group-text">성별 :</span> &nbsp; &nbsp;
         <label class="form-check-label">
-          <%-- <input type="radio" class="form-check-input" name="gender" value="남자" ${vo.gender == '남자' ? 'checked' : ''}>남자 --%>
-          <input type="radio" class="form-check-input" name="gender" value="남자" <c:if test="${vo.gender == '남자'}">checked</c:if> />남자
+          <input type="radio" class="form-check-input" name="gender" value="남자" ${vo.gender == '남자' ? 'checked' : ''}>남자
         </label>
       </div>
       <div class="form-check-inline">
         <label class="form-check-label">
-          <%-- <input type="radio" class="form-check-input" name="gender" value="여자" ${vo.gender == '여자' ? 'checked' : ''}>여자 --%>
-          <input type="radio" class="form-check-input" name="gender" value="여자" <c:if test="${vo.gender == '여자'}">checked</c:if> />여자
+         	<input type="radio" class="form-check-input" name="gender" value="여자" ${vo.gender == '여자' ? 'checked' : ''}>여자
         </label>
       </div>
     </div>
     <div class="form-group">
-      <label for="birthday">생일</label> <%-- ${vo.birthday}/1998-05-09 00:00:00.0 --%>
+      <label for="birthday">생일</label>
       <input type="date" name="birthday" value="${fn:substring(vo.birthday,0,10)}" class="form-control"/>
     </div>
     <div class="form-group">
@@ -239,13 +236,12 @@
 			취미 : 
 			<c:set var="varHobbys" value="${fn:split('등산,낚시,수영,독서,영화감상,바둑,축구,기타',',')}" />  <!-- 자르는 기준은 관계없음 /해도됨 -->
 			<c:forEach var="tempHobby" items="${varHobbys}" varStatus="st">
-				<%-- <input type="checkbox" name="hobby" value="${tempHobby}" <c:if test="${fn:contains(vo.hobby,varHobbys[st.index])}">checked</c:if> />${tempHobby} &nbsp;&nbsp; --%>
-				<input type="checkbox" name="hobby" value="${tempHobby}" <c:if test="${fn:contains(vo.hobby,tempHobby)}">checked</c:if> />${tempHobby} &nbsp;&nbsp;  <!-- vo.hobby에 tempHobby가 포함되어 있는지 // include는 java -->
+				<input type="checkbox" name="hobby" value="${tempHobby}" <c:if test="${fn:contains(vo.hobby,tempHobby)}">checked</c:if> />${tempHobby} &nbsp;&nbsp;
 			</c:forEach>        
     </div>
     <div class="form-group">
       <label for="content">자기소개</label>
-      <textarea rows="5" class="form-control" id="content" name="content">${vo.content}</textarea>  <!-- textarea는 중간에 넣어야 함 -->
+      <textarea rows="5" class="form-control" id="content" name="content">${vo.content}</textarea>
     </div>
     <div class="form-group">
       <div class="form-check-inline">
@@ -262,16 +258,15 @@
     </div>
     <div  class="form-group">
       회원 사진(파일용량:2MByte이내) : <img src="${ctp}/images/member/${vo.photo}" width="100px"/>
-      <input type="file" name="fName" id="file" class="form-control-file border"/>  <!-- file에는 value 값을 넣을 수 없음 -->
+      <input type="file" name="fName" id="file" class="form-control-file border"/>
     </div>
-    <button type="button" class="btn btn-success" onclick="fCheck()">회원정보수정</button> &nbsp;  <!-- 업데이트 처리 하면 됨 -->
+    <button type="button" class="btn btn-success" onclick="fCheck()">회원정보수정</button> &nbsp;
     <button type="reset" class="btn btn-warning">다시작성</button> &nbsp;
     <button type="button" class="btn btn-danger" onclick="location.href='${ctp}/MemberMain.mem';">돌아가기</button>
     
     <input type="hidden" name="email" />
     <input type="hidden" name="tel" />
     <input type="hidden" name="address" />
-    <%-- <input type="hidden" name="mid" value="${sMid}" /> --%>  <!-- 세션에 있는걸 넘김 -->
     <input type="hidden" name="photo" value="${vo.photo}" />
   </form>
 </div>

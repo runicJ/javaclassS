@@ -84,13 +84,12 @@
   			tel = tel1 + "-" + tel2 + "-" + tel3;
   		}
   		
-  		/*
   		// 전송 전에 파일에 관련된 사항들을 체크해준다.=> 프론트체크
   		let fName = document.getElementById("file").value;
   		
   		if(fName.trim() != "") {
   			let ext = fName.substring(fName.lastIndexOf(".")+1).toLowerCase(); 
-	  		let maxSize = 1024 * 1024 * 5;
+	  		let maxSize = 1024 * 1024 * 20;
 	  		let fileSize = document.getElementById("file").files[0].size;
 	  		
 	  		if(ext != 'jpg' && ext != 'gif' && ext != 'png' && ext != 'jpeg') {
@@ -98,11 +97,10 @@
 	  			return false;
 	  		}
 	  		else if(fileSize > maxSize) {
-	  			alert("업로드할 파일의 최대용량은 5Mbyte입니다.");
+	  			alert("업로드할 파일의 최대용량은 20Mbyte입니다.");
 	  			return false;
 	  		}	  			
   		}
-  		*/
 			  		
     	// 아이디/닉네임 중복체크
     	if(idCheckSw == 0) {
@@ -218,7 +216,7 @@
 <p><br/></p>
 <div class="container">
   <!-- <form name="myform" method="post" class="was-validated" enctype="multipart/form-data"> -->
-  <form name="myform" method="post" class="was-validated">
+  <form name="myform" method="post" class="was-validated" enctype="multipart/form-data">
     <h2>회 원 가 입</h2>
     <br/>
     <div class="form-group">
