@@ -15,7 +15,7 @@ public class JavaclassProvide {
 	
 	// urlPath에 파일 저장하는 메소드 : (업로드 파일명, 저장할 파일명, 저장할경로)
 	public void writeFile(MultipartFile fName, String sFileName, String urlPath) throws IOException {
-		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest(); 
+		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
 		String realPath = request.getSession().getServletContext().getRealPath("/resources/data/"+urlPath+"/");  // 서버의 절대경로
 		
 		FileOutputStream fos = new FileOutputStream(realPath + sFileName);

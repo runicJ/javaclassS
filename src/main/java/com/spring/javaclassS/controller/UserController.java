@@ -20,7 +20,7 @@ public class UserController {
 	UserService userService;  // interface 만들기
 	
 	// user 리스트
-	@RequestMapping(value = "userList", method = RequestMethod.GET)
+	@RequestMapping(value = "/userList", method = RequestMethod.GET)
 	public String getUserList(Model model) {
 		
 		List<UserVO> vos = userService.getUserList();  // 인터페이스에 만들어짐
@@ -31,18 +31,16 @@ public class UserController {
 	}
 	
 	// user 1건 삭제처리
-	@RequestMapping(value = "userDelete", method = RequestMethod.GET)
-	public String getUserDelete(int idx) {
-		
+	@RequestMapping(value = "/userDelete", method = RequestMethod.GET)
+	public String userDeleteGet(int idx) {
 		int res = userService.setUserDelete(idx);
 		if(res != 0) return "redirect:/message/userDeleteOk";
 		else return "redirect:/message/userDeleteNo";
 	}
 	
 	// user 1건 입력처리
-	@RequestMapping(value = "userInputOk", method = RequestMethod.POST)
-	public String setUserInputOk(UserVO vo) {
-		
+	@RequestMapping(value = "/userInputOk", method = RequestMethod.POST)
+	public String userInputOkGet(UserVO vo) {
 		int res = userService.setUserInputOk(vo);
 		if(res != 0) return "redirect:/message/userInputOk";
 		else return "redirect:/message/userInputNo";
@@ -81,6 +79,6 @@ public class UserController {
 		int res = userService.setUserUpdateOk(vo);
 		if(res != 0) return "redirect:/message/userUpdateOk";
 		else return "redirect:/message/userUpdateNo";
-	}	
+	}
 
 }

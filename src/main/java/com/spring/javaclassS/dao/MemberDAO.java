@@ -23,8 +23,7 @@ public interface MemberDAO {
 
 	public ArrayList<MemberVO> getMemberList(@Param("level") int level);
 
-	public int setMemberUpdateOk(@Param("fName") MultipartFile fName, @Param("vo") MemberVO vo);
+	public int setMemberUpdateOk(@Param("vo") MemberVO vo);
 
 	public int setMemberDelete(@Param("mid") String mid);
-
 }

@@ -1,6 +1,5 @@
 package com.spring.javaclassS.controller;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -27,7 +26,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.spring.javaclassS.common.JavaclassProvide;
 import com.spring.javaclassS.service.MemberService;
 import com.spring.javaclassS.vo.MemberVO;
 
@@ -108,7 +106,7 @@ public class MemberController {
 			// 방문포인트 : 1회 방문시 point 10점, 1일 최대 50점까지 할당가능(!숙제!)
 			int point = 10;
 			
-			// 방문카운트(DB에 바로 넣음)
+			// 방문카운트
 			memberService.setMemberInforUpdate(mid, point);
 			
 			return "redirect:/message/memberLoginOk?mid="+mid;
@@ -141,27 +139,28 @@ public class MemberController {
 	}
 	
 	@RequestMapping(value = "/memberJoin", method = RequestMethod.POST)
-	public String memberJoinPost(MultipartFile fName, MemberVO vo) throws IOException {
+	//public String memberJoinPost(MultipartFile fName, MemberVO vo) throws IOException {
+	public String memberJoinPost(MemberVO vo, MultipartFile fName) {
 		// 아이디/닉네임 중복체크
 		if(memberService.getMemberIdCheck(vo.getMid()) != null) return "redirect:/message/idCheckNo";
 		if(memberService.getMemberNickCheck(vo.getNickName()) != null) return "redirect:/message/nickCheckNo";
+			
+			// 비밀번호 암호화
+			vo.setPwd(passwordEncoder.encode(vo.getPwd()));
 		
-		// 비밀번호 암호화
-		vo.setPwd(passwordEncoder.encode(vo.getPwd()));
+//		if(fName == null || fName.toString().equals("")) {
+//			UUID uid = UUID.randomUUID();
+//			String oFileName = fName.getOriginalFilename();
+//			String sFileName = vo.getMid() + "_" + uid.toString().substring(0,8) + "_" + oFileName;
+//			vo.setPhoto(sFileName);	
+//		}
+//		else vo.setPhoto("noImage.jpg");
 		
 		// 회원 사진 처리(service객체에서 처리후 DB에 저장한다.)
-		if(fName == null || fName.toString().equals("")) {
-			UUID uid = UUID.randomUUID();
-			String oFileName = fName.getOriginalFilename();
-			String sFileName = vo.getMid() + "_" + uid.toString().substring(0,8) + "_" + oFileName;
-			vo.setPhoto(sFileName);	
-		}
-		else vo.setPhoto("noImage.jpg");
+		if(!fName.getOriginalFilename().equals("")) vo.setPhoto(memberService.fileUpload(fName, vo.getMid()));
+		else vo.setPhoto("noimage.jpg");
 		
-//		if(!fName.getOriginalFilename().equals("")) vo.setPhoto(memberService.fileUpload(fName, vo.getMid()));
-//		else vo.setPhoto("noimage.jpg");
-
-		int res = memberService.setMemberJoinOk(fName, vo);
+		int res = memberService.setMemberJoinOk(vo);
 		
 		if(res != 0) return "redirect:/message/memberJoinOk";
 		else return "redirect:/message/memberJoinNo";
@@ -185,7 +184,7 @@ public class MemberController {
 	
 	@ResponseBody
 	@RequestMapping(value = "/memberNewPassword", method = RequestMethod.POST)
-	public String memberNewPasswordPost(String mid, String email) throws MessagingException {
+	public String memberNewPasswordPost(String mid, String email, HttpSession session) throws MessagingException {
 		MemberVO vo = memberService.getMemberIdCheck(mid);
 		if(vo != null && vo.getEmail().equals(email)) {
 			// 정보 확인 후 정보가 맞으면 임시 비밀번호를 발급 받아서 메일로 전송 처리한다.
@@ -203,7 +202,7 @@ public class MemberController {
 			// 새 비밀번호를 발급하였을 시에 sLogin이란 세션을 발생시키고, 2분 안에 새 비밀번호로 로그인 후 비밀번호를 변경 처리할 수 있도록 한다(sLogin값이 없을 경우에 (처음과 끝 차이?
 			// (!숙제!)
 			
-			//session.setAttribute("sLogin", "OK");  // 새비밀번호 왔을때만 세션이 생성 -> 다 끝나고 세션 지워버림
+			session.setAttribute("sLogin", "OK");  // 새비밀번호 왔을때만 세션이 생성 -> 다 끝나고 세션 지워버림
 			
 			if(res == "1") return "1";
 		}
@@ -212,12 +211,12 @@ public class MemberController {
 
 	// 메일 전송하기(아이디찾기, 비밀번호 찾기)
 	private String mailSend(String toMail, String title, String mailFlag) throws MessagingException {
-			HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();  // 그냥 못씀 강제 형변환 해서 request 써야함
-			String content = "";
+		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();  // 그냥 못씀 강제 형변환 해서 request 써야함
+		String content = "";
 			
   		// 메일 전송을 위한 객체 : MimeMessage(), MimeMessageHelper()  // 보내고, 뒤에 중간중간 작업한걸 저장하는 저장소
-			MimeMessage message = mailSender.createMimeMessage();
-			MimeMessageHelper messageHelper = new MimeMessageHelper(message, true, "UTF-8");  // 인코딩해서 항상 저장
+		MimeMessage message = mailSender.createMimeMessage();
+		MimeMessageHelper messageHelper = new MimeMessageHelper(message, true, "UTF-8");  // 인코딩해서 항상 저장
   		
   		// 메일보관함에 작성한 메시지들의 정보를 모두 저장시킨 후 작업처리...(3개 필요한 것 밑에서 하나로 처리함(공부하라고 써놓음)
   		messageHelper.setTo(toMail);  // 받는 사람 메일 주소 // 앞에서 받은 메일 주소로 보낼거야
@@ -225,26 +224,85 @@ public class MemberController {
   		messageHelper.setText(content);
   		
   		// 메시지 보관함의 내용(content)에, 발신자의 필요한 정보를 추가로 담아서 전송처리한다.
-  	  content = content.replace("\n", "<br>");  // 우리는 textarea에 내용을 담지만 보내면 웹에서 text로 봄(한줄로 출력되기에 줄바꿈 처리 위해서 첫줄 '=' 사용)
-  		content += "<br><hr><h3>"+mailFlag+"</h3><hr><br>";
-  		content += "<p><img src=\"cid:main.jpg\" width='500px'></p>";
-  		content += "<p>방문하기 : <a href='http://49.142.157.251:9090/cjgreen'>javaclass</a></p>";
-  		content += "<hr>";
-  		messageHelper.setText(content, true);  // 기존 것 무시하고 깨끗하게 갈아치워줘(위에거 3개 안써도됨)
+		content = content.replace("\n", "<br>");  // 우리는 textarea에 내용을 담지만 보내면 웹에서 text로 봄(한줄로 출력되기에 줄바꿈 처리 위해서 첫줄 '=' 사용)
+		content += "<br><hr><h3>"+mailFlag+"</h3><hr><br>";
+		content += "<p><img src=\"cid:main.jpg\" width='500px'></p>";
+		content += "<p>방문하기 : <a href='http://49.142.157.251:9090/cjgreen'>javaclass</a></p>";
+		content += "<hr>";
+		messageHelper.setText(content, true);  // 기존 것 무시하고 깨끗하게 갈아치워줘(위에거 3개 안써도됨)
   		
   		//FileSystemResource file = new FileSystemResource("D:\\javaclass\\springframework\\works\\javaclassS\\src\\main\\webapp\\resources\\images\\main.jpg");
   		
   		//request.getSession().getServletContext().getRealPath("/resources/images/main.jpg");
   		
   		// 본문에 기재될 그림파일의 경로를 별도로 표시시켜준다. 그런후 다시 보관함에 저장한다.
-  		FileSystemResource file = new FileSystemResource(request.getSession().getServletContext().getRealPath("/resources/images/main.jpg"));
-  		messageHelper.addInline("main.jpg", file);
+		FileSystemResource file = new FileSystemResource(request.getSession().getServletContext().getRealPath("/resources/images/main.jpg"));
+		messageHelper.addInline("main.jpg", file);
   		
   		// 메일 전송하기
-  		mailSender.send(message);
-  		
-  		return "1";
+		mailSender.send(message);
+		
+		return "1";
 	}
+	
+	// 아이디 찾기
+//    @ResponseBody
+//    @RequestMapping(value = "/memberMidSearch", method = RequestMethod.POST)
+//    public String memberMidSearchPost(String name, String email) throws MessagingException {
+//        MemberVO vo = memberService.getMemberNameCheck(name);
+//        if(vo != null && vo.getEmail().equals(email)) {
+//            // 정보 확인 후 정보가 맞으면 임시 비밀번호를 발급받아서 메일로 전송처리한다.
+//            
+//            // 발급받은 비밀번호를 메일로 전송한다.
+//            String title = "아이디 찾기";
+//            String imsiContent = "아이디 : "+vo.getMid();
+//            String mailFlag = "midSearch";
+//            String res = mailSend(email, title, imsiContent, mailFlag);
+//            
+//            if(res == "1") return "1";
+//        }
+//        return "0";
+//    }
+//    
+//    // 메일 전송 메소드(아이디 찾기, 비밀번호 찾기)
+//    private String mailSend(String toMail, String title, String imsiContent, String mailFlag) throws MessagingException {
+//        HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.currentRequestAttributes()).getRequest();
+//        String content = "";
+//        
+//        // 메일 전송을 위한 객체 :MimeMessage(), MimeMessageHelper()
+//        MimeMessage message = mailSender.createMimeMessage();
+//        MimeMessageHelper messageHelper = new MimeMessageHelper(message, true, "UTF-8");
+//        
+//        // 메일 보관함에 작성한 메세지들의 정보를 모두 저장시킨 후 작업처리
+//        messageHelper.setTo(toMail); // 받는 사람 메일 주소
+//        messageHelper.setSubject(title); // 메일 제목
+//        messageHelper.setText(content);    // 메일 내용
+//        
+//        // 메세지 보관함의 내용(content)에, 발신자의 필요한 정보를 추가로 담아서 전송처리한다.
+//        if(mailFlag.equals("pwdSearch")) {
+//            content += "<br><hr><h3>임시 비밀번호 발급</h3><hr><br>";
+//            content += imsiContent+"<br>";
+//        }
+//        else if(mailFlag.equals("midSearch")) {
+//            content += "<br><hr><h3>아이디 찾기</h3><hr><br>";
+//            content += imsiContent+"<br>";
+//        }
+//        content += "<p><img src='cid:main.jpg' width='500px'></p>"; // cid: 예약어, 보내고 싶은 그림 이름을 적어준다
+//        content += "<p>방문하기 : <a href='http://49.142.157.251:9090/javaclassJ9/Main.do'>javaclass</a></p>";
+//        content += "<hr>";
+//        content = content.replace("\n", "<br>"); // 엔터키를 <br>태그로 바꾼 후 내용을 쌓는다 /는 html4에서 에러가 생길 수 있어서 생략
+//        messageHelper.setText(content, true);    // 기존 내용을 무시하고 덮어쓴다
+//        
+//        // 본문에 그림 표시하기: cid개수대로 나와야 함
+//        FileSystemResource file = new FileSystemResource(request.getSession().getServletContext().getRealPath("/resources/images/main.jpg"));
+//        messageHelper.addInline("main.jpg", file);
+//        
+//        // 메일 전송하기
+//        mailSender.send(message);
+//        
+//        return "1";
+//    }
+
 	
 	@RequestMapping(value = "/memberPwdCheck/{pwdFlag}", method = RequestMethod.GET)
 	public String memberPwdCheckGet(@PathVariable String pwdFlag, Model model) {
@@ -261,64 +319,10 @@ public class MemberController {
 		return "0";
 	}
 	
-	@ResponseBody  // ajax
+	@ResponseBody
 	@RequestMapping(value = "/memberPwdChangeOk", method = RequestMethod.POST)
 	public String memberPwdChangeOkPost(String mid, String pwd) {
 		return memberService.setPwdChangeOk(mid, passwordEncoder.encode(pwd)) + "";
-	}
-	
-	@RequestMapping(value = "/memberUpdate/{mid}", method = RequestMethod.GET)
-	public String memberUpdateGet(@PathVariable String mid, String pwd, Model model) {
-		MemberVO vo = memberService.getMemberIdCheck(mid);
-		
-		if(passwordEncoder.matches(pwd, vo.getPwd())) {
-			String[] tel = vo.getTel().split("-");
-			if(tel[1].equals(" ")) tel[1] = "";
-			if(tel[2].equals(" ")) tel[2] = "";		
-			
-			model.addAttribute("tel1", tel[0]);
-			model.addAttribute("tel2", tel[1]);
-			model.addAttribute("tel3", tel[2]);
-			
-			// 주소분리(/)
-			String[] address = vo.getAddress().split("/");
-			if(address[0].equals(" ")) address[0] = "";
-			if(address[1].equals(" ")) address[1] = "";
-			if(address[2].equals(" ")) address[2] = "";
-			if(address[3].equals(" ")) address[3] = "";
-			model.addAttribute("postcode", address[0]);
-			model.addAttribute("roadAddress", address[1]);
-			model.addAttribute("detailAddress", address[2]);
-			model.addAttribute("extraAddress", address[3]);
-			
-			model.addAttribute("vo", vo);
-			return "member/memberUpdate";
-		}
-		else return "member/memberPwdCheck";
-	}
-	
-	@ResponseBody
-	@RequestMapping(value = "/memberUpdate", method = RequestMethod.POST)
-	public String memberUpdatePost(MultipartFile fName, MemberVO vo) {
-		// 아이디/닉네임 중복체크
-		if(memberService.getMemberNickCheck(vo.getNickName()) != null) return "redirect:/message/nickCheckNo";
-		
-		// 비밀번호 암호화
-		vo.setPwd(passwordEncoder.encode(vo.getPwd()));
-		
-		// 회원 사진 처리(service객체에서 처리후 DB에 저장한다.)
-		if(fName == null || fName.toString().equals("")) {
-			UUID uid = UUID.randomUUID();
-			String oFileName = fName.getOriginalFilename();
-			String sFileName = vo.getMid() + "_" + uid.toString().substring(0,8) + "_" + oFileName;
-			vo.setPhoto(sFileName);	
-		}
-		else vo.setPhoto("noImage.jpg");
-		
-		int res = memberService.setMemberUpdateOk(fName, vo);
-		
-		if(res != 0) return "redirect:/message/memberUpdateOk";
-		else return "redirect:/message/memberUpdateNo";
 	}
 	
 	@RequestMapping(value = "/memberList", method = RequestMethod.GET)
@@ -329,16 +333,82 @@ public class MemberController {
 		return "member/memberList";
 	}
 	
+    @RequestMapping(value = "/memberUpdate", method = RequestMethod.GET)
+    public String memberUpdateGet(HttpSession session, @RequestParam(required = false) String pwd, Model model) {
+        String mid = (String) session.getAttribute("sMid");
+        MemberVO vo = memberService.getMemberIdCheck(mid);
+        
+        // Log statements to debug
+        System.out.println("pwd: " + pwd);
+        if (vo == null) {
+            System.out.println("MemberVO is null for mid: " + mid);
+        } else {
+            System.out.println("MemberVO is not null");
+            System.out.println("vo.getPwd(): " + vo.getPwd());
+        }
+        
+        // Null check and password validation
+        if (pwd != null && vo != null && passwordEncoder.matches(pwd, vo.getPwd())) {
+            String[] tel = vo.getTel().split("-");
+            if (tel.length == 3) {
+                model.addAttribute("tel1", tel[0]);
+                model.addAttribute("tel2", tel[1]);
+                model.addAttribute("tel3", tel[2]);
+            }
+            
+            String[] address = vo.getAddress().split("/");
+            if (address.length == 4) {
+                model.addAttribute("postcode", address[0]);
+                model.addAttribute("roadAddress", address[1]);
+                model.addAttribute("detailAddress", address[2]);
+                model.addAttribute("extraAddress", address[3]);
+            }
+            
+            model.addAttribute("vo", vo);
+            return "member/memberUpdate";
+        } else {
+            // Return error message or redirect to the appropriate page
+            System.out.println("Password validation failed or MemberVO is null");
+            return "redirect:/member/memberPwdCheck/i";  // Redirect to password check page
+        }
+    }
+	
+	@ResponseBody
+	@RequestMapping(value = "/memberUpdate", method = RequestMethod.POST)
+	public String memberUpdatePost(String currentPhoto, MultipartFile fName, MemberVO vo, HttpServletRequest request) {
+		// 아이디/닉네임 중복체크
+		if(memberService.getMemberNickCheck(vo.getNickName()) != null) return "redirect:/message/nickCheckNo";
+		
+		// 비밀번호 암호화
+		vo.setPwd(passwordEncoder.encode(vo.getPwd()));
+	    
+		int res = memberService.setMemberUpdateOk(currentPhoto, fName, vo, request);
+		
+		if(res != 0) return "redirect:/message/memberUpdateOk";
+		else return "redirect:/message/memberUpdateNo";
+	}
+	
 	@RequestMapping(value = "/memberDelete", method = RequestMethod.GET)
-	public String memberPwdCheckGet(String mid, String pwd) {
+	public String memberPwdCheckGet() {
+		return "member/memberDeleteCheck";
+	}
+	
+	@RequestMapping(value = "/memberDelete", method = RequestMethod.POST)
+	public String memberPwdCheckPost(HttpSession session, String pwd) {
+		String mid = (String) session.getAttribute("sMid");
 		MemberVO vo = memberService.getMemberIdCheck(mid);
+		
 		int res = 0;
+		
 		if(passwordEncoder.matches(pwd, vo.getPwd())) {
 			res = memberService.setMemberDelete(mid);
 		}
 		else return "redirect:/message/memberPwdNo";
 		
-		if(res != 0) return "redirect:/message/memberDeleteOk";
+		if(res != 0) {
+			session.invalidate();
+			return "redirect:/message/memberDeleteOk";
+		}
 		else return "redirect:/message/memberDeleteNo";
 	}
 }

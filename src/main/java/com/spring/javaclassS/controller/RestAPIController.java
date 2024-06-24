@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController  // REST Api의 규칙을 따르려면 이걸 적어주기 => ajax 처리하는 걸 묶어놓고 처리해야 함 // postMapping getMapping 할때 사용
 @RequestMapping("/restapi")
 public class RestAPIController {
-	
+
 	@ResponseBody
 	@RequestMapping(value = "/restapiTest2/{message}", method = RequestMethod.GET)
 	public String restapiTest2Get(@PathVariable String message) {

@@ -28,7 +28,7 @@
 		<!-- bean으로 되어있는 객체 // 예약어, 이 객체를 참조하겠다 -->
 		<property name="dataSource" ref="dataSource" />
 		<!-- mapperLocations 오타나면 무조건 404, 위치 적어줌 / 자바 sql문 주입 위치 => 자바 resources에 넣음 // Mapper.xml 고정 바뀌는 부분 *로 써줌  // 중간에 들어간 별은 경로에 대한 * // 앞에 별은 무조건 대문자Mapper 앞 => 틀리면 404 -->
-		<property name="mapperLocations" value="classpath:mappers/**/*Mapper.xml"></property>
+		<property name="mapperLocations" value="classpath:mappers/**/*Mapper.xml" />
 	</bean>
 	
 	<!-- SqlSessionTemplate 설정 -->
@@ -49,13 +49,13 @@
 		<property name="username" value="dodobiwa0270@gmail.com" />		
 		<property name="password" value="klumfadtblhvomvo" />		
 		<property name="javaMailProperties">
-			<props>
-				<prop key="mail.transport.protocol">smtp</prop>
-				<prop key="mail.smtp.starttls.enable">true</prop>
-				<prop key="mail.debug">true</prop>
-				<prop key="mail.smtp.ssl.trust">smtp.gmail.com</prop>
-				<prop key="mail.smtp.ssl.protocols">TLSv1.2</prop>
-			</props>
+		  <props>
+		    <prop key="mail.transport.protocol">smtp</prop>
+		    <prop key="mail.smtp.starttls.enable">true</prop>
+		    <prop key="mail.debug">true</prop>
+		    <prop key="mail.smtp.ssl.trust">smtp.gmail.com</prop>
+		    <prop key="mail.smtp.ssl.protocols">TLSv1.2</prop>
+		  </props>
 		</property>
 	</bean>
 </beans>

@@ -38,8 +38,8 @@
     	let email = email1 + "@" + email2;  // 결합 , 구분자 넣기
 
     	let tel1 = myform.tel1.value;
-    	let tel2 = myform.tel1.value.trim();
-    	let tel3 = myform.tel1.value.trim();
+    	let tel2 = myform.tel2.value.trim();
+    	let tel3 = myform.tel3.value.trim();
     	let tel = tel1 + "-" + tel2 + "-" + tel3;
     	
     	let postcode = myform.postcode.value + " ";  // 공백 한칸으로 내용이 있는 것 처럼  // / 넣을 것 // db에 null 허용 설정 값이 없으면 ////로 들어가도록
@@ -93,7 +93,7 @@
     		nickCheckSw = 1;
     		
 	    	$.ajax({
-	    		url : "${ctp}/MemberNickCheck.mem",
+	    		url : "${ctp}/member/memberNickCheck",
 	    		type : "get",
 	    		data : {nickName : nickName},
 	    		success:function(res) {
@@ -126,7 +126,7 @@
 <jsp:include page="/WEB-INF/views/include/slide2.jsp" />s
 <p><br/></p>
 <div class="container">
-  <form name="myform" method="post" class="was-validated">
+  <form name="myform" method="post" class="was-validated" enctype="multipart/form-data" action="${ctp}/member/memberUpdate">
     <h2>회 원 정 보 수 정</h2>
     <br/>
     <div class="form-group">
@@ -267,7 +267,7 @@
     <input type="hidden" name="email" />
     <input type="hidden" name="tel" />
     <input type="hidden" name="address" />
-    <input type="hidden" name="photo" value="${vo.photo}" />
+    <input type="hidden" name="currentPhoto" value="${vo.photo}" />
   </form>
 </div>
 <p><br/></p>

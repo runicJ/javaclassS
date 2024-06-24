@@ -24,8 +24,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>memberLogin.jsp</title>
   <%@ include file = "/WEB-INF/views/include/bs4.jsp" %>
+  <style>
+        #spinner {
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          z-index: 1;
+        }
+    </style>
   <script>
-    'use strict';
+      'use strict';
+      
+      $(function(){
+          $("#searchPassword").hide();
+          $("#searchMid").hide();
+      });
+      
+      // 아이디 찾기
+      function midSearch() {
+          $("#searchMid").show();
+          $("#searchPassword").hide();
+      }
     
     $(function(){
     	$("#searchPassword").hide();
@@ -62,6 +81,34 @@
     			alert("전송오류!!")
     		}
     	});
+    }
+    
+    // 아이디 발송하기
+    function searchMidBtn(){
+        let name = $("#nameSearch").val().trim();
+        let email = $("#emailSearch1").val().trim();
+        if(name=="" || email=="") {
+            alert("가입시 등록한 이름과 메일 주소를 입력하세요.");
+            $("#nameSearch").focus();
+            return false;
+        }
+        document.getElementById("spinner").style.display='block';
+        $.ajax({
+            url: "${ctp}/member/memberMidSearch",
+            type: "post",
+            data: {
+                name : name,
+                email : email
+            },
+            success: function(res){
+                document.getElementById("spinner").style.display='none';
+                if(res != "0") alert("회원님의 아이디가 메일로 발송 되었습니다.\n받은 메일함을 확인하세요.");
+                else alert("등록하신 정보가 일치하지 않습니다.\n확인 후 다시 처리하세요.");
+            },
+            error: function(){
+                alert("전송오류");
+            }
+        });
     }
   </script>
 </head>
@@ -101,6 +148,28 @@
       </tr>
     </table>
   </form>
+  <div id="searchMid">
+      <hr/>
+      <table class="table table-bordered p-0 text-center">
+          <tr>
+              <td colspan="2">
+                  <font size="4"><b>아이디 찾기</b></font>
+                  (가입시 입력한 이름과 메일 주소를 입력하세요.)
+              </td>
+          </tr>
+          <tr>
+              <th>이름</th>
+              <td><input type="text" name="nameSearch" id="nameSearch" class="form-control" placeholder="이름을 입력하세요" /></td>
+          </tr>
+          <tr>
+              <th>이메일</th>
+              <td><input type="text" name="emailSearch1" id="emailSearch1" class="form-control" placeholder="이메일을 입력하세요" /></td>
+          </tr>
+          <tr>
+              <td colspan="2"><input type="button" value="아이디 찾기" xxonclick="searchMidBtn()" class="btn btn-primary form-control" /></td>
+          </tr>
+      </table>
+  </div>
   <div id="searchPassword">
     <hr/>
   	<table class="table table-bordered p-0 text-center">

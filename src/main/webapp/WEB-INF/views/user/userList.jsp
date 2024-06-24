@@ -57,8 +57,8 @@
   </script>
 </head>
 <body>
-  <jsp:include page="/WEB-INF/views/include/nav.jsp" />
-  <jsp:include page="/WEB-INF/views/include/slide.jsp" />
+<jsp:include page="/WEB-INF/views/include/nav.jsp" />
+<jsp:include page="/WEB-INF/views/include/slide2.jsp" />
 <p><br/></p>
 <div class="container">
   <h2>회원 리스트</h2>
@@ -169,6 +169,6 @@
   </c:if>
 </div>
 <p><br/></p>
-  <jsp:include page="/WEB-INF/views/include/footer.jsp" />
+<jsp:include page="/WEB-INF/views/include/footer.jsp" />
 </body>
 </html>

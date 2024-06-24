@@ -4,197 +4,114 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="UTF-8">
-	<title>ajaxTest3_4.jsp</title>
+  <meta charset="UTF-8">
+  <title>ajaxTest3_4.jsp</title>
   <jsp:include page="/WEB-INF/views/include/bs4.jsp" />
-  <style>
-	/*the container must be positioned relative:*/
-	.custom-select {
-	  position: relative;
-	}
-	
-	.custom-select select {
-	  display: none;
-	}
-	
-	.select-selected {
-	  background-color: DodgerBlue;
-	}
-	
-	/*style the arrow inside the select element:*/
-	.select-selected:after {
-	  position: absolute;
-	  content: "";
-	  top: 14px;
-	  right: 10px;
-	  width: 0;
-	  height: 0;
-	  border: 6px solid transparent;
-	  border-color: #fff transparent transparent transparent;
-	}
-	
-	/*point the arrow upwards when the select box is open (active):*/
-	.select-selected.select-arrow-active:after {
-	  border-color: transparent transparent #fff transparent;
-	  top: 7px;
-	}
-	
-	/*style the items (options), including the selected item:*/
-	.select-items div,.select-selected {
-	  color: #ffffff;
-	  padding: 8px 16px;
-	  border: 1px solid transparent;
-	  border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
-	  cursor: pointer;
-	  user-select: none;
-	}
-	
-	/*style items (options):*/
-	.select-items {
-	  position: absolute;
-	  background-color: DodgerBlue;
-	  top: 100%;
-	  left: 0;
-	  right: 0;
-	  z-index: 99;
-	}
-	
-	/*hide the items when the select box is closed:*/
-	.select-hide {
-	  display: none;
-	}
-	
-	.select-items div:hover, .same-as-selected {
-	  background-color: rgba(0, 0, 0, 0.1);
-	}
-</style>
   <script>
-  	'use strict';
-  	
-    function getUserInfo() {
-        let mid = $("#userMid").val();
-        if(mid) {
-            $.ajax({
-                url: "${ctp}/study/ajax/ajaxTest3_4/"+ mid,
-                method: 'GET',
-                success: function(res) {
-                    $("#demo").html(
-                        "<p>ID: " + res.mid + "</p>" +
-                        "<p>Name: " + res.name + "</p>" +
-                        "<p>Age: " + res.age + "</p>" +
-                        "<p>Address: " + res.address + "</p>"
-                    );
-                },
-                error: function() {
-                    alert("전송오류!");
-                }
-            });
-        }
+    'use strict';
+    
+    function midCheck() {
+    	let mid = document.getElementById("mid").value;
+    	if(mid.trim() == "") {
+    		alert("아이디를 선택하세요");
+    		return false;
+    	}
+    	
+    	$.ajax({
+    		url  : "${ctp}/study/ajax/ajaxTest3_4",
+    		type : "post",
+    		data : {mid : mid},
+    		success:function(res) {
+    			//console.log(res);
+    			$("#demo").html(res);
+    		},
+    		error : function() {
+    			alert("전송 오류!");
+    		}
+    	});
+    }
+    
+    function addressCheck() {
+    	let address = document.getElementById("address").value;
+    	if(address.trim() == "") {
+    		alert("주소를 선택하세요");
+    		return false;
+    	}
+    	
+    	$.ajax({
+    		url  : "${ctp}/study/ajax/ajaxTest3_5",
+    		type : "post",
+    		data : {address : address},
+    		success:function(res) {
+    			//console.log(res);
+    			let str = '';
+    			str += '<table class="table-hover"><tr style="background-color:#eee">';
+    			str += '<th>아이디</th><th>성명</th><th>나이</th><th>주소</th>';
+    			for(let i=0; i<res.length; i++) {
+    				str += '<tr>';
+    				str += '<td>'+res[i].mid+'</td>';
+    				str += '<td>'+res[i].name+'</td>';
+    				str += '<td>'+res[i].age+'</td>';
+    				str += '<td>'+res[i].address+'</td>';
+    				str += '</tr>';
+    			}
+    			str += '<tr><td colspan="4" class="m-0 p-0"></td></tr>';
+    			str += '</table>';
+    			$("#addressDemo").html(str);
+    		},
+    		error : function() {
+    			alert("전송 오류!");
+    		}
+    	});
     }
   </script>
 </head>
 <body>
 <jsp:include page="/WEB-INF/views/include/nav.jsp" />
 <jsp:include page="/WEB-INF/views/include/slide2.jsp" />
-<p><br></p>
-<div class="container text-center">
-    <h2 style="font-weight:bold;">회원 정보 조회</h2>
-    <hr>
-    <form>
-        <h3 class="mb-5">조회하실 회원의 이름을 선택하세요</h3>
-        <div class="custom-select p-0" style="width:200px;">
-	        <select name="userMid" id="userMid">
-	            <option value="">유저 선택</option>
-	            <c:forEach var="user" items="${userMap}">
-	                <option value="${user.key}">${user.value.name}</option>
-	            </c:forEach>
-	        </select>
-        </div>
-        <input type="button" value="유저정보 조회하기" onclick="getUserInfo()" class="btn btn-outline-dark ml-3 mt-2" />
-    </form>
-    <div id="demo" class="mt-3"></div>
+<p><br/></p>
+<div class="container">
+  <h2>ajaxTest3_4.jsp(ArrayList 처리)</h2>
+  <hr/>
+  <form>
+    <h4>1.아이디를 선택하세요</h4>
+    <table class="table">
+      <tr>
+        <td>
+		    <select name="mid" id="mid" onchange="midCheck()">
+		      <option value="">아이디선택</option>
+		      <c:forEach var="mid" items="${midVos}" varStatus="st">
+		        <option>${mid}</option>
+		      </c:forEach>
+		    </select>
+        </td>
+        <td>
+	  			<div id="demo"></div>
+	  		</td>
+	    </tr>
+	  </table>
+    <hr/>
+    <h4>2.주소를 선택하세요</h4>
+    <table class="table">
+      <tr>
+        <td>
+		    <select name="address" id="address" onchange="addressCheck()">
+		      <option value="">주소선택</option>
+		      <c:forEach var="address" items="${addressVos}" varStatus="st">
+		        <option>${address}</option>
+		      </c:forEach>
+		    </select>
+        </td>
+        <td>
+	  			<div id="addressDemo"></div>
+	  		</td>
+	    </tr>
+	  </table>
+    <hr/>
+    <input type="button" value="돌아가기" onclick="location.href='ajaxForm';" class="btn btn-warning mr-3 mb-3"/>
+  </form>
 </div>
-<p><br></p>
-<script>
-var x, i, j, l, ll, selElmnt, a, b, c;
-/*look for any elements with the class "custom-select":*/
-x = document.getElementsByClassName("custom-select");
-l = x.length;
-for (i = 0; i < l; i++) {
-  selElmnt = x[i].getElementsByTagName("select")[0];
-  ll = selElmnt.length;
-  /*for each element, create a new DIV that will act as the selected item:*/
-  a = document.createElement("DIV");
-  a.setAttribute("class", "select-selected");
-  a.innerHTML = selElmnt.options[selElmnt.selectedIndex].innerHTML;
-  x[i].appendChild(a);
-  /*for each element, create a new DIV that will contain the option list:*/
-  b = document.createElement("DIV");
-  b.setAttribute("class", "select-items select-hide");
-  for (j = 1; j < ll; j++) {
-    /*for each option in the original select element,
-    create a new DIV that will act as an option item:*/
-    c = document.createElement("DIV");
-    c.innerHTML = selElmnt.options[j].innerHTML;
-    c.addEventListener("click", function(e) {
-        /*when an item is clicked, update the original select box,
-        and the selected item:*/
-        var y, i, k, s, h, sl, yl;
-        s = this.parentNode.parentNode.getElementsByTagName("select")[0];
-        sl = s.length;
-        h = this.parentNode.previousSibling;
-        for (i = 0; i < sl; i++) {
-          if (s.options[i].innerHTML == this.innerHTML) {
-            s.selectedIndex = i;
-            h.innerHTML = this.innerHTML;
-            y = this.parentNode.getElementsByClassName("same-as-selected");
-            yl = y.length;
-            for (k = 0; k < yl; k++) {
-              y[k].removeAttribute("class");
-            }
-            this.setAttribute("class", "same-as-selected");
-            break;
-          }
-        }
-        h.click();
-    });
-    b.appendChild(c);
-  }
-  x[i].appendChild(b);
-  a.addEventListener("click", function(e) {
-      /*when the select box is clicked, close any other select boxes,
-      and open/close the current select box:*/
-      e.stopPropagation();
-      closeAllSelect(this);
-      this.nextSibling.classList.toggle("select-hide");
-      this.classList.toggle("select-arrow-active");
-    });
-}
-function closeAllSelect(elmnt) {
-  /*a function that will close all select boxes in the document,
-  except the current select box:*/
-  var x, y, i, xl, yl, arrNo = [];
-  x = document.getElementsByClassName("select-items");
-  y = document.getElementsByClassName("select-selected");
-  xl = x.length;
-  yl = y.length;
-  for (i = 0; i < yl; i++) {
-    if (elmnt == y[i]) {
-      arrNo.push(i)
-    } else {
-      y[i].classList.remove("select-arrow-active");
-    }
-  }
-  for (i = 0; i < xl; i++) {
-    if (arrNo.indexOf(i)) {
-      x[i].classList.add("select-hide");
-    }
-  }
-}
-/*if the user clicks anywhere outside the select box,
-then close all select boxes:*/
-document.addEventListener("click", closeAllSelect);
-</script>
+<p><br/></p>
 <jsp:include page="/WEB-INF/views/include/footer.jsp" />
 </body>
 </html>

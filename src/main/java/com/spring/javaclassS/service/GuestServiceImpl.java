@@ -33,5 +33,4 @@ public class GuestServiceImpl implements GuestService {
 	public ArrayList<GuestVO> getGuestList(int startIndexNo, int pageSize) {
 		return guestDAO.getGuestList(startIndexNo, pageSize);
 	}
-	
 }

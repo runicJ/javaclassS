@@ -36,7 +36,7 @@
     					$("#pwdDemo").show();
     					$("#pwdForm").hide();
     				}
-    				else location.href = '${ctp}/member/memberUpdate?mid=${sMid}';
+    				else location.href = '${ctp}/member/memberUpdate';
     			}
     			else {
     				alert("비밀번호가 틀립니다. 확인해주세요");
@@ -112,7 +112,7 @@
     <br/>
   </form>
   <div id="pwdDemo">
-    <form name="pwdForm" method="post" action="MemberPwdChangeCheck.mem">
+    <form name="pwdForm" method="get" action="MemberPwdChangeCheck.mem">
       <table class="table table-bordered">
         <tr>
           <td colspan="2" class="text-center">

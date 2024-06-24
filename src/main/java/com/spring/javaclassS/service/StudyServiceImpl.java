@@ -1,24 +1,18 @@
 package com.spring.javaclassS.service;
 
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.spring.javaclassS.dao.DbTestDAO;
 import com.spring.javaclassS.dao.StudyDAO;
 import com.spring.javaclassS.vo.CrimeVO;
 import com.spring.javaclassS.vo.UserVO;
@@ -32,7 +26,7 @@ public class StudyServiceImpl implements StudyService {
 	@Override
 	public String[] getCityStringArray(String dodo) {
 		String[] strArray = new String[100];
-		
+			
 		if(dodo.equals("서울")) {
 			strArray[0] = "강남구";
 			strArray[1] = "강북구";
@@ -43,7 +37,7 @@ public class StudyServiceImpl implements StudyService {
 			strArray[6] = "종로구";
 			strArray[7] = "영등포구";
 			strArray[8] = "마포구";
-			strArray[9] = "동대문국";
+			strArray[9] = "동대문구";
 		}
 		else if(dodo.equals("경기")) {
 			strArray[0] = "수원시";
@@ -77,7 +71,7 @@ public class StudyServiceImpl implements StudyService {
 			strArray[4] = "당진시";
 			strArray[5] = "서산시";
 			strArray[6] = "홍성군";
-			strArray[7] = "청양시";
+			strArray[7] = "청양군";
 			strArray[8] = "계룡시";
 			strArray[9] = "예산군";
 		}
@@ -102,9 +96,9 @@ public class StudyServiceImpl implements StudyService {
 			vos.add("서초구");
 			vos.add("관악구");
 			vos.add("종로구");
-			vos.add("영등포구");
+			vos.add("영등포");
 			vos.add("마포구");
-			vos.add("동대문국");
+			vos.add("동대문구");
 		}
 		else if(dodo.equals("경기")) {
 			vos.add("수원시");
@@ -138,51 +132,35 @@ public class StudyServiceImpl implements StudyService {
 			vos.add("당진시");
 			vos.add("서산시");
 			vos.add("홍성군");
-			vos.add("청양시");
+			vos.add("청양군");
 			vos.add("계룡시");
 			vos.add("예산군");
 		}
-		
+			
 		return vos;
 	}
 
-    HashMap<String, UserVO> userMidMap = new HashMap<>();
+//    HashMap<String, UserVO> userMidMap = new HashMap<>();
+//    
+//    @Override
+//    public HashMap<String, UserVO> getUserMidMap() {
+//        ArrayList<UserVO> users = studyDAO.getUserMidMap();
+//        for (UserVO user : users) {
+//            userMidMap.put(user.getMid(), user);
+//        }
+//        return userMidMap;
+//    }
+
+//    @Override
+//    public UserVO getUserMidInfo(String mid) {
+//        return userMidMap.get(mid);
+//    }
+
+//  	@Override
+//  	public ArrayList<String> getDbtestMidList() {
+//  		return studyDAO.getDbtestMidList();
+//  	}
     
-    @Override
-    public HashMap<String, UserVO> getUserMidMap() {
-        ArrayList<UserVO> users = studyDAO.getUserMidMap();
-        for (UserVO user : users) {
-            userMidMap.put(user.getMid(), user);
-        }
-        return userMidMap;
-    }
-
-    @Override
-    public UserVO getUserMidInfo(String mid) {
-        return userMidMap.get(mid);
-    }
-
-  	@Override
-  	public ArrayList<String> getDbtestMidList() {
-  		return studyDAO.getDbtestMidList();
-  	}
-    
-    @Override
-    public UserVO getUserIdCheck(String mid) {
-    	// TODO Auto-generated method stub
-    	return null;
-    }
-
-  	@Override
-  	public ArrayList<String> getDbtestAddressList() {
-  		return studyDAO.getDbtestAddressList();
-  	}
-
-  	@Override
-  	public ArrayList<UserVO> getUserAddressCheck(String address) {
-  		return studyDAO.getUserAddressCheck(address);
-  	}
-
 	@Override
 	public UserVO getUserMidSearch(String mid) {
 		return studyDAO.getUserMidSearch(mid);
@@ -197,6 +175,27 @@ public class StudyServiceImpl implements StudyService {
 	public void setSaveCrimeData(CrimeVO vo) {
 		studyDAO.setSaveCrimeData(vo);
 	}
+
+	@Override
+	public void setDeleteCrimeDate(int year) {
+		studyDAO.setDeleteCrimeDate(year);
+	}
+
+	@Override
+	public ArrayList<CrimeVO> getListCrimeDate(int year) {
+		return studyDAO.getListCrimeDate(year);
+	}
+
+	@Override
+	public ArrayList<CrimeVO> getYearPoliceCheck(int year, String police, String yearOrder) {
+		return studyDAO.getYearPoliceCheck(year, police, yearOrder);
+	}
+
+	@Override
+	public CrimeVO getAnalyzeTotal(int year, String police) {
+		return studyDAO.getAnalyzeTotal(year, police);
+	}
+	
     /*
     @Override
     public int setDeleteCrimeData(int year) {
@@ -290,26 +289,6 @@ public class StudyServiceImpl implements StudyService {
     */
 
 	@Override
-	public void setDeleteCrimeDate(int year) {
-		studyDAO.setDeleteCrimeDate(year);
-	}
-
-	@Override
-	public ArrayList<CrimeVO> getListCrimeDate(int year) {
-		return studyDAO.getListCrimeDate(year);
-	}
-
-	@Override
-	public ArrayList<CrimeVO> getYearPoliceCheck(int year, String police, String yearOrder) {
-		return studyDAO.getYearPoliceCheck(year, police, yearOrder);
-	}
-
-	@Override
-	public CrimeVO getAnalyzeTotal(int year, String police) {
-		return studyDAO.getAnalyzeTotal(year, police);
-	}
-
-	@Override
 	public int fileUpload(MultipartFile fName, String mid) {
 		int res = 0;
 		
@@ -330,7 +309,7 @@ public class StudyServiceImpl implements StudyService {
 	}
 
 	private void writeFile(MultipartFile fName, String sFileName) throws IOException {
-		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest(); 
+		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
 		String realPath = request.getSession().getServletContext().getRealPath("/resources/data/fileUpload/");  // 서버의 절대경로
 		
 		FileOutputStream fos = new FileOutputStream(realPath + sFileName);
@@ -340,6 +319,6 @@ public class StudyServiceImpl implements StudyService {
 			fos.write(fName.getBytes());
 		}
 		fos.flush();
-		fos.getClass();
+		fos.close();
 	}
 }
