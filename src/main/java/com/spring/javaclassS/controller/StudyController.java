@@ -288,9 +288,7 @@ public class StudyController {
 	@RequestMapping(value = "/fileUpload/fileUpload", method = RequestMethod.GET)
 	public String fileUploadGet(HttpServletRequest request, Model model) {
 		String realPath = request.getSession().getServletContext().getRealPath("/resources/data/fileUpload");  // 정보를 꺼내는 것 끝에 / 지우기
-  		
-  		String[] files = new File(realPath).list();  // realPath의 위치를 보겠다는 것
-		
+		String[] files = new File(realPath).list();  // realPath의 위치를 보겠다는 것
 		model.addAttribute("files", files);
 		model.addAttribute("fileCount", files.length);
 		

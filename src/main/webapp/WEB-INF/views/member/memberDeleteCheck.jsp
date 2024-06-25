@@ -11,18 +11,17 @@
   <script>
   	'use strict';
   	
-  	function pwdDeleteCheck() {  // 탈퇴시키는데 굳이 ajax써서 다시 돌아오게 할 필요 없음, ajax 써도 어차피 돌아와서 로그아웃으로 보내긴 함.
+  	function pwdDeleteCheck() {
   		let pwd = $("#pwd").val().trim();
   		if(pwd == "") {
   			alert("현재 비밀번호를 입력하세요!");
   			$("#pwd").focus();
-  			//return false;  // else 적으면 return false 필요없음
   		}
   		else {
   			let ans = confirm("회원 탈퇴 신청 하시겠습니까?");
   			if(ans) {
   				ans = confirm("회원 탈퇴하시면 1개월간 같은 아이디로 가입하실 수 없습니다.\n계속 진행하시겠습니까?");
-  				if(ans) myform.submit();  // 중간에 한번이라도 아니라고 하면 끝나는 것
+  				if(ans) myform.submit();
   			}
   		}
   	}

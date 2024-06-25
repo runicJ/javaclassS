@@ -8,5 +8,49 @@
 		http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
 	
 	<!-- Interceptor 설정(정의) 가장 관대한 순 -> 폐쇄적인 순 -->
+	<beans:bean id="level0Interceptor" class="com.spring.javaclassS.intercepter.Level0Interceptor"></beans:bean>
+	<beans:bean id="level1Interceptor" class="com.spring.javaclassS.intercepter.Level1Interceptor"></beans:bean>
+	<beans:bean id="level2Interceptor" class="com.spring.javaclassS.intercepter.Level2Interceptor"></beans:bean>
+	<beans:bean id="level3Interceptor" class="com.spring.javaclassS.intercepter.Level2Interceptor"></beans:bean>
+	
+	<interceptors>
+		<!--준회원/비회원 처리 -->
+		<interceptor>
+	    <mapping path="/member/**"/>
+	    <mapping path="/board/boardList"/>
+	    <exclude-mapping path="/member/memberLogin"/>
+	    <exclude-mapping path="/member/memberJoin"/>
+	    <exclude-mapping path="/member/memberIdCheck"/>
+	    <exclude-mapping path="/member/memberNickCheck"/>
+	    <exclude-mapping path="/member/memberLogout"/>
+	    <beans:ref bean="level3Interceptor" />
+		</interceptor>
+	  <!-- 정회원(준회원은 게시판 목록만 읽기가능, 기타 'board/study/pds/dbShop'의 기능은 정회원 이상만 가능) -->
+		<interceptor>
+	    <mapping path="/board/**"/>
+	    <mapping path="/study/**"/>
+	    <mapping path="/user/**"/>
+	    <mapping path="/dbShop/**"/>
+	    <mapping path="/pds/pdsList"/>
+	    <mapping path="/pds/pdsDownload"/>
+	    <mapping path="/member/memberList"/>
+			<!-- 비회원 처리 인터셉트가 추가로 필요함(비회원 못막음) -->
+	    <exclude-mapping path="/board/boardList"/>
+	    <beans:ref bean="level2Interceptor" />
+		</interceptor>
+	  <!-- 우수회원(정회원은 자료실의 list와 downLoad 가능, upload는 우수회원 이상만 가능 -->
+		<interceptor>
+			<mapping path="/pds/**" />
+			<!-- 여긴 지금 준회원 이하는 제한이 안됨(준회원은 정회원에서 제한해야함) -->
+	  	<exclude-mapping path="/pds/pdsList"/>
+	  	<exclude-mapping path="/pds/pdsDownload"/>
+	  	<beans:ref bean="level1Interceptor" />
+		</interceptor>
+	  <!-- 관리자(가장 폐쇄적인 것 가장 아래쪽에) -->
+		<interceptor>
+	    <mapping path="/admin/**"/>
+	    <beans:ref bean="level0Interceptor" />
+		</interceptor>
+	</interceptors>
 	
 </beans:beans>

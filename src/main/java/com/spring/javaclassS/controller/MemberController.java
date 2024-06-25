@@ -338,16 +338,6 @@ public class MemberController {
         String mid = (String) session.getAttribute("sMid");
         MemberVO vo = memberService.getMemberIdCheck(mid);
         
-        // Log statements to debug
-        System.out.println("pwd: " + pwd);
-        if (vo == null) {
-            System.out.println("MemberVO is null for mid: " + mid);
-        } else {
-            System.out.println("MemberVO is not null");
-            System.out.println("vo.getPwd(): " + vo.getPwd());
-        }
-        
-        // Null check and password validation
         if (pwd != null && vo != null && passwordEncoder.matches(pwd, vo.getPwd())) {
             String[] tel = vo.getTel().split("-");
             if (tel.length == 3) {
@@ -367,8 +357,6 @@ public class MemberController {
             model.addAttribute("vo", vo);
             return "member/memberUpdate";
         } else {
-            // Return error message or redirect to the appropriate page
-            System.out.println("Password validation failed or MemberVO is null");
             return "redirect:/member/memberPwdCheck/i";  // Redirect to password check page
         }
     }
