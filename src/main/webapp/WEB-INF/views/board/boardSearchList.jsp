@@ -14,7 +14,7 @@
   	
   	function pageSizeCheck() {  // 글 상세 보기 하고 '돌아가기'버튼 누르면 해당 페이지로 돌아가지 않음
   		let pageSize = $("#pageSize").val();
-  		location.href = "BoardSearchList.bo?search=${search}&searchString=${searchString}&pageSize="+pageSize;  // javaScript 함수니까 +pageSize  // BoardSearchList로 넘기려면, search(EL로 넘어옴), searchString 다 넘겨야함
+  		location.href = "boardSearch?search=${search}&searchString=${searchString}&pageSize="+pageSize;  // javaScript 함수니까 +pageSize  // BoardSearchList로 넘기려면, search(EL로 넘어옴), searchString 다 넘겨야함
   	}
   	
   	function modalCheck(hostIp, mid, nickName, idx) {
@@ -67,7 +67,7 @@
 		    <tr>
 		      <td>${curScrStartNo}</td>
 		      <td class="text-left">
-		        <a href="BoardContent.bo?idx=${vo.idx}&pag=${pag}&pageSize=${pageSize}&flag=search&search=${search}&searchString=${searchString}">${vo.title}</a>  <!-- 지금까지 idx만 넘겼지만, 페이지 수, 페이지 사이즈, 검색필드, 검색어 같이 넘겨야함 --> <!-- 확장자 쓰면 좋은점 ctp 안써도 됨 // 확장성 고려하면 queryString(돌아가기, 수정, 삭제 다하려면)으로 하나만 하려면 request.set-->
+		        <a href="boardContent?idx=${vo.idx}&pag=${pag}&pageSize=${pageSize}&flag=search&search=${search}&searchString=${searchString}">${vo.title}</a>  <!-- 지금까지 idx만 넘겼지만, 페이지 수, 페이지 사이즈, 검색필드, 검색어 같이 넘겨야함 --> <!-- 확장자 쓰면 좋은점 ctp 안써도 됨 // 확장성 고려하면 queryString(돌아가기, 수정, 삭제 다하려면)으로 하나만 하려면 request.set-->
 		        <c:if test="${vo.hour_diff <= 24}"><img src="${ctp}/images/new.gif" /></c:if>  <!-- 이미지 무조건 절대경로 // 시작은 webapp -->
 		      </td>
 		      <td>
@@ -94,22 +94,22 @@
   <br>
   <!-- 블록페이지 시작 -->  <!-- 0블록: 1/2/3 -->
 	<div class="text-center">
-	  <ul class="pagination justify-content-center">
-		  <c:if test="${pag > 1}"><li class="page-item"><a class="page-link text-secondary" href="${ctp}/BoardSearchList.bo?search=${search}&searchString=${searchString}&pag=1&pageSize=${pageSize}">첫페이지</a></li></c:if>
-		  <c:if test="${curBlock > 0}"><li class="page-item"><a class="page-link text-secondary" href="${ctp}/BoardSearchList.bo?search=${search}&searchString=${searchString}&pag=${(curBlock-1)*blockSize + 1}&pageSize=${pageSize}">이전블록</a></li></c:if>
-		  <c:forEach var="i" begin="${(curBlock*blockSize)+1}" end="${(curBlock*blockSize) + blockSize}" varStatus="st">
-		    <c:if test="${i <= totPage && i == pag}"><li class="page-item active"><a class="page-link bg-secondary border-secondary" href="${ctp}/BoardSearchList.bo?search=${search}&searchString=${searchString}&pag=${i}&pageSize=${pageSize}">${i}</a></li></c:if>
-		    <c:if test="${i <= totPage && i != pag}"><li class="page-item"><a class="page-link text-secondary" href="${ctp}/BoardSearchList.bo?search=${search}&searchString=${searchString}&pag=${i}&pageSize=${pageSize}">${i}</a></li></c:if>
-		  </c:forEach>
-		  <c:if test="${curBlock < lastBlock}"><li class="page-item"><a class="page-link text-secondary" href="${ctp}/BoardSearchList.bo?search=${search}&searchString=${searchString}&pag=${(curBlock+1)*blockSize+1}&pageSize=${pageSize}">다음블록</a></li></c:if>
-		  <c:if test="${pag < totPage}"><li class="page-item"><a class="page-link text-secondary" href="${ctp}/BoardSearchList.bo?search=${search}&searchString=${searchString}&pag=${totPage}&pageSize=${pageSize}">마지막페이지</a></li></c:if>
-	  </ul>
+		<ul class="pagination justify-content-center" style="margin:20px 0">
+			<c:if test="${pageVO.pag > 1}"><li class="page-item"><a class="page-link text-secondary" href="${ctp}/board/boardSearch?pag=1&pageSize=${pageVO.pageSize}">첫페이지</a></li></c:if>
+			<c:if test="${pageVO.curBlock > 0}"><li class="page-item"><a class="page-link text-secondary" href="${ctp}/board/boardSearch?pag=${(pageVO.curBlock*pageVO.blockSize+1)-pageVO.blockSize}&pageSize=${pageVO.pageSize}">이전블록</a></li></c:if>  <!-- (curBlock-1)*blockSize +1 -->
+			<c:forEach var="i" begin="${(pageVO.curBlock*pageVO.blockSize)+1}" end="${(pageVO.curBlock*pageVO.blockSize)+pageVO.blockSize}" varStatus="st">  <!-- 처음이니까 curBlock => 0블록 -->
+				<c:if test="${i <= pageVO.totPage && i == pageVO.pag}"><li class="page-item active"><a class="page-link bg-secondary border-secondary" href="${ctp}/board/boardSearch?pag=${i}&pageSize=${pageVO.pageSize}">${i}</a></li></c:if>
+				<c:if test="${i <= pageVO.totPage && i != pageVO.pag}"><li class="page-item"><a class="page-link text-secondary" href="${ctp}/board/boardSearch?pag=${i}&pageSize=${pageVO.pageSize}">${i}</a></li></c:if>
+			</c:forEach>
+			<c:if test="${pageVO.curBlock < pageVO.lastBlock}"><li class="page-item"><a class="page-link text-secondary" href="${ctp}/board/boardSearch?pag=${(pageVO.curBlock+1)*pageVO.blockSize+1}&pageSize=${pageVO.pageSize}">다음블록</a></li></c:if>
+			<c:if test="${pageVO.pag < pageVO.totPage}"><li class="page-item"><a class="page-link text-secondary" href="${ctp}/board/boardSearch?pag=${pageVO.totPage}&pageSize=${pageVO.pageSize}">마지막페이지</a></li></c:if>
+		</ul>
 	</div>
 	<!-- 블록페이지 끝 -->
 	<br>
 	<!-- 검색기 시작 -->
-<!-- 	<div class="container text-center">  80% 보이게 하는 것
-		 <form name="searchForm" method="post" action="BoardSearchList.bo">
+	<div class="container text-center">  80% 보이게 하는 것
+		 <form name="searchForm" method="post" action="${ctp}/board/boardSearch">
 		   <b>검색 : </b>
 		   <select name="search" id="search">
 		     <option value="title">글제목</option>
@@ -118,8 +118,10 @@
 		   </select>
 		   <input type="text" name="searchString" id="searchString" required />
 		   <input type="submit" value="검색" class="btn btn-success btn-sm" />
+		   <input type="hidden" name="pag" value="${pageVO.pag}" />
+		   <input type="hidden" name="pageSize" value="${pageVO.pageSize}" />
 		 </form>
-	</div> -->
+	</div>
 	<!-- 검색기 끝 -->
 	<input type="button" value="돌아가기" onclick="location.href='BoardList.bo';" class="btn btn-warning" />  <!-- 원하는 페이지 있으면 같이 보냄 -->
 </div>

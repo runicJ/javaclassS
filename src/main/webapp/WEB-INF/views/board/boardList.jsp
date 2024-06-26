@@ -7,18 +7,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>boardList.jsp</title>
+  <title>boardSearchList.jsp</title>
   <jsp:include page="/WEB-INF/views/include/bs4.jsp" />
   <script>
   	'use strict';
   	
   	function pageSizeCheck() {  // 글 상세 보기 하고 '돌아가기'버튼 누르면 해당 페이지로 돌아가지 않음
   		let pageSize = $("#pageSize").val();
-  		location.href = "boardList?pageSize="+pageSize;  // javaScript 함수니까 +pageSize
+  		location.href = "boardList?{pag}="+pag+"&pageSize="+pageSize;
   	}
   	
   	function modalCheck(hostIp, mid, nickName, idx) {
-  		$("#myModal #modalHostIp").text(hostIp);  // .html(html방식으로 변환해서 출력) / .val(form태그의 값을 출력)
+  		$("#myModal #modalHostIp").text(hostIp);
   		$("#myModal #modalMid").text(mid);
   		$("#myModal #modalNickName").text(nickName);
   		$("#myModal #modalIdx").text(idx);
@@ -85,21 +85,21 @@
   <!-- 블록페이지 시작 -->  <!-- 0블록: 1/2/3 -->
 	<div class="text-center">
 		<ul class="pagination justify-content-center" style="margin:20px 0">
-			<c:if test="${pageVO.pag > 1}"><li class="page-item"><a class="page-link text-secondary" href="${ctp}/board/boardList?pag=1&pageSize=${pageVO.pageSize}">첫페이지</a></li></c:if>
-			<c:if test="${pageVO.curBlock > 0}"><li class="page-item"><a class="page-link text-secondary" href="${ctp}/board/boardList?pag=${(pageVO.curBlock*pageVO.blockSize+1)-pageVO.blockSize}&pageSize=${pageVO.pageSize}">이전블록</a></li></c:if>  <!-- (curBlock-1)*blockSize +1 -->
+			<c:if test="${pageVO.pag > 1}"><li class="page-item"><a class="page-link text-secondary" href="${ctp}/board/boardSearchList?pag=1&pageSize=${pageVO.pageSize}">첫페이지</a></li></c:if>
+			<c:if test="${pageVO.curBlock > 0}"><li class="page-item"><a class="page-link text-secondary" href="${ctp}/board/boardSearchList?pag=${(pageVO.curBlock*pageVO.blockSize+1)-pageVO.blockSize}&pageSize=${pageVO.pageSize}">이전블록</a></li></c:if>  <!-- (curBlock-1)*blockSize +1 -->
 			<c:forEach var="i" begin="${(pageVO.curBlock*pageVO.blockSize)+1}" end="${(pageVO.curBlock*pageVO.blockSize)+pageVO.blockSize}" varStatus="st">  <!-- 처음이니까 curBlock => 0블록 -->
-				<c:if test="${i <= pageVO.totPage && i == pageVO.pag}"><li class="page-item active"><a class="page-link bg-secondary border-secondary" href="${ctp}/board/boardList?pag=${i}&pageSize=${pageVO.pageSize}">${i}</a></li></c:if>
-				<c:if test="${i <= pageVO.totPage && i != pageVO.pag}"><li class="page-item"><a class="page-link text-secondary" href="${ctp}/board/boardList?pag=${i}&pageSize=${pageVO.pageSize}">${i}</a></li></c:if>
+				<c:if test="${i <= pageVO.totPage && i == pageVO.pag}"><li class="page-item active"><a class="page-link bg-secondary border-secondary" href="${ctp}/board/boardSearchList?pag=${i}&pageSize=${pageVO.pageSize}">${i}</a></li></c:if>
+				<c:if test="${i <= pageVO.totPage && i != pageVO.pag}"><li class="page-item"><a class="page-link text-secondary" href="${ctp}/board/boardSearchList?pag=${i}&pageSize=${pageVO.pageSize}">${i}</a></li></c:if>
 			</c:forEach>
-			<c:if test="${pageVO.curBlock < pageVO.lastBlock}"><li class="page-item"><a class="page-link text-secondary" href="${ctp}/board/boardList?pag=${(pageVO.curBlock+1)*pageVO.blockSize+1}&pageSize=${pageVO.pageSize}">다음블록</a></li></c:if>
-			<c:if test="${pageVO.pag < pageVO.totPage}"><li class="page-item"><a class="page-link text-secondary" href="${ctp}/board/boardList?pag=${pageVO.totPage}&pageSize=${pageVO.pageSize}">마지막페이지</a></li></c:if>
+			<c:if test="${pageVO.curBlock < pageVO.lastBlock}"><li class="page-item"><a class="page-link text-secondary" href="${ctp}/board/boardSearchList?pag=${(pageVO.curBlock+1)*pageVO.blockSize+1}&pageSize=${pageVO.pageSize}">다음블록</a></li></c:if>
+			<c:if test="${pageVO.pag < pageVO.totPage}"><li class="page-item"><a class="page-link text-secondary" href="${ctp}/board/boardSearchList?pag=${pageVO.totPage}&pageSize=${pageVO.pageSize}">마지막페이지</a></li></c:if>
 		</ul>
 	</div>
 	<!-- 블록페이지 끝 -->
 	<br>
 	<!-- 검색기 시작 -->
 	<div class="container text-center">
-	  <form name="searchForm" method="post" action="goardSearchList">
+	  <form name="searchForm" method="post" action="boardSearchList">
 	    <b>검색 : </b>
 	    <select name="search" id="search">
 	      <option value="title">글제목</option>
