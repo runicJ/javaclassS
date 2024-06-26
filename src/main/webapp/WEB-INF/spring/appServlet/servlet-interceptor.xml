@@ -36,6 +36,7 @@
 	    <mapping path="/member/memberList"/>
 			<!-- 비회원 처리 인터셉트가 추가로 필요함(비회원 못막음) -->
 	    <exclude-mapping path="/board/boardList"/>
+	    <exclude-mapping path="/board/boardList"/>
 	    <beans:ref bean="level2Interceptor" />
 		</interceptor>
 	  <!-- 우수회원(정회원은 자료실의 list와 downLoad 가능, upload는 우수회원 이상만 가능 -->

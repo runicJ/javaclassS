@@ -22,7 +22,7 @@ public class Level2Interceptor extends HandlerInterceptorAdapter {
 			if(level == 99) {	// 비회원 처리
 				dispatcher = request.getRequestDispatcher("/message/memberNo");
 			}
-			else {  // 준회원
+			else {	// 준회원
 				dispatcher = request.getRequestDispatcher("/message/memberLevelNo");
 			}
 			dispatcher.forward(request, response);

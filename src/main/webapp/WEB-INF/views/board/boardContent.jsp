@@ -285,7 +285,7 @@
         <div class="row">
 	        <div class="col">
 	        	<c:if test="${empty flag}"><input type="button" value="돌아가기" onclick="location.href='boardList?pag=${pag}&pageSize=${pageSize}';" class="btn btn-warning" /></c:if>
-	        	<c:if test="${!empty flag}"><input type="button" value="돌아가기" onclick="location.href='boardSearchList?pag=${pag}&pageSize=${pageSize}&search=${search}&searchString=${searchString}';" class="btn btn-warning" /></c:if>
+	        	<c:if test="${!empty flag}"><input type="button" value="돌아가기" onclick="location.href='boardSearch?pag=${pag}&pageSize=${pageSize}&search=${search}&searchString=${searchString}';" class="btn btn-warning" /></c:if>
 	        </div>
 	        <c:if test="${sNickName == vo.nickName || sLevel == 0}">
 		        <div class="col text-right">
@@ -426,6 +426,7 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
+        
       </div>
     </div>
   </div>

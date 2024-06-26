@@ -17,11 +17,11 @@ public class Level0Interceptor extends HandlerInterceptorAdapter {
 		
 		// 관리자가 아니라면 초기화면 창으로 보낸다.
 		if(level != 0) {
-			RequestDispatcher dispatcher = request.getRequestDispatcher("/message/admin");
+			RequestDispatcher dispatcher = request.getRequestDispatcher("/message/adminNo");
 			dispatcher.forward(request, response);
 			return false;
 		}
 		
-		return super.preHandle(request, response, handler);
+		return true;
 	}
 }
