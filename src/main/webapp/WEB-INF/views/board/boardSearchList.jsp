@@ -38,7 +38,7 @@
   		</td>
   	</tr>
   	<tr>
-  		<td><c:if test="${sLevel != 1}"><a href="BoardInput.bo" class="btn btn-success btn-sm">글쓰기</a></c:if></td>  <!-- 세션 들어가서 준회원이면 안보이게 준회원은 읽을 수만 있게 -->
+  		<td><c:if test="${sLevel != 1}"><a href="${ctp}/board/boardInput" class="btn btn-success btn-sm">글쓰기</a></c:if></td>  <!-- 세션 들어가서 준회원이면 안보이게 준회원은 읽을 수만 있게 -->
   		<td class="text-right">
   			<select name="pageSize" id="pageSize" onchange="pageSizeCheck()">  <!-- ajax로 할 필요 없음 -->
   				<option ${pageSize==5 ? "selected" : ""}>5</option>
@@ -123,7 +123,7 @@
 		 </form>
 	</div>
 	<!-- 검색기 끝 -->
-	<input type="button" value="돌아가기" onclick="location.href='BoardList.bo';" class="btn btn-warning" />  <!-- 원하는 페이지 있으면 같이 보냄 -->
+	<input type="button" value="돌아가기" onclick="location.href='boardList';" class="btn btn-warning" />  <!-- 원하는 페이지 있으면 같이 보냄 -->
 </div>
 <p><br/></p>
 

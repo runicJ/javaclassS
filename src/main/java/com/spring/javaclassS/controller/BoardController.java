@@ -251,7 +251,6 @@ public class BoardController {
 		return res + "";
 	}
 	
-	// 대댓글 입력처리(부모댓글에 대한 댓글)
 	//@RequestMapping(value = "/boardSearch", method = {RequestMethod.POST, RequestMethod.GET})
 	@RequestMapping(value = "/boardSearch")  // 빼면 post, get 둘다 처리됨
 	public String boardSearch(Model model, String search,  // search는 안넘어올 일이 없음

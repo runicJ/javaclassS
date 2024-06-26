@@ -37,13 +37,12 @@
 	</select>
 	
 	<select id="totRecCntSearch" resultType="int">
-	  select * from board2 where ${search} like concat("%",#{searchString},"%");
+	  select count(*) from board2 where ${search} like concat("%",#{searchString},"%");
 	</select>
 	
 	<select id="getBoardSearchList" resultType="com.spring.javaclassS.vo.BoardVO">
 		select * from board2 where ${search} like concat("%",#{searchString},"%") order by idx desc limit #{startIndexNo}, #{pageSize}
 	</select>
-	
 	
 	
 	<insert id="setBoardInput">
