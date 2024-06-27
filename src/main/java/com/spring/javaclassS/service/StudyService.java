@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.spring.javaclassS.vo.CrimeVO;
 import com.spring.javaclassS.vo.UserVO;
@@ -31,6 +32,9 @@ public interface StudyService {
 	public CrimeVO getAnalyzeTotal(int year, String police);
 
 	public int fileUpload(MultipartFile fName, String mid);
+
+	public int multiFileUpload(MultipartHttpServletRequest mFile);
+
 
 	//public HashMap<String, UserVO> getUserMidMap();
 

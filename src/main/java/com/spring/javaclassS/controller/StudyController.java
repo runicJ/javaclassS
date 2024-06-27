@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.MultipartRequest;
 
 import com.spring.javaclassS.service.DbtestService;
 import com.spring.javaclassS.service.StudyService;
@@ -341,4 +343,34 @@ public class StudyController {
   		return res;
   	}
   	
+	@RequestMapping(value = "/fileUpload/multiFile", method = RequestMethod.GET)
+	public String multiFileGet() {
+		return "study/fileUpload/multiFile";
+	}
+	
+	@RequestMapping(value = "/fileUpload/multiFile", method = RequestMethod.POST)
+	public String multiFilePost(MultipartHttpServletRequest mFile/* , HttpServletRequest request */) {  // MultipartHttpServletRequests는 여러개 파일 가져오는 것 / HttpServletRequest request 객체로 파일을 뽑아오고싶음 // 파일을 하나만 올릴때 MultipartFile 객체 사용(MultipartFile fName)
+		
+		/* String[] imgNames = request.getParameter("imgNames").split("/"); */
+		
+		int res = studyService.multiFileUpload(mFile/* , imgNames */);
+		
+		if(res != 0) return "redirect:/message/multiFileUploadOk";
+		else return "redirect:/message/multiFileUploadNo";
+	}
+	
+	@RequestMapping(value = "/fileUpload/multiFile2", method = RequestMethod.GET)
+	public String multiFile2Get() {
+		return "study/fileUpload/multiFile2";
+	}
+
+	@RequestMapping(value = "/fileUpload/multiFile2", method = RequestMethod.POST)
+	public String multiFile2Post(MultipartHttpServletRequest mFile, HttpServletRequest request, String imgNames) {  // MultipartHttpServletRequests는 여러개 파일 가져오는 것 / HttpServletRequest request 객체로 파일을 뽑아오고싶음 // 파일을 하나만 올릴때 MultipartFile 객체 사용(MultipartFile fName)
+		//String[] imgNames = request.getParameter("imgNames").split("/");
+		
+		int res = studyService.multiFileUpload(mFile);
+		
+		if(res != 0) return "redirect:/message/multiFileUploadOk";
+		else return "redirect:/message/multiFileUploadNo";
+	}
 }
