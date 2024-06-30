@@ -46,5 +46,4 @@ public class AdminServiceImpl implements AdminService {
 		return adminDAO.setMemberDeleteOk(idx);
 	}
 	
-	
 }

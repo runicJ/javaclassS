@@ -173,10 +173,10 @@ public class StudyController {
 		return "study/restapi/restapiTest4";
 	}
   	
-  	@ResponseBody  // ajax
-	@RequestMapping(value = "/restapi/saveCrimeData", method = RequestMethod.POST)
-	public void saveCrimeDataPost(CrimeVO vo) {
-		studyService.setSaveCrimeData(vo);
+	@ResponseBody  // ajax
+	@RequestMapping(value = "/restapi/saveCrimeDate", method = RequestMethod.POST)
+	public void saveCrimeDatePost(CrimeVO vo) {
+		studyService.setSaveCrimeDate(vo);
 	}
   	
   	/*

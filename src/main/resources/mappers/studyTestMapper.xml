@@ -57,7 +57,7 @@
 	</select>
 	
 	
-	<insert id="setSaveCrimeData">
+	<insert id="setSaveCrimeDate">
 		insert into crime values (default,#{vo.year},#{vo.police},#{vo.robbery},#{vo.theft},#{vo.murder},#{vo.violence});
 	</insert>
 	
@@ -65,4 +65,5 @@
 	<delete id="setDeleteCrimeDate">
 	  delete from crime where year = #{year};
 	</delete>
+	
 </mapper>

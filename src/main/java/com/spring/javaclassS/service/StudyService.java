@@ -21,7 +21,7 @@ public interface StudyService {
 
 	public ArrayList<UserVO> getUserMidList(String mid);
 
-	public void setSaveCrimeData(CrimeVO vo);
+	public void setSaveCrimeDate(CrimeVO vo);
 
 	public void setDeleteCrimeDate(int year);
 

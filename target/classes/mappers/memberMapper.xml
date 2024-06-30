@@ -11,17 +11,21 @@
 		select * from member3 where nickName = #{nickName};
 	</select>
 	
-		<!-- 관리자일때 관리자가 아닐때 레벨 넘어옴 c:if x // 동적쿼리에서는 절대로 #쓰면 안됨 -->
-		<!-- <if test="level == 0">
-			select * from member3 order by nickName;
-		</if>
-		<if test="level != 0">
-			select * from member3 where userInfor = '공개' order by nickName;
-		</if> -->
+	<!-- 관리자일때 관리자가 아닐때 레벨 넘어옴 c:if x // 동적쿼리에서는 절대로 #쓰면 안됨 -->
+	<!-- <if test="level == 0">
+		select * from member3 order by nickName;
+	</if>
+	<if test="level != 0">
+		select * from member3 where userInfor = '공개' order by nickName;
+	</if> -->
+	
 	<select id="getMemberList" resultType="com.spring.javaclassS.vo.MemberVO">
 		select * from member3 <if test="level != 0"> where userInfor = '공개'</if> order by nickName;
 	</select>
 	
+    <select id="getMemberNameCheck" resultType="com.spring.javaclassS.vo.MemberVO">
+        select * from member3 where name = #{name};
+    </select>
 	
 	
 	<insert id="setMemberJoinOk">
@@ -41,12 +45,12 @@
 	  update member3 set pwd = #{pwd} where mid = #{mid};
 	</update>
 	
-	
-	<insert id="setMemberUpdateOk">
-	  update member3 set pwd=#{vo.pwd}, nickName=#{vo.nickName}, name=#{vo.name}, gender=#{vo.gender}, birthday=#{vo.birthday}, tel=#{vo.tel},address#{vo.address},email=#{vo.email},homePage=#{vo.homePage},job=#{vo.job},hobby=#{vo.hobby},photo=#{vo.photo},content=#{vo.content},userInfor=#{vo.userInfor} where mid = #{vo.mid};
-	</insert>
-	
-	<update id="setMemberDelete">
-		update member3 set userDel = 'OK' where mid = #{mid};
+	<update id="setMemberUpdateOk">
+	  update member3 set nickName=#{vo.nickName},name=#{vo.name},gender=#{vo.gender},birthday=#{vo.birthday},tel=#{vo.tel},address=#{vo.address},email=#{vo.email},homePage=#{vo.homePage},job=#{vo.job},hobby=#{vo.hobby},photo=#{vo.photo},content=#{vo.content},userInfor=#{vo.userInfor} where mid=#{vo.mid};
 	</update>
+	
+	<update id="setUserDel">
+	  update member3 set userDel = 'OK' where mid = #{mid};
+	</update>
+	
 </mapper>

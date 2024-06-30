@@ -40,6 +40,7 @@
 	</update>
 	
 	
+	
 	<delete id="setDbtestDelete">
 	  delete from user where idx = #{idx};
 	</delete>

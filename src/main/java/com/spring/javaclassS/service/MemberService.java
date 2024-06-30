@@ -22,11 +22,14 @@ public interface MemberService {
 
 	public int setPwdChangeOk(String mid, String pwd);
 
-	public String fileUpload(MultipartFile fName, String mid);
+	public String fileUpload(MultipartFile fName, String mid, String photo);
 
 	public ArrayList<MemberVO> getMemberList(int level);
 
-	public int setMemberUpdateOk(String currentPhoto, MultipartFile fName, MemberVO vo, HttpServletRequest request);
+	public int setMemberUpdateOk(MemberVO vo);
 
-	public int setMemberDelete(String mid);
+	public int setUserDel(String mid);
+
+	public MemberVO getMemberNameCheck(String name);
+	
 }

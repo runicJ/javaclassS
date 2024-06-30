@@ -1,7 +1,6 @@
 package com.spring.javaclassS.controller;
 
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -52,15 +51,24 @@ public class PdsController {
 	}
 	
 	@RequestMapping(value = "/pdsInput", method = RequestMethod.GET)
-	public String pdsInputGet(Model model, String part) {
+	public String pdsInputGet(Model model,
+			@RequestParam(name="part", defaultValue = "전체", required = false) String part) {
 		return "pds/pdsInput";
 	}
 	
 	@RequestMapping(value = "/pdsInput", method = RequestMethod.POST)
-	public String pdsInputPost(MultipartHttpServletRequest mFile, PdsVO vo, HttpServletRequest request) {
-		try {
-			//MultipartHttpServletRequest mFile =  (MultipartHttpServletRequest) request;  
-			List<MultipartFile> fileList = mFile.getFiles("fName");
+	public String pdsInputPost(MultipartHttpServletRequest mFName, PdsVO vo) {
+		int res = pdsService.setPdsUpload(mFName, vo);
+		
+		if(res != 0) return "redirect:/message/pdsUploadOk";
+		else return "redirect:/message/pdsUploadNo";
+	}
+	
+//	@RequestMapping(value = "/pdsInput", method = RequestMethod.POST)
+//	public String pdsInputPost(MultipartHttpServletRequest mFile, PdsVO vo, HttpServletRequest request) {
+//		try {
+//			MultipartHttpServletRequest mFile =  (MultipartHttpServletRequest) request;  
+//			List<MultipartFile> fileList = mFile.getFiles("fName");
 //         Iterator fileNameIterator = mpRequest.getFileNames();
 //         List boardFileList = new ArrayList();
 //         while (fileNameIterator.hasNext()) {
@@ -72,63 +80,54 @@ public class PdsController {
 //                 boardFileList.add(boardFile);
 //             }
 //         }
-			String oFileNames = "";
-			String sFileNames = "";
-			int fileSizes = 0;  // 누적할 것이므로 0
-			
-			for(MultipartFile file : fileList) {
-				//System.out.println("원본화일 : " + file.getOriginalFilename());
-				String oFileName = file.getOriginalFilename();
-				String sFileName = javaclassProvide.saveFileName(oFileName);
-				
-				javaclassProvide.writeFile(file, sFileName, "pds");
-				
-				oFileNames += oFileName + "/";
-				sFileNames += sFileName + "/";
-				fileSizes += file.getSize();
-			}
-			oFileNames = oFileNames.substring(0, oFileNames.length()-1);
-			sFileNames = sFileNames.substring(0, sFileNames.length()-1);
-			
-			vo.setFName(oFileNames);
-			vo.setFSName(sFileNames);
-			vo.setFSize(fileSizes);
-			
-		} catch (IOException e) {e.printStackTrace();}
-		
-		int res =  pdsService.setPdsUpload(mFile, vo);
-		
-		if(res != 0) return "redirect:/message/pdsUploadOk";
-		else return "redirect:/message/pdsUploadNo";
-	}
-	
-//	@RequestMapping(value = "/pdsInput", method = RequestMethod.POST)
-//	public String pdsInputPost(MultipartHttpServletRequest mFName, PdsVO vo) {
-//		System.out.println("vo : " + vo);
-//		int res = pdsService.setPdsUpload(mFName, vo);
+//			String oFileNames = "";
+//			String sFileNames = "";
+//			int fileSizes = 0;  // 누적할 것이므로 0
+//			
+//			for(MultipartFile file : fileList) {
+//				//System.out.println("원본화일 : " + file.getOriginalFilename());
+//				String oFileName = file.getOriginalFilename();
+//				String sFileName = javaclassProvide.saveFileName(oFileName);
+//				
+//				javaclassProvide.writeFile(file, sFileName, "pds");
+//				
+//				oFileNames += oFileName + "/";
+//				sFileNames += sFileName + "/";
+//				fileSizes += file.getSize();
+//			}
+//			oFileNames = oFileNames.substring(0, oFileNames.length()-1);
+//			sFileNames = sFileNames.substring(0, sFileNames.length()-1);
+//			
+//			vo.setFName(oFileNames);
+//			vo.setFSName(sFileNames);
+//			vo.setFSize(fileSizes);
+//			
+//		} catch (IOException e) {e.printStackTrace();}
+//		
+//		int res =  pdsService.setPdsUpload(mFile, vo);
 //		
 //		if(res != 0) return "redirect:/message/pdsUploadOk";
 //		else return "redirect:/message/pdsUploadNo";
 //	}
 	
 	@ResponseBody
-	@RequestMapping(value="/pdsDownNumCheck", method = RequestMethod.POST)
-	public String pdsDownNumPost(int idx) {
-		return pdsService.setPdsDownNum(idx) + "";
+	@RequestMapping(value = "/pdsDownNumCheck", method = RequestMethod.POST)
+	public String pdsDownNumCheckPost(int idx) {
+		return pdsService.setPdsDownNumPlus(idx) + "";
 	}
 	
 	@ResponseBody
-	@RequestMapping(value="/pdsDeleteCheck", method = RequestMethod.POST)
-	public String pdsDeletePost(String fSName, int idx, HttpServletRequest request) {
+	@RequestMapping(value = "/pdsDeleteCheck", method = RequestMethod.POST)
+	public String pdsDeleteCheckPost(int idx, String fSName, HttpServletRequest request) {
 		return pdsService.setPdsDelete(idx, fSName, request) + "";
 	}
-	
-	@ResponseBody
-	@RequestMapping(value="/pdsContent", method = RequestMethod.GET)
-	public String pdsContentGet(int idx, Model model,
+
+	@RequestMapping(value = "/pdsContent", method = RequestMethod.GET)
+	public String pdsContentGet(Model model, int idx,
 			@RequestParam(name="part", defaultValue = "전체", required = false) String part,
 			@RequestParam(name="pag", defaultValue = "1", required = false) int pag,
-			@RequestParam(name="pageSize", defaultValue = "5", required = false) int pageSize) {
+			@RequestParam(name="pageSize", defaultValue = "5", required = false) int pageSize
+		) {
 		PdsVO vo = pdsService.getPdsContent(idx);
 		model.addAttribute("vo", vo);
 		

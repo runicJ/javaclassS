@@ -35,7 +35,7 @@ public class PdsServiceImpl implements PdsService {
 			
 			for(MultipartFile file : fileList) {
 				String oFileName = file.getOriginalFilename();
-				String sFileName = javaclassProvide.saveFileName(oFileName);  // 서버에 저장하는 saveFileName
+				String sFileName = javaclassProvide.saveFileName(oFileName); // 서버에 저장하는 saveFileName
 			
 				javaclassProvide.writeFile(file, sFileName, "pds");
 				
@@ -55,20 +55,20 @@ public class PdsServiceImpl implements PdsService {
 		return pdsDAO.setPdsUpload(vo);
 	}
 
+
 	@Override
 	public List<PdsVO> getPdsList(int startIndexNo, int pageSize, String part) {
 		return pdsDAO.getPdsList(startIndexNo, pageSize, part);
 	}
 
 	@Override
-	public String setPdsDownNum(int idx) {
-		return pdsDAO.setPdsDownNum(idx);
+	public int setPdsDownNumPlus(int idx) {
+		return pdsDAO.setPdsDownNumPlus(idx);
 	}
-
 
 	@Override
 	public int setPdsDelete(int idx, String fSName, HttpServletRequest request) {
-		String realPath = request.getSession().getServletContext().getRealPath("/resources/data/pds/");
+	  String realPath = request.getSession().getServletContext().getRealPath("/resources/data/pds/");
 		String[] fSNames = fSName.split("/");
 		
 		// 서버에 저장된 실제 파일을 삭제처리

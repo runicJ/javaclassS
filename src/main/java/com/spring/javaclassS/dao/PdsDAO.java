@@ -14,7 +14,7 @@ public interface PdsDAO {
 
 	public int totRecCnt(@Param("part") String part);
 
-	public String setPdsDownNum(@Param("idx") int idx);
+	public int setPdsDownNumPlus(@Param("idx") int idx);
 
 	public int setPdsDelete(@Param("idx") int idx);
 

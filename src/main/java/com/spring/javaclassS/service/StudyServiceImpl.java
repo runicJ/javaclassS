@@ -178,8 +178,8 @@ public class StudyServiceImpl implements StudyService {
 	}
 
 	@Override
-	public void setSaveCrimeData(CrimeVO vo) {
-		studyDAO.setSaveCrimeData(vo);
+	public void setSaveCrimeDate(CrimeVO vo) {
+		studyDAO.setSaveCrimeDate(vo);
 	}
 
 	@Override

@@ -14,7 +14,7 @@ public interface DbtestDAO {
 	public ArrayList<UserVO> getDbtestSearch(@Param("mid") String mid);
 
 	// xml에서 있는 변수명과 같으면 @Param 안써도 됨(vo는 당연히 생략 불가능)
-
+	
 	public int setDbtestDelete(@Param("idx") int idx);
 
 	public int setDbtestInputOk(@Param("vo") UserVO vo);

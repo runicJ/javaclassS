@@ -142,7 +142,7 @@
       <tr>
         <td class="text-center">
 	    		<input type="checkbox" name="idSave" checked /> 아이디 저장 &nbsp;&nbsp;&nbsp;
-          [<a href="javascript:midSearch()">아이디 찾기</a>] |
+          [<a href="javascript:midSearch()">아이디 찾기</a>] /
           [<a href="javascript:pwdSearch()">비밀번호 찾기</a>]
         </td>
       </tr>
@@ -166,33 +166,31 @@
               <td><input type="text" name="emailSearch1" id="emailSearch1" class="form-control" placeholder="이메일을 입력하세요" /></td>
           </tr>
           <tr>
-              <td colspan="2"><input type="button" value="아이디 찾기" xxonclick="searchMidBtn()" class="btn btn-primary form-control" /></td>
+              <td colspan="2"><input type="button" value="아이디 찾기" onclick="searchMidBtn()" class="btn btn-primary form-control" /></td>
           </tr>
       </table>
   </div>
   <div id="searchPassword">
-    <hr/>
-  	<table class="table table-bordered p-0 text-center">
-  	  <tr>
-  	    <td colspan="2" class="text-center">
-  	      <font size="4"><b>비밀번호 찾기</b></font>
-  	      (가입시 입력한 아이디와 메일주소를 입력하세요)
-  	    </td>
-  	  </tr>
-  	  <tr>
-  	    <th>아이디</th>
-  	    <td><input type="text" name="midSearch" id="midSearch" class="form-control" placeholder="아이디를 입력하세요"/></td>
-  	  </tr>
-  	  <tr>
-  	    <th>메일주소</th>
-  	    <td><input type="text" name="emailSearch2" id="emailSearch2" class="form-control" placeholder="메일주소를 입력하세요"/></td>
-  	  </tr>
-  	  <tr>
-  	    <td colspan="2" class="text-center">
-  	      <input type="button" value="새비밀번호발급" onclick="newPassword()" class="btn btn-secondary form-control" placeholder="메일주소를 입력하세요"/>
-  	    </td>
-  	  </tr>
-  	</table>
+      <hr/>
+      <table class="table table-bordered p-0 text-center">
+          <tr>
+              <td colspan="2">
+                  <font size="4"><b>비밀번호 찾기</b></font>
+                  (가입시 입력한 아이디와 메일 주소를 입력하세요.)
+              </td>
+          </tr>
+          <tr>
+              <th>아이디</th>
+              <td><input type="text" name="midSearch" id="midSearch" class="form-control" placeholder="아이디를 입력하세요" /></td>
+          </tr>
+          <tr>
+              <th>이메일</th>
+              <td><input type="text" name="emailSearch2" id="emailSearch2" class="form-control" placeholder="이메일을 입력하세요" /></td>
+          </tr>
+          <tr>
+              <td colspan="2"><input type="button" value="새 비밀번호 발급" onclick="newPassword()" class="btn btn-primary form-control" /></td>
+          </tr>
+      </table>
   </div>
 </div>
 <p><br/></p>

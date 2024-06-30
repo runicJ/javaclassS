@@ -3,10 +3,10 @@
 <mapper namespace="com.spring.javaclassS.dao.BoardDAO">
 	
 	<select id="getBoardList" resultType="com.spring.javaclassS.vo.BoardVO">
-		select *, datediff(wDate, now()) as date_diff,
+		select *,datediff(wDate, now()) as date_diff,
 		  timestampdiff(hour, wDate, now()) as hour_diff,
 		  (select count(*) from boardReply2 where boardIdx=b.idx) as replyCnt
-		  from board2 b order by idx desc limit #{startIndexNo}, #{pageSize};
+		  from board2 b order by idx desc limit #{startIndexNo},#{pageSize};
 		<!-- 0이면 하루가 안된것 -->
 	</select>
 	
@@ -36,15 +36,14 @@
 	  select * from boardReply2 where boardIdx = #{idx} order by re_order;
 	</select>
 	
-	<select id="totRecCntSearch" resultType="int">
-	  select count(*) from board2 where ${search} like concat("%",#{searchString},"%");
+	<select id="totRecCntSearch"  resultType="int">
+		select count(*) from board2 where ${search} like concat("%",#{searchString},"%"); 
 	</select>
 	
 	<select id="getBoardSearchList" resultType="com.spring.javaclassS.vo.BoardVO">
-		select * from board2 where ${search} like concat("%",#{searchString},"%") order by idx desc limit #{startIndexNo}, #{pageSize}
+		select * from board2 where ${search} like concat("%",#{searchString},"%") order by idx desc limit #{startIndexNo},#{pageSize};
 	</select>
-	
-	
+
 	<insert id="setBoardInput">
 	  insert into board2 values (default,#{vo.mid},#{vo.nickName},#{vo.title},#{vo.content},default,#{vo.hostIp},#{vo.openSw},default,default,default);
 	</insert>
@@ -53,13 +52,13 @@
 	  insert into boardReply2 values (default,#{replyVO.boardIdx},#{replyVO.re_step},#{replyVO.re_order},#{replyVO.mid},#{replyVO.nickName},default,#{replyVO.hostIp},#{replyVO.content});
 	</insert>
 
-
+	
 	<update id="setReadNumPlus">
-		update board2 set readNum = readNum + 1 where idx = #{idx};
+	  update board2 set readNum = readNum + 1 where idx = #{idx};
 	</update>
 	
 	<update id="setBoardUpdate">
-		update board2 set title=#{vo.title}, content=#{vo.content}, hostIp=#{vo.hostIp}, openSw=#{vo.openSw}, wDate=now() where idx=#{vo.idx};
+	  update board2 set title=#{vo.title}, content=#{vo.content}, hostIp=#{vo.hostIp}, openSw=#{vo.openSw}, wDate=now() where idx=#{vo.idx};
 	</update>
 	
 	<update id="setReplyOrderUpdate">
@@ -69,7 +68,8 @@
 	
 	
 	<delete id="setBoardDelete">
-		delete from board2 where idx=#{idx};
+	  delete from board2 where idx = #{idx};
 	</delete>
+	
 </mapper>
 <!-- mapper에는 같은 이름 쓸 수 없음 하나만 써야함 -->

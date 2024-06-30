@@ -34,7 +34,6 @@
   <div class="form-group">정보공개 : ${vo.userInfor}</div>
   <div class="form-group">회원 사진 : <img src="${ctp}/images/member/${vo.photo}" width="180px" /></div>
   <hr>
-  <%-- <button type="button" class="btn btn-secondary" onclick="location.href='${ctp}/MemberLogin.mem';">돌아가기</button> --%>
   <div>
   	<a href="javascript:history.back();" class="btn btn-success">돌아가기</a>  <!-- 작업한게 없으니까 그냥 바로 전단계로 보내면 됨(history.back()) -->
   </div>

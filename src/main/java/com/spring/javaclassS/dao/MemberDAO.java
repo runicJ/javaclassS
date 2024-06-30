@@ -25,5 +25,8 @@ public interface MemberDAO {
 
 	public int setMemberUpdateOk(@Param("vo") MemberVO vo);
 
-	public int setMemberDelete(@Param("mid") String mid);
+	public int setUserDel(@Param("mid") String mid);
+
+	public MemberVO getMemberNameCheck(@Param("name") String name);
+	
 }

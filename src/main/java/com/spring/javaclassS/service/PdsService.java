@@ -14,7 +14,7 @@ public interface PdsService {
 
 	public int setPdsUpload(MultipartHttpServletRequest mFile, PdsVO vo);
 
-	public String setPdsDownNum(int idx);
+	public int setPdsDownNumPlus(int idx);
 
 	public int setPdsDelete(int idx, String fSName, HttpServletRequest request);
 

@@ -49,7 +49,7 @@
   				<input type="submit" value="수정하기" class="btn btn-success mr-2" />  <!-- 유효성검사 안하려면 위에 required -->
   				
   				<input type="reset" value="다시입력" class="btn btn-warning mr-2" />
-  				<input type="button" value="돌아가기" onclick="location.href='boardContent?idx=${vo.idx}pag=${pag}&pageSize=${pageSize}';" class="btn btn-danger" />
+  				<input type="button" value="돌아가기" onclick="location.href='boardContent?idx=${vo.idx}&pag=${pag}&pageSize=${pageSize}';" class="btn btn-danger" />
   			</td>
   		</tr>
   	</table>

@@ -44,4 +44,5 @@ public class UserServiceImpl implements UserService {  // 인터페이스 구현
 	public int setUserUpdateOk(UserVO vo) {
 		return userDAO.setUserUpdateOk(vo);
 	}
+	
 }

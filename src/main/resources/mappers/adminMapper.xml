@@ -3,26 +3,26 @@
 <mapper namespace="com.spring.javaclassS.dao.AdminDAO">
 	
 	<select id="getMemberTotRecCnt" resultType="int">
-	  <if test="level == 99">select count(*) from member2;</if>
-	  <if test="level == 999">select count(*) from member2 where userDel='OK';</if>
-	  <if test="level != 99 and level != 999">select count(*) from member2 where level = #{level};</if>
+	  <if test="level == 99">select count(*) from member3;</if>
+	  <if test="level == 999">select count(*) from member3 where userDel='OK';</if>
+	  <if test="level != 99 and level != 999">select count(*) from member3 where level = #{level};</if>
 	</select>
 	
 	<select id="getMemberList" resultType="com.spring.javaclassS.vo.MemberVO">
-		<if test="level == 99">select *, timestampdiff(day, lastDate, now()) as deleteDiff from member2 order by mid limit #{startIndexNo},#{pageSize};</if>
-		<if test="level == 999">select *, timestampdiff(day, lastDate, now()) as deleteDiff from member2 where userDel='OK' order by mid limit #{startIndexNo},#{pageSize};</if>
-		<if test="level != 99 and level != 999">select *, timestampdiff(day, lastDate, now()) as deleteDiff from member2 where level = #{level} order by mid limit #{startIndexNo},#{pageSize};</if>
+		<if test="level == 99">select *, timestampdiff(day, lastDate, now()) as deleteDiff from member3 order by mid limit #{startIndexNo},#{pageSize};</if>
+		<if test="level == 999">select *, timestampdiff(day, lastDate, now()) as deleteDiff from member3 where userDel='OK' order by mid limit #{startIndexNo},#{pageSize};</if>
+		<if test="level != 99 and level != 999">select *, timestampdiff(day, lastDate, now()) as deleteDiff from member3 where level = #{level} order by mid limit #{startIndexNo},#{pageSize};</if>
 	</select>
 	
 	
 	
 	<update id="setMemberLevelCheck">
-		update member2 set level = #{level} where idx = #{idx};
+		update member3 set level = #{level} where idx = #{idx};
 	</update>
 	
 	
 	
 	<delete id="setMemberDeleteOk">
-	  delete from member2 where idx = #{idx};
+	  delete from member3 where idx = #{idx};
 	</delete>
 </mapper>

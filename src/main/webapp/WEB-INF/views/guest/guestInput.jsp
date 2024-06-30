@@ -39,7 +39,7 @@
     <div class="form-group text-center">
     	<button type="submit" class="btn btn-primary mr-3">방명록 등록</button>
     	<button type="reset" class="btn btn-warning mr-3">방명록 다시입력</button>
-    	<button type="button" onclick="location.href='${ctp}/GuestList';" class="btn btn-danger">돌아가기</button>
+    	<button type="button" onclick="location.href='guestList';" class="btn btn-danger">돌아가기</button>
     </div>
     <%-- <input type="hidden" name="hostIp" value="<%=request.getRemoteAddr()%>"/> --%>
     <input type="hidden" name="hostIp" value="${pageContext.request.remoteAddr}"/>

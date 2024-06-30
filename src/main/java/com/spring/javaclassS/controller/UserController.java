@@ -21,7 +21,7 @@ public class UserController {
 	
 	// user 리스트
 	@RequestMapping(value = "/userList", method = RequestMethod.GET)
-	public String getUserList(Model model) {
+	public String userListGet(Model model) {
 		
 		List<UserVO> vos = userService.getUserList();  // 인터페이스에 만들어짐
 		

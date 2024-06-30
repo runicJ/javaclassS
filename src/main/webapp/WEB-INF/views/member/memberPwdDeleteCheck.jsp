@@ -32,27 +32,27 @@
 <jsp:include page="/WEB-INF/views/include/slide2.jsp" />
 <p><br/></p>
 <div class="container">
-  <form name="myform" method="post" action="${ctp}/member/memberDelete">
-  	<table class="table table-bordered text-center">
-  		<tr>
-  			<td colspan="2">
-  				<h3>비밀번호 확인</h3>
-  				<div>(회원 탈퇴를 위해 현재 비밀번호를 확인합니다.)</div>
-  			</td>
-  		</tr>
-  		<tr>
-  			<th>비밀번호</th>
-  			<td><input type="password" name="pwd" id="pwd" class="form-control" autofocus required /></td>
-  		</tr>
-  		<tr>
-  			<td colspan="2" class="text-center">
-  				<input type="button" value="비밀번호확인" onclick="pwdDeleteCheck()" class="btn btn-success mr-2" />
-  				<input type="reset" value="다시입력" class="btn btn-info mr-2" />
-  				<input type="button" value="돌아가기" onclick="location.href='MemberMain.mem';" class="btn btn-warning" />
-  			</td>
-  		</tr>
-  	</table>
-  	<br/>
+  <form name="myform" method="post" action="MemberDeleteCheckOk.mem">
+    <table class="table table-bordered text-center">
+      <tr>
+        <td colspan="2">
+          <h3>비밀번호 확인</h3>
+          <div>(회원 탈퇴를 하기위해 현재 비밀번호를 확인합니다.)</div>
+        </td>
+      </tr>
+      <tr>
+        <th>비밀번호</th>
+        <td><input type="password" name="pwd" id="pwd" class="form-control" autofocus required /></td>
+      </tr>
+      <tr>
+        <td colspan="2" class="text-center">
+          <input type="button" value="비밀번호확인" onclick="pwdDeleteCheck()" class="btn btn-primary mr-2"/>
+          <input type="reset" value="다시입력" class="btn btn-info mr-2"/>
+          <input type="button" value="돌아가기" onclick="location.href='memberMain';" class="btn btn-warning"/>
+        </td>
+      </tr>
+    </table>
+    <br/>
   </form>
 </div>
 <p><br/></p>
