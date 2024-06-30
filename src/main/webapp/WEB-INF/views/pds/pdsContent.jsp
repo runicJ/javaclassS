@@ -66,46 +66,13 @@
     	});
     });
     
-    // 별점/리뷰평가 등록하기
-    function reviewCheck() {
-    	let star = starForm.star.value;
-    	let review = $("#review").val();
-    	
-    	if(star == "") {
-    		alert("별점을 부여해 주세요");
-    		return false;
-    	}
-    	
-    	let query = {
-    			part   : 'pds',
-    			partIdx: ${vo.idx},
-    			mid    : '${sMid}',
-    			nickName    : '${sNickName}',
-    			star   : star,
-    			content: review
-    	}
-    	
-    	$.ajax({
-    		url  : "${ctp}/review/reviewInputOk",
-    		type : "post",
-    		data : query,
-    		success:function(res) {
-    			alert(res);
-    			location.reload();
-    		},
-    		error : function() {
-    			alert("전송오류!");
-    		}
-    	});
-    }
-    
     // 리뷰 삭제하기
     function reviewDelete(idx) {
     	let ans = confirm("리뷰를 삭제하시겠습니까?");
     	if(!ans) return false;
     	
     	$.ajax({
-    		url  : "${ctp}/review/reviewDelete",
+    		url  : "${ctp}/pds/reviewDelete",
     		type : "post",
     		data : {idx : idx},
     		success:function(res) {
@@ -119,48 +86,86 @@
     			alert("전송오류!");
     		}
     	});
-    }
-    
-    // 리뷰 댓글 달기폼 보여주기
+    } 
+
     function reviewReply(idx, nickName, content) {
-    	$("#myModal #reviewIdx").val(idx);
-    	$("#myModal #reviewReplyNickName").text(nickName);
-    	$("#myModal #reviewReplyContent").html(content);
+        $("#myModal #reviewIdx").val(idx);
+        $("#myModal #reviewReplyNickName").text(nickName);
+        $("#myModal #reviewReplyContent").html(content);
+        $("#myModal #parentId").val(idx);
     }
-    
-    // 리뷰 댓글 달기
+
     function reviewReplyCheck() {
-    	let replyContent = reviewReplyForm.replyContent.value;
-    	let reviewIdx = reviewReplyForm.reviewIdx.value;
-    	
-    	if(replyContent.trim() == "") {
-    		alert("리뷰 댓글을 입력하세요");
-    		return false;
-    	}
-    	
-    	let query = {
-    			reviewIdx : reviewIdx,
-    			replyMid  : '${sMid}',
-    			replyNickName : '${sNickName}',
-    			replyContent  : replyContent
-    	}
-    	
-    	$.ajax({
-    		url  : "${ctp}/review/reviewReplyInputOk",
-    		type : "post",
-    		data : query,
-    		success:function(res) {
-    			if(res != "0") {
-    				alert("댓글이 등록되었습니다.");
-    				location.reload();
-    			}
-    			else alert("댓글 등록 실패~~");
-    		},
-    		error : function() {
-    			alert("전송 오류!");
-    		}
-    	});
+        let replyContent = reviewReplyForm.replyContent.value;
+        let parentId = reviewReplyForm.parentId.value;
+        
+        if (replyContent.trim() == "") {
+            alert("리뷰 댓글을 입력하세요");
+            return false;
+        }
+        
+        let query = {
+            pdsIdx : ${vo.idx},
+            mid    : '${sMid}',
+            nickName : '${sNickName}',
+            content: replyContent,
+            parentId: parentId,
+            hostIp: '${pageContext.request.remoteAddr}'
+        }
+                
+        $.ajax({
+            url  : "${ctp}/pds/pdsReplyInput",
+            type : "post",
+            data : JSON.stringify(query),
+            success:function(res) {
+                if (res != "0") {
+                    alert("댓글이 입력되었습니다.");
+                    location.reload();
+                } else {
+                    alert("댓글 입력 실패~~");
+                }
+            },
+            error : function() {
+                alert("전송오류!");
+            }
+        });
     }
+
+    function reviewCheck() {
+        let star = starForm.star.value;
+        let review = $("#review").val();
+        
+        if (star == "") {
+            alert("별점을 부여해 주세요");
+            return false;
+        }
+        
+        let query = {
+            pdsIdx : ${vo.idx},
+            mid    : '${sMid}',
+            nickName : '${sNickName}',
+            star   : star,
+            hostIp  : '${pageContext.request.remoteAddr}',
+            content: review
+        }
+        
+        $.ajax({
+            url  : "${ctp}/pds/pdsReplyInput",
+            type : "post",
+            data : query,
+            success:function(res) {
+                if(res != "0") {
+                    alert("댓글이 입력되었습니다.");
+                    location.reload();
+                }
+                else alert("이미 별점을 등록하였습니다.\n별점 등록은 게시글당 1번만 가능합니다.");
+            },
+            error : function() {
+                alert("전송오류!");
+            }
+        });
+    }
+
   </script>
   <style>
     th {
@@ -168,12 +173,12 @@
       width: 15%;
       text-align: center;
     }
-		h6 {
-		  position: fixed;
-		  right: 1rem;
-		  bottom: -50px;
-		  transition: 0.7s ease;
-		}
+	h6 {
+	  position: fixed;
+	  right: 1rem;
+	  bottom: -50px;
+	  transition: 0.7s ease;
+	}
    	.on {
 		  opacity: 0.8;
 		  cursor: pointer;
@@ -182,7 +187,9 @@
 		
     /* 별점 스타일 설정하기 */
     #starForm fieldset {
-      direction: rtl;
+	    display: inline-block;
+	    direction: rtl;
+	    border:0;
     }
     #starForm input[type=radio] {
       display: none;
@@ -203,7 +210,14 @@
     }
     
     #reviewReplyForm {
-      font-size: 11pt;
+	    width: 100%;
+	    height: auto;
+	    padding: 10px;
+	    box-sizing: border-box;
+	    border: solid 1.5px #D3D3D3;
+	    border-radius: 5px;
+	    font-size: 16px;
+	    resize: none;
     }
   </style>
 </head>
@@ -256,72 +270,66 @@
   </table>
   <hr/>
   <div>
-    <form name="starForm" id="starForm">
-      <fieldset style="border:0px;">
-        <div class="text-left viewPoint m-0 b-0">
-          <input type="radio" name="star" value="5" id="star1"><label for="star1">★</label>
-          <input type="radio" name="star" value="4" id="star2"><label for="star2">★</label>
-          <input type="radio" name="star" value="3" id="star3"><label for="star3">★</label>
-          <input type="radio" name="star" value="2" id="star4"><label for="star4">★</label>
-          <input type="radio" name="star" value="1" id="star5"><label for="star5">★</label>
-          : 별점을 선택해 주세요 ■
-        </div>
-      </fieldset>
-      <div class="m-0 p-0">
-        <textarea rows="3" name="review" id="review" class="form-control mb-1" placeholder="별점 후기를 남겨주시면 100포인트를 지급합니다."></textarea>
-      </div>
-      <div>
-        <input type="button" value="별점/리뷰등록" onclick="reviewCheck()" class="btn btn-primary btn-sm form-control"/>
-      </div>
-    </form>
+    <!-- 댓글 작성 폼 -->
+	<form name="starForm" id="starForm" method="post">
+	  <fieldset style="border:0px;">
+	    <div class="text-left viewPoint m-0 b-0">
+	      <input type="radio" name="star" value="5" id="star1"><label for="star1"><i class="fas fa-star"></i></label>
+	      <input type="radio" name="star" value="4" id="star2"><label for="star2"><i class="fas fa-star"></i></label>
+	      <input type="radio" name="star" value="3" id="star3"><label for="star3"><i class="fas fa-star"></i></label>
+	      <input type="radio" name="star" value="2" id="star4"><label for="star4"><i class="fas fa-star"></i></label>
+	      <input type="radio" name="star" value="1" id="star5"><label for="star5"><i class="fas fa-star"></i></label>
+	      <span class="mr-3" style="font-weight:bold;">[별점을 선택해주세요]</span>
+	    </div>
+	  </fieldset>
+	  <div class="m-0 p-0">
+	    <textarea rows="3" name="review" id="review" class="form-control mb-1" placeholder="별점 후기를 남겨주시면 100포인트를 지급합니다."></textarea>
+	  </div>
+	  <div>
+	    <input type="button" value="별점/리뷰등록" onclick="reviewCheck()" class="btn btn-primary btn-sm form-control mb-4"/>
+	  </div>
+	</form>
   </div>
-  <hr/>
-  <div class="row">
-    <div class="col">
-      <input type="button" value="리뷰보이기" id="reviewShowBtn" onclick="reviewShow()" class="btn btn-success"/>
-      <input type="button" value="리뷰가리기" id="reviewHideBtn" onclick="reviewHide()" class="btn btn-warning"/>
-    </div>
-    <div class="col text-right">
-      <b>리뷰평점 : <fmt:formatNumber value="${reviewAvg}" pattern="#,##0.0" /></b>
-    </div>
-  </div>
-  <hr/>
   <div id="reviewBox">
     <c:set var="imsiIdx" value="0"/>
-    <c:forEach var="vo" items="${rVos}" varStatus="st">
-      <c:if test="${imsiIdx != vo.idx}">
-	      <div class="row">
-	        <div class="col ml-2">
-	          <b>${vo.nickName}</b>
-	          <span style="font-size:11px">${fn:substring(vo.RDate, 0, 10)}</span>
-	          <c:if test="${vo.mid == sMid || sLevel == 0}"><a href="javascript:reviewDelete(${vo.idx})" title="리뷰삭제" class="badge badge-danger">x</a></c:if>
-	          <a href="#" onclick="reviewReply('${vo.idx}','${vo.nickName}','${fn:replace(vo.content,newLine,'<br>')}')" title="댓글달기" data-toggle="modal" data-target="#myModal" class="badge badge-secondary">▤</a>
-	        </div>
-	        <div class="col text-right mr-2">
-	        	<c:forEach var="i" begin="1" end="${vo.star}" varStatus="iSt">
-	        	  <font color="gold">★</font>
-	        	</c:forEach>
-	        	<c:forEach var="i" begin="1" end="${5 - vo.star}" varStatus="iSt">☆</c:forEach>
-	        </div>
-	      </div>
-	      <div class="row border m-1 p-2" style="border-radius:5px">
-	        ${fn:replace(vo.content, newLine, '<br/>')}
-	      </div>
-      </c:if>
-      <c:set var="imsiIdx" value="${vo.idx}"/>
-      <c:if test="${!empty vo.replyContent}">
-        <div class="d-flex text-secondary">
-          <div class="mt-2 ml-3">└─▶ </div>
-          <div class="mt-2 ml-2">${vo.replyNickName}
-            <span style="font-size:11px">${fn:substring(vo.replyRDate,0,10)}</span>
-            <c:if test="${vo.replyMid == sMid || sLevel == 0}"><a href="javascript:reviewReplyDelete(${vo.replyIdx})" title="댓글삭제" class="badge badge-danger">x</a></c:if>
-            <br/>${vo.replyContent}
-          </div>
-        </div>
-      </c:if>
+    <c:forEach var="rVo" items="${rVos}" varStatus="st">
+        <c:if test="${rVo.parentId == null}">
+            <div class="row">
+                <div class="col ml-2">
+                    <b>${rVo.nickName}</b>
+                    <span style="font-size:11px">${fn:substring(rVo.RDate, 0, 10)}</span>
+                    <c:if test="${rVo.mid == sMid || sLevel == 0}">
+                        <a href="javascript:reviewDelete(${rVo.idx})" title="리뷰삭제" class="badge badge-danger">x</a>
+                    </c:if>
+                    <a href="#" onclick="reviewReply('${rVo.idx}','${rVo.nickName}','${fn:replace(rVo.content,newLine,'<br>')}')" title="댓글달기" data-toggle="modal" data-target="#myModal" class="badge badge-secondary">▤</a>
+                </div>
+                <div class="col text-right mr-2">
+                    <c:forEach var="i" begin="1" end="${rVo.star}" varStatus="iSt">
+                        <font color="gold"><i class="fas fa-star"></i></font>
+                    </c:forEach>
+                    <c:forEach var="i" begin="1" end="${5 - rVo.star}" varStatus="iSt">☆</c:forEach>
+                </div>
+            </div>
+            <div class="row border m-1 p-2" style="border-radius:5px">
+                ${fn:replace(rVo.content, newLine, '<br/>')}
+            </div>
+            <c:forEach var="replyVo" items="${rVos}" varStatus="stReply">
+                <c:if test="${replyVo.parentId == rVo.idx}">
+                    <div class="d-flex text-secondary ml-4">
+                        <div class="mt-2 ml-3">└─▶ </div>
+                        <div class="mt-2 ml-2">${replyVo.nickName}
+                            <span style="font-size:11px">${fn:substring(replyVo.RDate,0,10)}</span>
+                            <c:if test="${replyVo.mid == sMid || sLevel == 0}">
+                                <a href="javascript:reviewReplyDelete(${replyVo.idx})" title="댓글삭제" class="badge badge-danger">x</a>
+                            </c:if>
+                            <br/>${fn:replace(replyVo.content, newLine, '<br/>')}
+                        </div>
+                    </div>
+                </c:if>
+            </c:forEach>
+        </c:if>
     </c:forEach>
-  </div>
-  
+</div>
   <!-- 자료실에 등록된 자료가 사진이라면, 아래쪽에 모두 보여주기 -->
   <div class="text-center">
 		<c:forEach var="fSName" items="${fSNames}" varStatus="st">
@@ -341,42 +349,43 @@
 </div>
 <p><br/></p>
 
-<!-- 댓글달기를 위한 모달처리 -->
-  <div class="modal fade" id="myModal">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <!-- Modal Header -->
-        <div class="modal-header">
-          <h4 class="modal-title">>> 리뷰에 댓글달기</h4>
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-        </div>
-        <!-- Modal body -->
-        <div class="modal-body">
-          <form name="reviewReplyForm" id="reviewReplyForm" class="was-vilidated">
-            <table class="table table-bordered">
-              <tr>
-                <th style="width:25%">원본글작성자</th>
-                <td style="width:75%"><span id="reviewReplyNickName"></span></td>
-              </tr>
-              <tr>
-                <th>원본글</th>
-                <td><span id="reviewReplyContent"></span></td>
-              </tr>
-            </table>
-            <hr/>
-            댓글 작성자 : ${sNickName}<br/>
-            댓글 내용 : <textarea rows="3" name="replyContent" id="replyContent" class="form-control" required></textarea><br/>
-            <input type="button" value="리뷰댓글등록" onclick="reviewReplyCheck()" class="btn btn-success form-control"/>
-            <input type="hidden" name="reviewIdx" id="reviewIdx"/>
-          </form>
-        </div>
-        <!-- Modal footer -->
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        </div>
+<!-- 대댓글 작성 폼 -->
+<div class="modal fade" id="myModal">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">>> 리뷰에 댓글달기</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <!-- Modal body -->
+      <div class="modal-body">
+        <form name="reviewReplyForm" id="reviewReplyForm" class="was-validated">
+          <table class="table table-bordered">
+            <tr>
+              <th style="width:25%">원본글작성자</th>
+              <td style="width:75%"><span id="reviewReplyNickName"></span></td>
+            </tr>
+            <tr>
+              <th>원본글</th>
+              <td><span id="reviewReplyContent"></span></td>
+            </tr>
+          </table>
+          	※ 댓글 작성자 : ${sNickName}<br><br>
+          	※ 댓글 내용<br> <textarea rows="3" name="replyContent" id="replyContent" class="form-control" required></textarea>
+          <hr/>
+          <input type="hidden" name="parentId" id="parentId" value="" />
+          <input type="hidden" name="reviewIdx" id="reviewIdx" value="" />
+          <input type="button" value="리뷰댓글등록" onclick="reviewReplyCheck()" class="btn btn-success form-control"/>
+        </form>
+      </div>
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
+</div>
 
 <jsp:include page="/WEB-INF/views/include/footer.jsp" />
 </body>

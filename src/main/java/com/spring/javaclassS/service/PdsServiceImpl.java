@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.spring.javaclassS.common.JavaclassProvide;
 import com.spring.javaclassS.dao.PdsDAO;
+import com.spring.javaclassS.vo.PdsReplyVO;
 import com.spring.javaclassS.vo.PdsVO;
 
 @Service  // component로 써도 ㄱㅊ
@@ -82,6 +83,30 @@ public class PdsServiceImpl implements PdsService {
 	@Override
 	public PdsVO getPdsContent(int idx) {
 		return pdsDAO.getPdsContent(idx);
+	}
+
+
+	@Override
+	public PdsReplyVO getPdsReplyCheck(int pdsIdx, String mid) {
+		return pdsDAO.getPdsReplyCheck(pdsIdx, mid);
+	}
+
+
+	@Override
+	public int setPdsReplyInput(PdsReplyVO replyVO) {
+		return pdsDAO.setPdsReplyInput(replyVO);
+	}
+
+
+	@Override
+	public List<PdsReplyVO> getPdsReplyList(int idx) {
+		return pdsDAO.getPdsReplyList(idx);
+	}
+
+
+	@Override
+	public int setPdsReplyDelete(int idx) {
+		return pdsDAO.setPdsReplyDelete(idx);
 	}
 	
 }

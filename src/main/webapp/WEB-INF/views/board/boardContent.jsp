@@ -146,7 +146,7 @@
     	}
     	let query = {
     			boardIdx 	: ${vo.idx},
-    			mid				: '${sMid}',
+    			mid		: '${sMid}',
     			nickName	: '${sNickName}',
     			hostIp    : '${pageContext.request.remoteAddr}',
     			content		: content

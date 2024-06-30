@@ -1,6 +1,5 @@
 package com.spring.javaclassS.controller;
 
-import java.io.IOException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -8,17 +7,19 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.spring.javaclassS.common.JavaclassProvide;
 import com.spring.javaclassS.pagination.PageProcess;
 import com.spring.javaclassS.service.PdsService;
+import com.spring.javaclassS.vo.BoardReply2VO;
 import com.spring.javaclassS.vo.PageVO;
+import com.spring.javaclassS.vo.PdsReplyVO;
 import com.spring.javaclassS.vo.PdsVO;
 
 @Controller
@@ -130,7 +131,54 @@ public class PdsController {
 		) {
 		PdsVO vo = pdsService.getPdsContent(idx);
 		model.addAttribute("vo", vo);
+		model.addAttribute("part", part);
+		model.addAttribute("pag", pag);
+		model.addAttribute("pageSize", pageSize);
+		
+		List<PdsReplyVO> rVos = pdsService.getPdsReplyList(idx);
+		
+		int reviewTot = 0;
+		for(PdsReplyVO r : rVos) {
+			reviewTot += r.getStar();
+		}
+		double starAvg = 0.0;
+		if(rVos.size() != 0) starAvg = (double) reviewTot / rVos.size();
+		
+		model.addAttribute("rVos", rVos);
+		model.addAttribute("starAvg", starAvg);
 		
 		return "pds/pdsContent";
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/pdsReplyInput", method = RequestMethod.POST)
+	public String PdsReplyInputPost(PdsReplyVO replyVO) {
+	    
+	    if (replyVO.getMid() == null) {
+	        System.out.println("Error: mid is null");
+	        return "0"; // 오류 메시지 반환
+	    }
+		
+	    int res = 0;
+	    // 별점 리뷰 작성인 경우
+	    if (replyVO.getParentId() == null) {
+	        PdsReplyVO existReply = pdsService.getPdsReplyCheck(replyVO.getPdsIdx(), replyVO.getMid());
+	        if (existReply == null) {
+	            res = pdsService.setPdsReplyInput(replyVO);
+	        }
+	    }
+	    // 대댓글 작성인 경우
+	    else { 
+	        res = pdsService.setPdsReplyInput(replyVO);
+	    }
+	    return res + "";
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/reviewDelete", method = RequestMethod.POST)
+	public String PdsReplyInputPost(int idx) {
+		int res = pdsService.setPdsReplyDelete(idx);
+		
+		return res + "";
 	}
 }

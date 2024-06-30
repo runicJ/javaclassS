@@ -22,3 +22,17 @@ create table pds2 (
 desc pds2;
 
 drop table pds2;
+
+create table pdsReply(
+  idx   int not null auto_increment,  /* 리뷰 고유번호 */
+  pdsIdx  int not null,							/* 해당 분야의 고유번호 */ 
+  mid  varchar(20) not null,			/* 리뷰 올린이 */
+  nickName varchar(20) not null,			/* 리뷰 올린이 닉네임 */
+  rDate		 datetime default now(),		/* 리뷰 등록일자 */
+  star     int not null default 0,		/* 별점 부여 점수 */
+  hostIp varchar(50) not null,
+  content	 text,										/* 리뷰 내용 */
+  parentId  int default null,
+  primary key(idx),
+  foreign key(mid) references member3(mid)
+);

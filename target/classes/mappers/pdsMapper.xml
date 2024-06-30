@@ -20,10 +20,21 @@
 		select * from pds2 where idx = #{idx};
 	</select>
 	
+	<select id="getPdsReplyCheck" resultType="com.spring.javaclassS.vo.PdsReplyVO">
+	  select * from pdsReply where pdsIdx = #{pdsIdx} and mid = #{mid};
+	</select>
+		
+	<select id="getPdsReplyList" resultType="com.spring.javaclassS.vo.PdsReplyVO">
+	  select * from pdsReply where pdsIdx = #{pdsIdx} order by parentId, idx;
+	</select>
 	
 	
 	<insert id="setPdsUpload">
-	  insert into pds2 values (default,#{vo.mid},#{vo.nickName},#{vo.fName},#{vo.fSName},#{vo.fSize},#{vo.title},#{vo.part},default,default,#{vo.openSw},#{vo.hostIp},#{vo.content});
+	  insert into pds2 values (default,#{vo.mid},#{vo.nickName},#{vo.fName},#{vo.fSName},#{vo.fSize},#{vo.title},#{vo.part},default,default,#{vo.openSw},#{vo.hostIp},#{vo.content}));
+	</insert>
+	
+	<insert id="setPdsReplyInput">
+	  insert into pdsReply values (default,#{replyVO.pdsIdx},#{replyVO.mid},#{replyVO.nickName},default,#{replyVO.star},#{replyVO.hostIp},#{replyVO.content},#{replyVO.parentId});
 	</insert>
 	
 	
@@ -34,6 +45,10 @@
 	
 	<delete id="setPdsDelete">
 	  delete from pds2 where idx = #{idx};
+	</delete>
+	
+	<delete id="setPdsReplyDelete">
+	  delete from pdsReply where idx = #{idx};
 	</delete>
 	
 </mapper>
