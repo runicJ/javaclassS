@@ -2,37 +2,37 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <c:set var="ctp" value="${pageContext.request.contextPath}"/>
   <!-- <script src="http://developers.kakao.com/sdk/js/kakao.js"></script> -->
-<!-- <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js" integrity="sha384-TiCUE00h649CAMonG018J2ujOgDKW/kVWlChEuu4jK2vxfAAD0eZxzCKakxg55G4" crossorigin="anonymous"></script> -->
+<script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js" integrity="sha384-TiCUE00h649CAMonG018J2ujOgDKW/kVWlChEuu4jK2vxfAAD0eZxzCKakxg55G4" crossorigin="anonymous"></script>
 <script>
 	'use strict';
 
-	function userDelCheck() {
-		  let ans = confirm("회원 탈퇴하시겠습니까?");
+ 	function userDelCheck() {
+	  let ans = confirm("회원 탈퇴하시겠습니까?");
+	  if(ans) {
+		  ans = confirm("탈퇴하시면 1개월간 같은 아이디로 다시 가입하실수 없습니다.\n그래도 탈퇴 하시겠습니까?");
 		  if(ans) {
-			  ans = confirm("탈퇴하시면 1개월간 같은 아이디로 다시 가입하실수 없습니다.\n그래도 탈퇴 하시겠습니까?");
-			  if(ans) {
-				  $.ajax({
-					  type : "post",
-					  url  : "${ctp}/member/userDel",
-					  success:function(res) {
-						  if(res == "1") {
-							  alert("회원에서 탈퇴 되셨습니다.");
-							  location.href = '${ctp}/member/memberLogin';
-						  }
-						  else {
-							  alert("회원 탈퇴신청 실패~~");
-						  }
-					  },
-					  error : function() {
-						  alert("전송오류!");
+			  $.ajax({
+				  type : "post",
+				  url  : "${ctp}/member/userDel",
+				  success:function(res) {
+					  if(res == "1") {
+						  alert("회원에서 탈퇴 되셨습니다.");
+						  location.href = '${ctp}/member/memberLogin';
 					  }
-				  });
-			  }
+					  else {
+						  alert("회원 탈퇴신청 실패~~");
+					  }
+				  },
+				  error : function() {
+					  alert("전송오류!");
+				  }
+			  });
 		  }
+	  }
 	}
 
 	// 카카오 로그아웃
-	window.Kakao.init("f8adb2181213318e34c8e8f99a4eb70c");
+ 	window.Kakao.init("f8adb2181213318e34c8e8f99a4eb70c");
 	  function kakaoLogout() {
 		  const accessToken = Kakao.Auth.getAccessToken();
 		  if(accessToken) {
@@ -41,24 +41,8 @@
 			  });
 		  }
 	  }
-	
-/*   window.Kakao.init('f8adb2181213318e34c8e8f99a4eb70c'); // 사용하려는 앱의 JavaScript 키 입력
-
-   function kakakaoLogout() {
-    Kakao.Auth.logout()
-      .then(function() {
-        alert('logout ok\naccess token -> ' + Kakao.Auth.getAccessToken());
-        deleteCookie();
-      })
-      .catch(function() {
-        alert('Not logged in');
-      });
-  }
-
-  // 아래는 데모를 위한 UI 코드입니다.
-  function deleteCookie() {
-    document.cookie = 'authorize-access-token=f8adb2181213318e34c8e8f99a4eb70c; Path=http://localhost:9090/javaclassS/member/memberLogout; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-  } */
+	  
+	 //window.Kakao.init('f8adb2181213318e34c8e8f99a4eb70c'); // 사용하려는 앱의 JavaScript 키 입력
 </script>
 	<div class="w3-top">
 	  <div class="w3-bar w3-black w3-card">
@@ -105,7 +89,7 @@
 	      <div class="w3-dropdown-content w3-bar-block w3-card-4">
 			    <a href="${ctp}/member/memberLogout" class="w3-bar-item w3-button w3-padding-large w3-hide-small">일반 Logout</a>
 			    <a href="javascript:kakaoLogout()" class="w3-bar-item w3-button w3-padding-large w3-hide-small">Kakao Logout</a>
-	    		<button class="api-btn" onclick="kakakaoLogout()">로그아웃</button>
+	    		<!-- <button class="api-btn" onclick="kakakaoLogout()">로그아웃</button> -->
 		    </div>
 	    </div>
 	    </c:if>
@@ -120,3 +104,20 @@
 	  <a href="${ctp}/pds/pdsList" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">Pds</a>
 	  <a href="#" class="w3-bar-item w3-button w3-padding-large" onclick="myFunction()">Study1</a>
 	</div>
+<!-- <script>
+	function kakaoLogout() {
+    Kakao.Auth.logout()
+      .then(function() {
+        alert('logout ok\naccess token -> ' + Kakao.Auth.getAccessToken());
+        deleteCookie();
+      })
+      .catch(function() {
+        alert('Not logged in');
+      });
+  }
+
+  // 아래는 데모를 위한 UI 코드입니다.
+  function deleteCookie() {
+    document.cookie = 'authorize-access-token=f8adb2181213318e34c8e8f99a4eb70c; Path=http://localhost:9090/javaclassS/member/memberLogout; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+  }
+</script> -->

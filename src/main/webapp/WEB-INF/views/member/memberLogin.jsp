@@ -24,15 +24,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>memberLogin.jsp</title>
   <%@ include file = "/WEB-INF/views/include/bs4.jsp" %>
+  <!-- <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js" integrity="sha384-TiCUE00h649CAMonG018J2ujOgDKW/kVWlChEuu4jK2vxfAAD0eZxzCKakxg55G4" crossorigin="anonymous"></script> -->
   <script src="http://developers.kakao.com/sdk/js/kakao.js"></script>
   <style>
-        #spinner {
-          position: absolute;
-          left: 50%;
-          top: 50%;
-          z-index: 1;
-        }
-    </style>
+      #spinner {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        z-index: 1;
+      }
+  </style>
   <script>
       'use strict';
       
@@ -113,7 +114,7 @@
     }
     
     // 카카오 로그인(자바스크립트 앱키 등록)
-    window.Kakao.init("f8adb2181213318e34c8e8f99a4eb70c");
+     window.Kakao.init("f8adb2181213318e34c8e8f99a4eb70c");
     
     function kakaoLogin() {
     	window.Kakao.Auth.login({
@@ -131,6 +132,8 @@
     		}
     	});
     }
+    
+    Kakao.init('f8adb2181213318e34c8e8f99a4eb70c');
   </script>
 </head>
 <body>
@@ -156,7 +159,11 @@
           <input type="submit" value="로그인" class="btn btn-success mr-2"/>
           <input type="reset" value="다시입력" class="btn btn-warning mr-2"/>
           <input type="button" value="회원가입" onclick="location.href='${ctp}/member/memberJoin';" class="btn btn-primary mr-2"/>
-          <a href="javascript:kakaoLogin()"><img src="${ctp}/images/kakao_login_medium.png" style="width:75px;height:36px;"></a>
+          <%-- <a href="javascript:kakaoLogin()"><img src="${ctp}/images/kakao_login_medium.png" style="width:75px;height:36px;"></a> --%>
+          <a id="kakao-login-btn" href="javascript:loginWithKakao()">
+					  <img src="https://k.kakaocdn.net/14/dn/btroDszwNrM/I6efHub1SN5KCJqLm1Ovx1/o.jpg" width="222" alt="카카오 로그인 버튼" />
+					</a>
+					<p id="token-result"></p>
         </td>
       </tr>
     </table>
@@ -217,5 +224,37 @@
 </div>
 <p><br/></p>
 <jsp:include page="/WEB-INF/views/include/footer.jsp" />
+<!-- <script>
+  function loginWithKakao() {
+    Kakao.Auth.authorize({
+      redirectUri: 'http://localhost:9090/javaclassS/member/memberLogin',
+    });
+  }
+
+  // 아래는 데모를 위한 UI 코드입니다.
+  displayToken()
+  function displayToken() {
+    var token = getCookie('f8adb2181213318e34c8e8f99a4eb70c');
+
+    if(token) {
+      Kakao.Auth.setAccessToken(token);
+      Kakao.Auth.getStatusInfo()
+        .then(function(res) {
+          if (res.status === 'connected') {
+            document.getElementById('token-result').innerText
+              = 'login success, token:f8adb2181213318e34c8e8f99a4eb70c' + Kakao.Auth.getAccessToken();
+          }
+        })
+        .catch(function(err) {
+          Kakao.Auth.setAccessToken(null);
+        });
+    }
+  }
+
+  function getCookie(name) {
+    var parts = document.cookie.split(name + '=');
+    if (parts.length === 2) { return parts[1].split(';')[0]; }
+  }
+</script> -->
 </body>
 </html>
