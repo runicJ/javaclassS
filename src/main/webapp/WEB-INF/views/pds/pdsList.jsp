@@ -123,7 +123,8 @@
           <c:if test="${vo.mid == sMid || sLevel == 0}">
             <a href="javascript:pdsDeleteCheck('${vo.idx}','${vo.FSName}')" class="badge badge-danger">삭제</a><br/>
           </c:if>
-          <a href="PdsTotalDown.pds?idx=${vo.idx}" class="badge badge-primary">전체파일다운</a>
+          <a href="pdsTotalDown?idx=${vo.idx}" class="badge badge-primary">전체파일다운</a><br>
+          <a href="#" onclick="modalView()" data-toggle="modal" data-target="#myInfoModal" class="badge badge-warning">상세보기</a>
         </td>
       </tr>
       <c:set var="curScrStartNo" value="${curScrStartNo - 1}"/>

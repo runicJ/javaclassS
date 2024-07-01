@@ -30,7 +30,7 @@
 	
 	
 	<insert id="setPdsUpload">
-	  insert into pds2 values (default,#{vo.mid},#{vo.nickName},#{vo.fName},#{vo.fSName},#{vo.fSize},#{vo.title},#{vo.part},default,default,#{vo.openSw},#{vo.hostIp},#{vo.content}));
+	  insert into pds2 values (default,#{vo.mid},#{vo.nickName},#{vo.fName},#{vo.fSName},#{vo.fSize},#{vo.title},#{vo.part},default,default,#{vo.openSw},#{vo.hostIp},#{vo.content});
 	</insert>
 	
 	<insert id="setPdsReplyInput">

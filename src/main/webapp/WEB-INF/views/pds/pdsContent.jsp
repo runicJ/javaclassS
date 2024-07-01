@@ -116,7 +116,8 @@
         $.ajax({
             url  : "${ctp}/pds/pdsReplyInput",
             type : "post",
-            data : JSON.stringify(query),
+            //data : JSON.stringify(query),
+            data : query,
             success:function(res) {
                 if (res != "0") {
                     alert("댓글이 입력되었습니다.");

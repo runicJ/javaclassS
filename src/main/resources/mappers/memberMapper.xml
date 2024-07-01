@@ -23,13 +23,22 @@
 		select * from member3 <if test="level != 0"> where userInfor = '공개'</if> order by nickName;
 	</select>
 	
-    <select id="getMemberNameCheck" resultType="com.spring.javaclassS.vo.MemberVO">
-        select * from member3 where name = #{name};
-    </select>
+   <select id="getMemberNameCheck" resultType="com.spring.javaclassS.vo.MemberVO">
+     select * from member3 where name = #{name};
+   </select>
+   
+   <select id="getMemberNickNameEmailCheck" resultType="com.spring.javaclassS.vo.MemberVO">
+   		<!-- limit 1 안써도 됨(정상적인 경우) -->
+			select * from member3 where nickName = #{nickName} and email = #{email} limit 1;
+   </select>
 	
 	
 	<insert id="setMemberJoinOk">
 	  insert into member3 values (default,#{vo.mid},#{vo.pwd},#{vo.nickName},#{vo.name},#{vo.gender},#{vo.birthday},#{vo.tel},#{vo.address},#{vo.email},#{vo.homePage},#{vo.job},#{vo.hobby},#{vo.photo},#{vo.content},#{vo.userInfor},default,default,default,default,default,default,default);
+	</insert>
+	
+	<insert id="setKakaoMemberInput">
+	  insert into member3 (mid, pwd, nickName, name, email, level) values (#{mid},#{pwd},#{nickName},#{nickName},#{email},2);
 	</insert>
 	
 	

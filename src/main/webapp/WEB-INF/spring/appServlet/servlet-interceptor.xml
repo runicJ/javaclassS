@@ -23,6 +23,8 @@
 	    <exclude-mapping path="/member/memberIdCheck"/>
 	    <exclude-mapping path="/member/memberNickCheck"/>
 	    <exclude-mapping path="/member/memberLogout"/>
+	    <exclude-mapping path="/member/kakaoLogin"/>
+	    <exclude-mapping path="/member/kakaoLogout"/>
 	    <beans:ref bean="level3Interceptor" />
 		</interceptor>
 	  <!-- 정회원(준회원은 게시판 목록만 읽기가능, 기타 'board/study/pds/dbShop'의 기능은 정회원 이상만 가능) -->
