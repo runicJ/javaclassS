@@ -314,32 +314,32 @@ public class MemberController {
 		else return "0";
 	}
 	
-//	@ResponseBody
-//	@RequestMapping(value = "/memberNewPassword", method = RequestMethod.POST)
-//	public String memberNewPasswordPost(String mid, String email, HttpSession session) throws MessagingException {
-//		MemberVO vo = memberService.getMemberIdCheck(mid);
-//		if(vo != null && vo.getEmail().equals(email)) {
-//			// 정보 확인 후 정보가 맞으면 임시 비밀번호를 발급 받아서 메일로 전송 처리한다.
-//			UUID uid = UUID.randomUUID();  // 다른방법 6월 23일에 (월요일)
-//			String pwd = uid.toString().substring(0,8);
-//			
-//			// 새로 발급받은 비밀번호를 암호화 한후, DB에 저장한다.
-//			memberService.setMemberPasswordUpdate(mid, passwordEncoder.encode(pwd));
-//			
-//			// 발급받은 비밀번호를 메일로 전송처리한다.
-//			String title = "임시 비밀번호를 발급하셨습니다.";
-//			String mailFlag = "임시 비밀번호 : " + pwd;
-//			String res = mailSend(email, title, mailFlag);
-//			
-//			// 새 비밀번호를 발급하였을 시에 sLogin이란 세션을 발생시키고, 2분 안에 새 비밀번호로 로그인 후 비밀번호를 변경 처리할 수 있도록 한다(sLogin값이 없을 경우에 (처음과 끝 차이?
-//			// (!숙제!)
-//			
-//			session.setAttribute("sLogin", "OK");  // 새비밀번호 왔을때만 세션이 생성 -> 다 끝나고 세션 지워버림
-//			
-//			if(res == "1") return "1";
-//		}
-//		return "0";
-//	}
+	@ResponseBody
+	@RequestMapping(value = "/memberNewPassword", method = RequestMethod.POST)
+	public String memberNewPasswordPost(String mid, String email, HttpSession session) throws MessagingException {
+		MemberVO vo = memberService.getMemberIdCheck(mid);
+		if(vo != null && vo.getEmail().equals(email)) {
+			// 정보 확인 후 정보가 맞으면 임시 비밀번호를 발급 받아서 메일로 전송 처리한다.
+			UUID uid = UUID.randomUUID();  // 다른방법 6월 23일에 (월요일)
+			String pwd = uid.toString().substring(0,8);
+			
+			// 새로 발급받은 비밀번호를 암호화 한후, DB에 저장한다.
+			memberService.setMemberPasswordUpdate(mid, passwordEncoder.encode(pwd));
+			
+			// 발급받은 비밀번호를 메일로 전송처리한다.
+			String title = "임시 비밀번호를 발급하셨습니다.";
+			String mailFlag = "임시 비밀번호 : " + pwd;
+			String res = mailSend(email, title, mailFlag);
+			
+			// 새 비밀번호를 발급하였을 시에 sLogin이란 세션을 발생시키고, 2분 안에 새 비밀번호로 로그인 후 비밀번호를 변경 처리할 수 있도록 한다(sLogin값이 없을 경우에 (처음과 끝 차이?
+			// (!숙제!)
+			
+			session.setAttribute("sLogin", "OK");  // 새비밀번호 왔을때만 세션이 생성 -> 다 끝나고 세션 지워버림
+			
+			if(res == "1") return "1";
+		}
+		return "0";
+	}
 
 	// 메일 전송하기(아이디찾기, 비밀번호 찾기)
 	private String mailSend(String toMail, String title, String mailFlag) throws MessagingException {
@@ -378,47 +378,47 @@ public class MemberController {
 	}
 	
     // 임시 비밀번호 발급
-    @ResponseBody
-    @RequestMapping(value = "/memberNewPassword", method = RequestMethod.POST)
-    public String memberNewPasswordPost(String mid, String email) throws MessagingException {
-        MemberVO vo = memberService.getMemberIdCheck(mid);
-        if(vo != null && vo.getEmail().equals(email)) {
-            // 정보 확인 후 정보가 맞으면 임시 비밀번호를 발급받아서 메일로 전송처리한다.
-            UUID uid = UUID.randomUUID();
-            String pwd = uid.toString().substring(0,8);
-            
-            // 새로 발급받은 비밀번호를 암호화 한 후, DB에 저장한다.
-            memberService.setMemberPasswordUpdate(mid, passwordEncoder.encode(pwd));
-            
-            // 발급받은 비밀번호를 메일로 전송한다.
-            String title = mid +"님의 임시 비밀번호를 발급하였습니다.";
-            String imsiContent = "임시 비밀번호 : " + pwd;
-            String mailFlag = "pwdSearch";
-            String res = mailSend(email, title, imsiContent, mailFlag);
-            
-            if(res == "1")    return "1";
-        }
-        return "0";
-    }
+//    @ResponseBody
+//    @RequestMapping(value = "/memberNewPassword", method = RequestMethod.POST)
+//    public String memberNewPasswordPost(String mid, String email) throws MessagingException {
+//        MemberVO vo = memberService.getMemberIdCheck(mid);
+//        if(vo != null && vo.getEmail().equals(email)) {
+//            // 정보 확인 후 정보가 맞으면 임시 비밀번호를 발급받아서 메일로 전송처리한다.
+//            UUID uid = UUID.randomUUID();
+//            String pwd = uid.toString().substring(0,8);
+//            
+//            // 새로 발급받은 비밀번호를 암호화 한 후, DB에 저장한다.
+//            memberService.setMemberPasswordUpdate(mid, passwordEncoder.encode(pwd));
+//            
+//            // 발급받은 비밀번호를 메일로 전송한다.
+//            String title = mid +"님의 임시 비밀번호를 발급하였습니다.";
+//            String imsiContent = "임시 비밀번호 : " + pwd;
+//            String mailFlag = "pwdSearch";
+//            String res = mailSend(email, title, imsiContent, mailFlag);
+//            
+//            if(res == "1")    return "1";
+//        }
+//        return "0";
+//    }
 	
     // 아이디 찾기
-    @ResponseBody
-    @RequestMapping(value = "/memberMidSearch", method = RequestMethod.POST)
-    public String memberMidSearchPost(String name, String email) throws MessagingException {
-        MemberVO vo = memberService.getMemberNameCheck(name);
-        if(vo != null && vo.getEmail().equals(email)) {
-            // 정보 확인 후 정보가 맞으면 임시 비밀번호를 발급받아서 메일로 전송처리한다.
-            
-            // 발급받은 비밀번호를 메일로 전송한다.
-            String title = "아이디 찾기";
-            String imsiContent = "아이디 : "+vo.getMid();
-            String mailFlag = "midSearch";
-            String res = mailSend(email, title, imsiContent, mailFlag);
-            
-            if(res == "1")    return "1";
-        }
-        return "0";
-    }
+//    @ResponseBody
+//    @RequestMapping(value = "/memberMidSearch", method = RequestMethod.POST)
+//    public String memberMidSearchPost(String name, String email) throws MessagingException {
+//        MemberVO vo = memberService.getMemberNameCheck(name);
+//        if(vo != null && vo.getEmail().equals(email)) {
+//            // 정보 확인 후 정보가 맞으면 임시 비밀번호를 발급받아서 메일로 전송처리한다.
+//            
+//            // 발급받은 비밀번호를 메일로 전송한다.
+//            String title = "아이디 찾기";
+//            String imsiContent = "아이디 : "+vo.getMid();
+//            String mailFlag = "midSearch";
+//            String res = mailSend(email, title, imsiContent, mailFlag);
+//            
+//            if(res == "1")    return "1";
+//        }
+//        return "0";
+//    }
     
     // 메일 전송 메소드(아이디 찾기, 비밀번호 찾기)
 //    private String mailSend(String toMail, String title, String imsiContent, String mailFlag) throws MessagingException {
