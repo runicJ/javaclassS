@@ -243,28 +243,41 @@ public class MemberController {
 		return "member/memberMain";
 	}
 	
+	// 회원가입시 이메일로 인증번호 전송하기
+	@ResponseBody
+	@RequestMapping(value = "/memberEmailCheck", method = RequestMethod.POST)
+	public String memberEmailCheckPost(String email, HttpSession session) throws MessagingException {
+		UUID uid = UUID.randomUUID();
+		String emailKey = uid.toString().substring(0,8);
+		session.setAttribute("sEmailKey", emailKey);
+		
+		mailSend(email, "이메일 인증키입니다.", "인증키 : "+emailKey);
+		return "1";
+	}
+	
+	// 이메일 확인하기
+	@ResponseBody
+	@RequestMapping(value = "/memberEmailCheckOk", method = RequestMethod.POST)
+	public String memberEmailCheckOkPost(String checkKey, HttpSession session) throws MessagingException {
+		String sCheckKey = (String) session.getAttribute("sEmailKey");
+		if(checkKey.equals(sCheckKey)) return "1";
+		else return "0";
+	}
+	
 	@RequestMapping(value = "/memberJoin", method = RequestMethod.GET)
 	public String memberJoinGet() {
 		return "member/memberJoin";
 	}
 	
 	@RequestMapping(value = "/memberJoin", method = RequestMethod.POST)
-	//public String memberJoinPost(MultipartFile fName, MemberVO vo) throws IOException {
+//	public String memberJoinPost(MultipartFile fName, MemberVO vo) throws IOException {
 	public String memberJoinPost(MemberVO vo, MultipartFile fName) {
 		// 아이디/닉네임 중복체크
 		if(memberService.getMemberIdCheck(vo.getMid()) != null) return "redirect:/message/idCheckNo";
 		if(memberService.getMemberNickCheck(vo.getNickName()) != null) return "redirect:/message/nickCheckNo";
-			
+		
 		// 비밀번호 암호화
 		vo.setPwd(passwordEncoder.encode(vo.getPwd()));
-		
-//		if(fName == null || fName.toString().equals("")) {
-//			UUID uid = UUID.randomUUID();
-//			String oFileName = fName.getOriginalFilename();
-//			String sFileName = vo.getMid() + "_" + uid.toString().substring(0,8) + "_" + oFileName;
-//			vo.setPhoto(sFileName);	
-//		}
-//		else vo.setPhoto("noImage.jpg");
 		
 		// 회원 사진 처리(service객체에서 처리후 DB에 저장한다.)
 		if(!fName.getOriginalFilename().equals("")) vo.setPhoto(memberService.fileUpload(fName, vo.getMid(), ""));
@@ -275,6 +288,15 @@ public class MemberController {
 		if(res != 0) return "redirect:/message/memberJoinOk";
 		else return "redirect:/message/memberJoinNo";
 	}
+	
+	
+//		if(fName == null || fName.toString().equals("")) {
+//			UUID uid = UUID.randomUUID();
+//			String oFileName = fName.getOriginalFilename();
+//			String sFileName = vo.getMid() + "_" + uid.toString().substring(0,8) + "_" + oFileName;
+//			vo.setPhoto(sFileName);	
+//		}
+//		else vo.setPhoto("noImage.jpg");
 	
 	@ResponseBody
 	@RequestMapping(value = "/memberIdCheck", method = RequestMethod.GET)
@@ -319,41 +341,41 @@ public class MemberController {
 //		return "0";
 //	}
 
-//	// 메일 전송하기(아이디찾기, 비밀번호 찾기)
-//	private String mailSend(String toMail, String title, String mailFlag) throws MessagingException {
-//		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();  // 그냥 못씀 강제 형변환 해서 request 써야함
-//		String content = "";
-//			
-//  		// 메일 전송을 위한 객체 : MimeMessage(), MimeMessageHelper()  // 보내고, 뒤에 중간중간 작업한걸 저장하는 저장소
-//		MimeMessage message = mailSender.createMimeMessage();
-//		MimeMessageHelper messageHelper = new MimeMessageHelper(message, true, "UTF-8");  // 인코딩해서 항상 저장
-//  		
-//  		// 메일보관함에 작성한 메시지들의 정보를 모두 저장시킨 후 작업처리...(3개 필요한 것 밑에서 하나로 처리함(공부하라고 써놓음)
-//  		messageHelper.setTo(toMail);  // 받는 사람 메일 주소 // 앞에서 받은 메일 주소로 보낼거야
-//  		messageHelper.setSubject(title);  // 메일 제목  // 다 setter에 넣는 것
-//  		messageHelper.setText(content);
-//  		
-//  		// 메시지 보관함의 내용(content)에, 발신자의 필요한 정보를 추가로 담아서 전송처리한다.
-//		content = content.replace("\n", "<br>");  // 우리는 textarea에 내용을 담지만 보내면 웹에서 text로 봄(한줄로 출력되기에 줄바꿈 처리 위해서 첫줄 '=' 사용)
-//		content += "<br><hr><h3>"+mailFlag+"</h3><hr><br>";
-//		content += "<p><img src=\"cid:main.jpg\" width='500px'></p>";
-//		content += "<p>방문하기 : <a href='http://49.142.157.251:9090/cjgreen'>javaclass</a></p>";
-//		content += "<hr>";
-//		messageHelper.setText(content, true);  // 기존 것 무시하고 깨끗하게 갈아치워줘(위에거 3개 안써도됨)
-//  		
-//  		//FileSystemResource file = new FileSystemResource("D:\\javaclass\\springframework\\works\\javaclassS\\src\\main\\webapp\\resources\\images\\main.jpg");
-//  		
-//  		//request.getSession().getServletContext().getRealPath("/resources/images/main.jpg");
-//  		
-//  		// 본문에 기재될 그림파일의 경로를 별도로 표시시켜준다. 그런후 다시 보관함에 저장한다.
-//		FileSystemResource file = new FileSystemResource(request.getSession().getServletContext().getRealPath("/resources/images/main.jpg"));
-//		messageHelper.addInline("main.jpg", file);
-//  		
-//  		// 메일 전송하기
-//		mailSender.send(message);
-//		
-//		return "1";
-//	}
+	// 메일 전송하기(아이디찾기, 비밀번호 찾기)
+	private String mailSend(String toMail, String title, String mailFlag) throws MessagingException {
+		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();  // 그냥 못씀 강제 형변환 해서 request 써야함
+		String content = "";
+			
+  		// 메일 전송을 위한 객체 : MimeMessage(), MimeMessageHelper()  // 보내고, 뒤에 중간중간 작업한걸 저장하는 저장소
+		MimeMessage message = mailSender.createMimeMessage();
+		MimeMessageHelper messageHelper = new MimeMessageHelper(message, true, "UTF-8");  // 인코딩해서 항상 저장
+  		
+  		// 메일보관함에 작성한 메시지들의 정보를 모두 저장시킨 후 작업처리...(3개 필요한 것 밑에서 하나로 처리함(공부하라고 써놓음)
+  		messageHelper.setTo(toMail);  // 받는 사람 메일 주소 // 앞에서 받은 메일 주소로 보낼거야
+  		messageHelper.setSubject(title);  // 메일 제목  // 다 setter에 넣는 것
+  		messageHelper.setText(content);
+  		
+  		// 메시지 보관함의 내용(content)에, 발신자의 필요한 정보를 추가로 담아서 전송처리한다.
+		content = content.replace("\n", "<br>");  // 우리는 textarea에 내용을 담지만 보내면 웹에서 text로 봄(한줄로 출력되기에 줄바꿈 처리 위해서 첫줄 '=' 사용)
+		content += "<br><hr><h3>"+mailFlag+"</h3><hr><br>";
+		content += "<p><img src=\"cid:main.jpg\" width='500px'></p>";
+		content += "<p>방문하기 : <a href='http://49.142.157.251:9090/cjgreen'>javaclass</a></p>";
+		content += "<hr>";
+		messageHelper.setText(content, true);  // 기존 것 무시하고 깨끗하게 갈아치워줘(위에거 3개 안써도됨)
+  		
+  		//FileSystemResource file = new FileSystemResource("D:\\javaclass\\springframework\\works\\javaclassS\\src\\main\\webapp\\resources\\images\\main.jpg");
+  		
+  		//request.getSession().getServletContext().getRealPath("/resources/images/main.jpg");
+  		
+  		// 본문에 기재될 그림파일의 경로를 별도로 표시시켜준다. 그런후 다시 보관함에 저장한다.
+		FileSystemResource file = new FileSystemResource(request.getSession().getServletContext().getRealPath("/resources/images/main.jpg"));
+		messageHelper.addInline("main.jpg", file);
+  		
+  		// 메일 전송하기
+		mailSender.send(message);
+		
+		return "1";
+	}
 	
     // 임시 비밀번호 발급
     @ResponseBody
@@ -399,43 +421,43 @@ public class MemberController {
     }
     
     // 메일 전송 메소드(아이디 찾기, 비밀번호 찾기)
-    private String mailSend(String toMail, String title, String imsiContent, String mailFlag) throws MessagingException {
-        HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.currentRequestAttributes()).getRequest();
-        String content = "";
-        
-        // 메일 전송을 위한 객체 :MimeMessage(), MimeMessageHelper()
-        MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper messageHelper = new MimeMessageHelper(message, true, "UTF-8");
-        
-        // 메일 보관함에 작성한 메세지들의 정보를 모두 저장시킨 후 작업처리
-        messageHelper.setTo(toMail); // 받는 사람 메일 주소
-        messageHelper.setSubject(title); // 메일 제목
-        messageHelper.setText(content);    // 메일 내용
-       
-        // 메세지 보관함의 내용(content)에, 발신자의 필요한 정보를 추가로 담아서 전송처리한다.
-        if(mailFlag.equals("pwdSearch")) {
-            content += "<br><hr><h3>임시 비밀번호 발급</h3><hr><br>";
-            content += imsiContent+"<br>";
-        }
-        else if(mailFlag.equals("midSearch")) {
-            content += "<br><hr><h3>아이디 찾기</h3><hr><br>";
-            content += imsiContent+"<br>";
-        }
-        content += "<p><img src='cid:main.jpg' width='500px'></p>"; // cid: 예약어, 보내고 싶은 그림 이름을 적어준다
-        content += "<p>방문하기 : <a href='http://49.142.157.251:9090/javaclassJ9/Main.do'>javaclass</a></p>";
-        content += "<hr>";
-        content = content.replace("\n", "<br>"); // 엔터키를 <br>태그로 바꾼 후 내용을 쌓는다 /는 html4에서 에러가 생길 수 있어서 생략
-        messageHelper.setText(content, true);    // 기존 내용을 무시하고 덮어쓴다
-        
-        // 본문에 그림 표시하기: cid개수대로 나와야 함
-        FileSystemResource file = new FileSystemResource(request.getSession().getServletContext().getRealPath("/resources/images/main.jpg"));
-        messageHelper.addInline("main.jpg", file);
-        
-        // 메일 전송하기
-        mailSender.send(message);
-        
-        return "1";
-    }
+//    private String mailSend(String toMail, String title, String imsiContent, String mailFlag) throws MessagingException {
+//        HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.currentRequestAttributes()).getRequest();
+//        String content = "";
+//        
+//        // 메일 전송을 위한 객체 :MimeMessage(), MimeMessageHelper()
+//        MimeMessage message = mailSender.createMimeMessage();
+//        MimeMessageHelper messageHelper = new MimeMessageHelper(message, true, "UTF-8");
+//        
+//        // 메일 보관함에 작성한 메세지들의 정보를 모두 저장시킨 후 작업처리
+//        messageHelper.setTo(toMail); // 받는 사람 메일 주소
+//        messageHelper.setSubject(title); // 메일 제목
+//        messageHelper.setText(content);    // 메일 내용
+//       
+//        // 메세지 보관함의 내용(content)에, 발신자의 필요한 정보를 추가로 담아서 전송처리한다.
+//        if(mailFlag.equals("pwdSearch")) {
+//            content += "<br><hr><h3>임시 비밀번호 발급</h3><hr><br>";
+//            content += imsiContent+"<br>";
+//        }
+//        else if(mailFlag.equals("midSearch")) {
+//            content += "<br><hr><h3>아이디 찾기</h3><hr><br>";
+//            content += imsiContent+"<br>";
+//        }
+//        content += "<p><img src='cid:main.jpg' width='500px'></p>"; // cid: 예약어, 보내고 싶은 그림 이름을 적어준다
+//        content += "<p>방문하기 : <a href='http://49.142.157.251:9090/javaclassJ9/Main.do'>javaclass</a></p>";
+//        content += "<hr>";
+//        content = content.replace("\n", "<br>"); // 엔터키를 <br>태그로 바꾼 후 내용을 쌓는다 /는 html4에서 에러가 생길 수 있어서 생략
+//        messageHelper.setText(content, true);    // 기존 내용을 무시하고 덮어쓴다
+//        
+//        // 본문에 그림 표시하기: cid개수대로 나와야 함
+//        FileSystemResource file = new FileSystemResource(request.getSession().getServletContext().getRealPath("/resources/images/main.jpg"));
+//        messageHelper.addInline("main.jpg", file);
+//        
+//        // 메일 전송하기
+//        mailSender.send(message);
+//        
+//        return "1";
+//    }
 
 	
 	@RequestMapping(value = "/memberPwdCheck/{pwdFlag}", method = RequestMethod.GET)
