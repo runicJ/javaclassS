@@ -1,13 +1,27 @@
 package com.spring.javaclassS.controller;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.io.FileUtils;
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+import org.openqa.selenium.By;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -20,10 +34,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.multipart.MultipartRequest;
 
 import com.spring.javaclassS.service.DbtestService;
 import com.spring.javaclassS.service.StudyService;
+import com.spring.javaclassS.vo.CrawlingVO;
 import com.spring.javaclassS.vo.CrimeVO;
 import com.spring.javaclassS.vo.MailVO;
 import com.spring.javaclassS.vo.UserVO;
@@ -373,4 +387,294 @@ public class StudyController {
 		if(res != 0) return "redirect:/message/multiFileUploadOk";
 		else return "redirect:/message/multiFileUploadNo";
 	}
+	
+	// 크롤링 연습(jsoup)
+	@RequestMapping(value = "/crawling/jsoup", method = RequestMethod.GET)
+	public String jsoupGet() {
+		return "study/crawling/jsoup";
+	}
+	
+	// 크롤링 연습(jsoup) 처리
+//	@ResponseBody
+//	@RequestMapping(value = "/crawling/jsoup", method = RequestMethod.POST, produces="application/text; charset=utf-8")
+//	public String jsoupPost(String url, String selector) throws IOException {
+//		Connection conn = Jsoup.connect(url);  // sql로 했었음
+//		
+//		Document document = conn.get();
+//		//System.out.println("document : " + document);
+//		
+//		Elements selects = document.select(selector);
+//		//System.out.println("selects : " + selects);
+//		//System.out.println("selects : " + selects.text());
+//		
+//		String str = "";
+//		int i = 0;
+//		for(Element select : selects) {
+//			i++;
+//			System.out.println(i + " : " + select);
+//			str += i + " : " + select + "<br>";
+//		}
+//		
+//		return str;
+//	}
+	
+	// 크롤링 연습(jsoup) 처리
+	@ResponseBody
+	@RequestMapping(value = "/crawling/jsoup", method = RequestMethod.POST)  // ajax로 하면 객체로 받아올 수 있음, 한글처리 필요x
+	public ArrayList<String> jsoupPost(String url, String selector) throws IOException {
+		Connection conn = Jsoup.connect(url);  // sql로 했었음
+		
+		Document document = conn.get();
+		//System.out.println("document : " + document);
+		
+		Elements selects = document.select(selector);
+		System.out.println("selects : " + selects);
+		//System.out.println("selects : " + selects.text());
+		
+		ArrayList<String> vos = new ArrayList<String>();  // 값이 여러개면 vo(제작사, 타이틀, 내용 등)
+		int i = 0;
+		for(Element select : selects) {
+			i++;
+			System.out.println(i + " : " + select);
+			vos.add(i + " : " + select.toString().replace("data-onshow-",""));
+			//vos.add(i + " : " + select.html().replace("data-onshow-",""));
+		}
+		
+		return vos;
+	}
+	
+	// 크롤링 연습(jsoup) 처리
+	@ResponseBody
+	@RequestMapping(value = "/crawling/jsoup2", method = RequestMethod.POST)  // ajax로 하면 객체로 받아올 수 있음, 한글처리 필요x
+	public ArrayList<CrawlingVO> jsoup2Post() throws IOException {
+		Connection conn = Jsoup.connect("https://news.naver.com/");
+		
+		Document document = conn.get();
+		
+		Elements selects = null;
+
+		ArrayList<String> titleVos = new ArrayList<String>();
+		selects = document.select("div.cjs_t");
+		for(Element select : selects) {
+			titleVos.add(select.html());
+		}
+		
+		ArrayList<String> imageVos = new ArrayList<String>();
+		selects = document.select("div.cjs_news_mw");
+		for(Element select : selects) {
+			imageVos.add(select.html().replace("data-onshow-",""));
+		}
+		
+		ArrayList<String> broadcastVos = new ArrayList<String>();
+		selects = document.select("h4.channel");
+		for(Element select : selects) {
+			broadcastVos.add(select.html());
+		}
+		
+		ArrayList<CrawlingVO> vos = new ArrayList<CrawlingVO>();
+		CrawlingVO vo = null;
+		for(int i=0; i<titleVos.size(); i++) {
+			vo = new CrawlingVO();
+			vo.setItem1(titleVos.get(i));
+			vo.setItem2(imageVos.get(i));
+			vo.setItem3(broadcastVos.get(i));
+			vos.add(vo);
+		}
+		
+		return vos;  // 이렇게 안쓰면 HashMap으로 쓰면 됨.
+	}
+	
+	// 크롤링 연습(jsoup) 처리
+	@ResponseBody
+	@RequestMapping(value = "/crawling/jsoup3", method = RequestMethod.POST)
+	public ArrayList<CrawlingVO> jsoup3Post() throws IOException {
+		Connection conn = Jsoup.connect("https://entertain.daum.net/");
+		
+		Document document = conn.get();
+		
+		Elements selects = null;
+		
+		ArrayList<String> titleVos = new ArrayList<String>();
+		selects = document.select("ul.list_news a.link_txt");
+		for(Element select : selects) {
+			titleVos.add(select.html());
+		}
+		
+		ArrayList<String> imageVos = new ArrayList<String>();
+		selects = document.select("ul.list_news a.link_thumb");
+		for(Element select : selects) {
+			imageVos.add(select.html().replace("data-onshow-",""));
+		}
+		
+		ArrayList<String> broadcastVos = new ArrayList<String>();
+		selects = document.select("ul.list_news span.info_thumb");
+		for(Element select : selects) {
+			broadcastVos.add(select.html());
+		}
+		
+		ArrayList<CrawlingVO> vos = new ArrayList<CrawlingVO>();
+		CrawlingVO vo = null;
+		for(int i=0; i<broadcastVos.size(); i++) {
+			vo = new CrawlingVO();
+			vo.setItem1(titleVos.get(i));
+			vo.setItem2(imageVos.get(i));
+			vo.setItem3(broadcastVos.get(i));
+			vos.add(vo);
+		}
+		
+		return vos;
+	}
+	
+	// 크롤링연습 처리4(jsoup) - 네이버 검색어를 이용한 검색처리
+	@ResponseBody
+	@RequestMapping(value = "/crawling/jsoup4", method = RequestMethod.POST)
+	public ArrayList<String> jsoup4Post(String search, String searchSelector) throws IOException {
+		Connection conn = Jsoup.connect(search);
+		
+		Document document = conn.get();
+		
+		// 하나만 넘긴다고 가정
+		Elements selects = document.select(searchSelector);
+		
+		ArrayList<String> vos = new ArrayList<String>();
+		
+		int i = 0;
+		for(Element select : selects) {
+			i++;
+			System.out.println(i + " : " + select.html());  // html 안 써도 됨
+			vos.add(i + " : " + select.html().replace("data-lazy", ""));
+		}
+		
+		return vos;
+	}
+	
+	// 셀레니움 연습(selenium)
+	@RequestMapping(value = "/crawling/selenium", method = RequestMethod.GET)
+	public String seleniumGet() {
+		return "study/crawling/selenium";
+	}
+	
+	// 크롤링연습 처리(selenium) - CGV 상영작 크롤링
+	@ResponseBody  // ajax는 넣어야함
+	@RequestMapping(value = "/crawling/selenium", method = RequestMethod.POST)
+	public List<HashMap<String, Object>> seleniumPost(HttpServletRequest request) {
+		List<HashMap<String, Object>> vos = new ArrayList<HashMap<String,Object>>();
+		
+		try {
+			String realPath = request.getSession().getServletContext().getRealPath("/resources/crawling/");
+			System.setProperty("webdriver.chrome.driver", realPath + "chromedriver.exe");
+			
+			WebDriver driver = new ChromeDriver();
+			driver.get("http://www.cgv.co.kr/movies/");
+			
+			// 현재 상영작만 보기
+			WebElement btnMore = driver.findElement(By.id("chk_nowshow"));
+			btnMore.click();
+			
+			// 더보기 버튼을 클릭한다.
+			btnMore = driver.findElement(By.className("link-more"));
+			btnMore.click();
+			
+			// 화면이 더 열리는 동안 시간을 지연시켜준다.
+			try { Thread.sleep(2000); } catch (Exception e) {}
+			
+			// 낱개의 vos객체(elements)를 HashMap에 등록후 List객체로 처리해서 프론트로 넘겨준다.
+			List<WebElement> elements = driver.findElements(By.cssSelector("div.sect-movie-chart ol li"));
+			for(WebElement  element : elements) {
+				HashMap<String, Object> map = new HashMap<String, Object>();
+				String image = "<img src='"+element.findElement(By.tagName("img")).getAttribute("src")+"' width='200px' />";  // 그림에 접근해서 src 속성을 가져옴
+				String link = element.findElement(By.tagName("a")).getAttribute("href");
+				String title = "<a href='"+link+"' target='_blank'>" +element.findElement(By.className("title")).getText() + "</a>";  // jsoup에서는 text()
+				String percent = element.findElement(By.className("percent")).getText();
+				map.put("image", image);
+				map.put("link", link);
+				map.put("title", title);
+				map.put("percent", percent);
+				vos.add(map);
+			}
+			driver.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		//System.out.println("vos : " + vos);
+		return vos;
+	}
+	
+	// 크롤링연습 처리(selenium) - SRT 열차 조회하기
+	@ResponseBody
+	@RequestMapping(value = "/crawling/train", method = RequestMethod.POST)
+	public List<HashMap<String, Object>> trainPost(HttpServletRequest request, String stationStart, String stationStop) {
+		List<HashMap<String, Object>> array = new ArrayList<HashMap<String,Object>>();
+		try {
+			String realPath = request.getSession().getServletContext().getRealPath("/resources/crawling/");
+			System.setProperty("webdriver.chrome.driver", realPath + "chromedriver.exe");
+			
+			WebDriver driver = new ChromeDriver();
+			driver.get("http://srtplay.com/train/schedule");  // f12 element 숨겨진 곳 마우스 오른쪽 Copy XPath
+			
+			WebElement btnMore = driver.findElement(By.xpath("//*[@id=\"station-start\"]/span"));  // 출발역 버튼 출력
+			btnMore.click();
+      try { Thread.sleep(2000);} catch (InterruptedException e) {}  // 2초간 쉬어(처음엔 쉬어주는 것이 좋음)
+      
+      btnMore = driver.findElement(By.xpath("//*[@id=\"station-pos-input\"]"));  // input창을 클릭함
+      btnMore.sendKeys(stationStart);  // 출발역 입력함
+      btnMore = driver.findElement(By.xpath("//*[@id=\"stationListArea\"]/li/label/div/div[2]"));
+      btnMore.click();
+      btnMore = driver.findElement(By.xpath("//*[@id=\"stationDiv\"]/div/div[3]/div/button"));
+      btnMore.click();
+      try { Thread.sleep(2000);} catch (InterruptedException e) {}
+      
+      btnMore = driver.findElement(By.xpath("//*[@id=\"station-arrive\"]/span"));
+      btnMore.click();
+      try { Thread.sleep(2000);} catch (InterruptedException e) {}  // 뜨는동아 2초전도 머물음
+      btnMore = driver.findElement(By.id("station-pos-input"));
+      
+      btnMore.sendKeys(stationStop);  // 입력창 클릭해서 출발역 입력
+      btnMore = driver.findElement(By.xpath("//*[@id=\"stationListArea\"]/li/label/div/div[2]"));
+      btnMore.click();
+      btnMore = driver.findElement(By.xpath("//*[@id=\"stationDiv\"]/div/div[3]/div/button"));
+      btnMore.click();
+      try { Thread.sleep(2000);} catch (InterruptedException e) {}  // 출발과 도착을 다 눌러서 2초간 쉼
+      
+      btnMore = driver.findElement(By.xpath("//*[@id=\"sr-train-schedule-btn\"]/div/button"));
+      btnMore.click();
+      try { Thread.sleep(2000);} catch (InterruptedException e) {}
+      
+      List<WebElement> timeElements = driver.findElements(By.cssSelector(".table-body ul.time-list li"));
+ 			
+      HashMap<String, Object> map = null;
+      
+			for(WebElement element : timeElements){
+				map = new HashMap<String, Object>();
+				String train=element.findElement(By.className("train")).getText();
+				String start=element.findElement(By.className("start")).getText();
+				String arrive=element.findElement(By.className("arrive")).getText();
+				String time=element.findElement(By.className("time")).getText();
+				String price=element.findElement(By.className("price")).getText();
+				map.put("train", train);
+				map.put("start", start);
+				map.put("arrive", arrive);
+				map.put("time", time);
+				map.put("price", price);
+				array.add(map);
+			}
+			
+	    // 요금조회하기 버튼을 클릭한다.(처리 안됨 - 스크린샷으로 대체)
+      btnMore = driver.findElement(By.xpath("//*[@id=\"scheduleDiv\"]/div[2]/div/ul/li[1]/div/div[5]/button"));
+      //System.out.println("요금 조회버튼클릭");
+      btnMore.click();
+      try { Thread.sleep(2000);} catch (InterruptedException e) {}
+      
+      // 지정경로에 브라우저 화면 스크린샷 저장처리
+  		realPath = request.getSession().getServletContext().getRealPath("/resources/data/ckeditor/");
+      File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+      FileUtils.copyFile(scrFile, new File(realPath + "screenshot.png"));
+			
+      driver.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return array;
+	}
+	
 }

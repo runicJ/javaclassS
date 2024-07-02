@@ -63,6 +63,8 @@
 		        <a href="${ctp}/password/password" class="w3-bar-item w3-button">암호화</a>
 		        <a href="${ctp}/study/mail/mailForm" class="w3-bar-item w3-button">메일연습</a>
 		        <a href="${ctp}/study/fileUpload/fileUpload" class="w3-bar-item w3-button">파일업로드연습</a>
+		        <a href="${ctp}/study/crawling/jsoup" class="w3-bar-item w3-button">크롤링(jsoup)</a>
+		        <a href="${ctp}/study/crawling/selenium" class="w3-bar-item w3-button">크롤링(selenium)</a>
 		      </div>
 		    </div>
 		    <div class="w3-dropdown-hover w3-hide-small">
