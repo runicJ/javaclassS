@@ -35,6 +35,8 @@ public interface StudyService {
 
 	public int multiFileUpload(MultipartHttpServletRequest mFile);
 
+	public Map<String, Integer> analyzer(String content);
+
 
 	//public HashMap<String, UserVO> getUserMidMap();
 

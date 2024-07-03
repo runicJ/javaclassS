@@ -76,6 +76,56 @@
 	    		}
 	    	});
 	    }
+	    
+	    // 네이버 게임 목록 지정페이지까지 크롤링
+	    function crawling3() {
+	    	$("#spinnerIcon3").show();
+	    	let page = $("#page").val();
+	    	let stationStop = $("#stationStop").val();
+	    	
+	    	$.ajax({
+					url   : "${ctp}/study/crawling/naverGameSearch",
+					type  : "post",
+					data  : {
+						page : page
+					},
+	    		success:function(vos) {
+	    			if(vos != "") {
+	    				let str = '';
+	    				str += '<table class="table table-bordered text-center"><tr class="table-dark text-dark"><th>번호</th><th>제목</th><th>장르</th><th>플랫폼</th><th>출시일</th><th>사진</th></tr>';
+	    				for(let i=0; i<vos.length; i++) {
+		    				str += '<tr>';
+		    				str += '<td>'+(i+1)+'</td>';
+		    				str += '<td>'+vos[i].item1+'</td>';
+		    				str += '<td>'+vos[i].item2+'</td>';
+		    				str += '<td>'+vos[i].item3+'</td>';
+		    				str += '<td>'+vos[i].item4+'</td>';
+		    				str += '<td>'+vos[i].item5+'</td>';
+		    				str += '</tr>';
+	    				}
+	    				str += '</tr></table>';
+	    				$("#demo").html(str);
+	    				
+		  				$("#spinnerIcon3").hide();
+	    			}
+	    			else $("#demo").html("검색한 자료가 없습니다.");
+	    		}
+	    	});
+	    }
+	    
+	    // 화살표클릭시 화면 상단으로 부드럽게 이동하기
+	    $(window).scroll(function(){
+	    	if($(this).scrollTop() > 100) {
+	    		$("#topBtn").addClass("on");
+	    	}
+	    	else {
+	    		$("#topBtn").removeClass("on");
+	    	}
+	    	
+	    	$("#topBtn").click(function(){
+	    		window.scrollTo({top:0, behavior: "smooth"});
+	    	});
+	    });
   </script>
 </head>
 <body>
@@ -87,16 +137,22 @@
 	<hr>
 	<div><a href="javascript:location.reload()" class="btn btn-danger form-control">다시검색</a></div>
 	<hr>
-	<form name="myform">
-		<div class="input-group mb-3">
-			<div class="input-group-text">CGV 상영관 무비차트</div>
-			<div class="input-group-append"><input type="button" value="크롤링1" onclick="crawling1()" class="btn btn-primary mr-5"></div>
-			<span id="spinnerIcon" style="display:none">
-				<span class="spinner-border">기다려라</span>
-			</span>
-		</div>
-	</form>
+  <h4>CGV 상영관 무비차트</h4>
+  <form name="myform">
+    <div class="input-group mb-3">
+	    <div class="input-group-text">CGV 상영관 무비챠트</div>
+	    <div class="input-group-append mr-5"><input type="button" value="크롤링1" onclick="crawling1()" class="btn btn-success"/></div>
+	    <div class="input-group-append">
+	      <span id="spinnerIcon" style="display:none">
+		      <span class="spinner-border"></span>
+		      &nbsp;&nbsp; 검색중입니다. &nbsp;&nbsp;
+		      <span class="spinner-border"></span>
+	      </span>
+	    </div>
+    </div>
+  </form>
 	<hr>
+<h4>SRT 승차권 조회</h4>
   <form name="trainform">
     <div class="input-group mb-3">
       <span class="input-group-text mr-2">출발역</span>
@@ -108,15 +164,34 @@
 	  <div class="input-group mb-3">
 	    <div class="input-group-prepend"><input type="button" value="새로고침" onclick="location.reload()" class="btn btn-info" /></div>
 	    <span class="input-group-text" style="width:50%">SRT 열차 시간표 조회</span>
-	    <div class="input-group-append mr-1"><input type="button" value="웹크롤링" onclick="crawlingCheck()" class="btn btn-success" /></div>
+	    <div class="input-group-append mr-1"><input type="button" value="웹크롤링2" onclick="crawlingCheck()" class="btn btn-success" /></div>
 	    <div class="input-group-append"><span id="spinnerIcon" style="display:none"><span class="spinner-border"></span>검색중입니다.<span class="spinner-border"></span></span></div>
 	  </div>
 	  <hr/>
   </form>
-	<hr>
+  <hr/>
+  <h4>네이버 게임 검색목록</h4>
+  <div>(https://search.naver.com/search.naver?where=nexearch&sm=top_hty&fbm=0&ie=utf8&query=게임)</div>
+  <form name="gameform">
+    <div class="input-group mb-3">
+	    <div class="input-group-text">마지막 페이지(1~마지막지정페이지)</div>
+	    <input type="number" name="page" id="page" value="2" class="form-control"/>
+	    <div class="input-group-append mr-5"><input type="button" value="크롤링3" onclick="crawling3()" class="btn btn-success"/></div>
+	    <div class="input-group-append">
+	      <span id="spinnerIcon3" style="display:none">
+		      <span class="spinner-border"></span>
+		      &nbsp;&nbsp; 검색중입니다. &nbsp;&nbsp;
+		      <span class="spinner-border"></span>
+	      </span>
+	    </div>
+    </div>
+  </form>
+  <hr/>
 	<div id="demo"></div>
 </div>
 <p><br><p>
   <jsp:include page="/WEB-INF/views/include/footer.jsp" />
+  <!-- 위로가기 버튼 -->
+<h6 id="topBtn" class="text-right mr-3"><img src="${ctp}/images/arrowTop.gif" title="위로이동"/></h6>
 </body>
 </html>

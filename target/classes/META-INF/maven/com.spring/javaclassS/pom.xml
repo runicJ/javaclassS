@@ -231,6 +231,14 @@
 		    <version>4.18.1</version>
 		</dependency>
 		
+		<!-- WordCloud를 위한 형태소 분석 라이브러리 -->
+		<!-- https://mvnrepository.com/artifact/com.kennycason/kumo-core -->
+		<dependency>
+		    <groupId>com.kennycason</groupId>
+		    <artifactId>kumo-core</artifactId>
+		    <version>1.13</version>
+		</dependency>
+		
 	</dependencies>
     <build>
         <plugins>

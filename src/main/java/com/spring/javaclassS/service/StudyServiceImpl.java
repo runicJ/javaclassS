@@ -3,7 +3,9 @@ package com.spring.javaclassS.service;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -360,6 +362,28 @@ public class StudyServiceImpl implements StudyService {
 		} catch (IOException e) {e.printStackTrace();}
 		return res;
 		
+	}
+
+	@Override
+	public Map<String, Integer> analyzer(String content) {
+		int wordFrequenciesToReturn = 10;  // 빈도수
+		int minWordLength = 2;  // 최소 글자수
+		
+		Map<String, Integer> frequencyMap = new HashMap<>();  // wrapper 타입으로 적어야 함(int 못옴)  // 구현객체로 써야함 hashMap  // 뒤에는 앞에 따라가므로 안써도 됨
+		
+		String[] words = content.split("\\s+");   // 공백을 정규식으로 넣어야함(" " 안됨)  // s 공백 + 최소 한개이상 s만 쓰면 문자로 보기에 \\ 붙임
+		
+		for(String word : words) {
+			if(word.length() >= minWordLength) {  // 이상이 되야 작업대상으로 봄
+				word = word.toLowerCase();  // 소문자로 통일
+				frequencyMap.put(word, frequencyMap.getOrDefault(word, 0) + 1);  // 형태소 분석  // object key, integer default  // 첫번째는 없으니까 0이고 같은게 들어오면 하나를 더해주세요  // 담은 것을 각각의 키에 담아줌  // word 키 , 뒤에 value
+			}
+		}
+		
+    return frequencyMap.entrySet().stream()
+        .sorted((e1, e2) -> e2.getValue().compareTo(e1.getValue()))
+        .limit(wordFrequenciesToReturn)
+        .collect(HashMap::new, (m, e) -> m.put(e.getKey(), e.getValue()), HashMap::putAll);
 	}
 
 }

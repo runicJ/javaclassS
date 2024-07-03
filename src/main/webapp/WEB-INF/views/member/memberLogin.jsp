@@ -133,7 +133,7 @@
     	});
     }
     
-    Kakao.init('f8adb2181213318e34c8e8f99a4eb70c');
+    //Kakao.init('f8adb2181213318e34c8e8f99a4eb70c');
   </script>
 </head>
 <body>
@@ -159,11 +159,11 @@
           <input type="submit" value="로그인" class="btn btn-success mr-2"/>
           <input type="reset" value="다시입력" class="btn btn-warning mr-2"/>
           <input type="button" value="회원가입" onclick="location.href='${ctp}/member/memberJoin';" class="btn btn-primary mr-2"/>
-          <%-- <a href="javascript:kakaoLogin()"><img src="${ctp}/images/kakao_login_medium.png" style="width:75px;height:36px;"></a> --%>
-          <a id="kakao-login-btn" href="javascript:loginWithKakao()">
+          <a href="javascript:kakaoLogin()"><img src="${ctp}/images/kakao_login_medium.png" style="width:75px;height:36px;"></a>
+          <!-- <a id="kakao-login-btn" href="javascript:loginWithKakao()">
 					  <img src="https://k.kakaocdn.net/14/dn/btroDszwNrM/I6efHub1SN5KCJqLm1Ovx1/o.jpg" width="222" alt="카카오 로그인 버튼" />
 					</a>
-					<p id="token-result"></p>
+					<p id="token-result"></p> -->
         </td>
       </tr>
     </table>
