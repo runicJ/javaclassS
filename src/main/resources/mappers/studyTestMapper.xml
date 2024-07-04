@@ -55,15 +55,31 @@
 					 avg(robbery) as avgRobbery,avg(murder) as avgMurder,avg(theft) as avgTheft,avg(violence) as avgViolence
 					 from crime where year = #{year} and police like concat(#{police},'%');
 	</select>
+
+	<select id="getKakaoAddressSearch" resultType="com.spring.javaclassS.vo.KakaoAddressVO">
+		select * from kakaoAddress where address = #{address};
+	</select>
+
+	<select id="getKakaoAddressList" resultType="com.spring.javaclassS.vo.KakaoAddressVO">
+		select * from kakaoAddress order by address;
+	</select>
 	
 	
 	<insert id="setSaveCrimeDate">
 		insert into crime values (default,#{vo.year},#{vo.police},#{vo.robbery},#{vo.theft},#{vo.murder},#{vo.violence});
 	</insert>
 	
+	<insert id="setKakaoAddressInput">
+		insert into kakaoAddress values (#{vo.address},#{vo.latitude},#{vo.longitude});
+	</insert>
+	
 	
 	<delete id="setDeleteCrimeDate">
 	  delete from crime where year = #{year};
+	</delete>
+	
+	<delete id="setKakaoAddressDelete">
+	  delete from kakaoAddress where address = #{address};
 	</delete>
 	
 </mapper>
