@@ -140,7 +140,7 @@ public class MemberController {
 		else return "redirect:/message/memberLoginNewOk?mid="+vo.getMid();
 	}
 	
-//일반 로그인 처리하기
+	//일반 로그인 처리하기
 	@RequestMapping(value = "/memberLogin", method = RequestMethod.POST)
 	public String memberLoginPost(HttpServletRequest request, HttpServletResponse response, HttpSession session,
 			@RequestParam(name="mid", defaultValue = "hkd1234", required = false) String mid,
