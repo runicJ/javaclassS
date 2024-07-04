@@ -51,25 +51,46 @@
 	    <!-- <a href="http://192.168.50.20:9090/javaclassS/" class="w3-bar-item w3-button w3-padding-large">HOME</a> -->
 	    <a href="${ctp}/guest/guestList" class="w3-bar-item w3-button w3-padding-large w3-hide-small">Guest</a>
 	    <c:if test="${!empty sLevel}">
-		    <a href="${ctp}/board/boardList" class="w3-bar-item w3-button w3-padding-large w3-hide-small">Board</a>
-		    <a href="${ctp}/pds/pdsList" class="w3-bar-item w3-button w3-padding-large w3-hide-small">Pds</a>
-		    <div class="w3-dropdown-hover w3-hide-small">
-		      <button class="w3-padding-large w3-button" title="More">Study1 <i class="fa fa-caret-down"></i></button>     
+	    <a href="${ctp}/board/boardList" class="w3-bar-item w3-button w3-padding-large w3-hide-small">Board</a>
+	    <a href="${ctp}/pds/pdsList" class="w3-bar-item w3-button w3-padding-large w3-hide-small">Pds</a>
+	    <div class="w3-dropdown-hover w3-hide-small">
+	      <button class="w3-padding-large w3-button" title="More">Study1 <i class="fa fa-caret-down"></i></button>     
+	      <div class="w3-dropdown-content w3-bar-block w3-card-4">
+	        <a href="${ctp}/user/userList" class="w3-bar-item w3-button">UserList</a>
+	        <a href="${ctp}/dbtest/dbtestList" class="w3-bar-item w3-button">DB Test</a>
+	        <a href="${ctp}/study/ajax/ajaxForm" class="w3-bar-item w3-button">Ajax Test</a>
+	        <a href="${ctp}/study/restapi/restapi" class="w3-bar-item w3-button">REST API</a>
+	        <a href="${ctp}/password/password" class="w3-bar-item w3-button">암호화</a>
+	        <a href="${ctp}/study/mail/mailForm" class="w3-bar-item w3-button">메일연습</a>
+	        <a href="${ctp}/study/fileUpload/fileUpload" class="w3-bar-item w3-button">파일업로드연습</a>
+	        <a href="${ctp}/study/crawling/jsoup" class="w3-bar-item w3-button">크롤링(jsoup)</a>
+	        <a href="${ctp}/study/crawling/selenium" class="w3-bar-item w3-button">크롤링(selenium)</a>
+	        <a href="${ctp}/study/crawling/train" class="w3-bar-item w3-button">크롤링(열차시간검색)</a>
+	        <a href="${ctp}/study/wordcloud/wordcloudForm" class="w3-bar-item w3-button">워드클라우드</a>
+	      </div>
+	    </div>
+				<div class="w3-dropdown-hover w3-hide-small">
+		      <button class="w3-padding-large w3-button" title="More">Study2 <i class="fa fa-caret-down"></i></button>     
 		      <div class="w3-dropdown-content w3-bar-block w3-card-4">
-		        <a href="${ctp}/user/userList" class="w3-bar-item w3-button">UserList</a>
-		        <a href="${ctp}/dbtest/dbtestList" class="w3-bar-item w3-button">DB Test</a>
-		        <a href="${ctp}/study/ajax/ajaxForm" class="w3-bar-item w3-button">Ajax Test</a>
-		        <a href="${ctp}/study/restapi/restapi" class="w3-bar-item w3-button">REST API</a>
-		        <a href="${ctp}/password/password" class="w3-bar-item w3-button">암호화</a>
-		        <a href="${ctp}/study/mail/mailForm" class="w3-bar-item w3-button">메일연습</a>
-		        <a href="${ctp}/study/fileUpload/fileUpload" class="w3-bar-item w3-button">파일업로드연습</a>
+		        <a href="${ctp}/study/random/randomForm" class="w3-bar-item w3-button">랜덤알파뉴메릭</a>
+		        <a href="${ctp}/study/kakao/kakaomap" class="w3-bar-item w3-button">카카오맵</a>
+		        <a href="${ctp}/study/chart/chart" class="w3-bar-item w3-button">차트연습1</a>
+		        <a href="${ctp}/study/chart2/chart" class="w3-bar-item w3-button">차트연습2</a>
+		        <a href="#" class="w3-bar-item w3-button">스케줄링(Quartz)</a>
+	        <a href="${ctp}/study/weather/weather" class="w3-bar-item w3-button">날씨정보</a>
+		        <a href="${ctp}/study/captcha/captcha" class="w3-bar-item w3-button">캡차연습</a>
+		        <a href="${ctp}/study/qrCode/qrCodeForm" class="w3-bar-item w3-button">QR Code연습</a>
+		        <a href="${ctp}/errorPage/errorMain" class="w3-bar-item w3-button">Error 연습</a>
+		        <a href="${ctp}/study/thumbnail/thumbnailForm" class="w3-bar-item w3-button">썸네일 연습</a>
+		        <a href="${ctp}/study/transaction/transaction" class="w3-bar-item w3-button">트랜잭션연습</a>
 		      </div>
-		    </div>
+	      </div>
 		    <div class="w3-dropdown-hover w3-hide-small">
 		      <button onclick="location.href='${ctp}/member/memberMain';" class="w3-padding-large w3-button" title="More">MyPage <i class="fa fa-caret-down"></i></button>     
 		      <div class="w3-dropdown-content w3-bar-block w3-card-4">
 		        <a href="${ctp}/" class="w3-bar-item w3-button">일정관리</a>
 		        <a href="${ctp}/" class="w3-bar-item w3-button">Photo Gallery</a>
+		        <a href="${ctp}/" class="w3-bar-item w3-button">DB 채팅</a>
 		        <a href="${ctp}/" class="w3-bar-item w3-button">웹소켓 채팅</a>
 		        <a href="${ctp}/member/memberList" class="w3-bar-item w3-button">회원리스트</a>
 		        <a href="${ctp}/member/memberPwdCheck/p" class="w3-bar-item w3-button">비밀번호변경</a>

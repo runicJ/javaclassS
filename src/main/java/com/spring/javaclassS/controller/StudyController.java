@@ -1,30 +1,73 @@
 package com.spring.javaclassS.controller;
 
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontFormatException;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+import org.openqa.selenium.By;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.multipart.MultipartRequest;
 
+import com.kennycason.kumo.CollisionMode;
+import com.kennycason.kumo.WordCloud;
+import com.kennycason.kumo.WordFrequency;
+import com.kennycason.kumo.bg.CircleBackground;
+import com.kennycason.kumo.font.KumoFont;
+import com.kennycason.kumo.font.scale.LinearFontScalar;
+import com.kennycason.kumo.nlp.FrequencyAnalyzer;
+import com.kennycason.kumo.nlp.tokenizer.WhiteSpaceWordTokenizer;
+import com.kennycason.kumo.palette.ColorPalette;
+import com.spring.javaclassS.common.ARIAUtil;
+import com.spring.javaclassS.common.SecurityUtil;
 import com.spring.javaclassS.service.DbtestService;
 import com.spring.javaclassS.service.StudyService;
+import com.spring.javaclassS.vo.CrawlingVO;
 import com.spring.javaclassS.vo.CrimeVO;
+import com.spring.javaclassS.vo.KakaoAddressVO;
 import com.spring.javaclassS.vo.MailVO;
 import com.spring.javaclassS.vo.UserVO;
 
@@ -40,6 +83,9 @@ public class StudyController {
 	
 	@Autowired
 	JavaMailSender mailSender;
+	
+	@Autowired
+	BCryptPasswordEncoder passwordEncoder;
 	
 	@RequestMapping(value = "/ajax/ajaxForm", method = RequestMethod.GET)
 	public String ajaxFormGet() {
@@ -372,5 +418,627 @@ public class StudyController {
 		
 		if(res != 0) return "redirect:/message/multiFileUploadOk";
 		else return "redirect:/message/multiFileUploadNo";
+	}
+	
+	// 크롤링 연습(jsoup)
+	@RequestMapping(value = "/crawling/jsoup", method = RequestMethod.GET)
+	public String jsoupGet() {
+		return "study/crawling/jsoup";
+	}
+	
+	// 크롤링 연습(jsoup) 처리
+//	@ResponseBody
+//	@RequestMapping(value = "/crawling/jsoup", method = RequestMethod.POST, produces="application/text; charset=utf-8")
+//	public String jsoupPost(String url, String selector) throws IOException {
+//		Connection conn = Jsoup.connect(url);  // sql로 했었음
+//		
+//		Document document = conn.get();
+//		//System.out.println("document : " + document);
+//		
+//		Elements selects = document.select(selector);
+//		//System.out.println("selects : " + selects);
+//		//System.out.println("selects : " + selects.text());
+//		
+//		String str = "";
+//		int i = 0;
+//		for(Element select : selects) {
+//			i++;
+//			System.out.println(i + " : " + select);
+//			str += i + " : " + select + "<br>";
+//		}
+//		
+//		return str;
+//	}
+	
+	// 크롤링 연습(jsoup) 처리
+	@ResponseBody
+	@RequestMapping(value = "/crawling/jsoup", method = RequestMethod.POST)  // ajax로 하면 객체로 받아올 수 있음, 한글처리 필요x
+	public ArrayList<String> jsoupPost(String url, String selector) throws IOException {
+		Connection conn = Jsoup.connect(url);  // sql로 했었음
+		
+		Document document = conn.get();
+		//System.out.println("document : " + document);
+		
+		Elements selects = document.select(selector);
+		System.out.println("selects : " + selects);
+		//System.out.println("selects : " + selects.text());
+		
+		ArrayList<String> vos = new ArrayList<String>();  // 값이 여러개면 vo(제작사, 타이틀, 내용 등)
+		int i = 0;
+		for(Element select : selects) {
+			i++;
+			System.out.println(i + " : " + select);
+			vos.add(i + " : " + select.toString().replace("data-onshow-",""));
+			//vos.add(i + " : " + select.html().replace("data-onshow-",""));
+		}
+		
+		return vos;
+	}
+	
+	// 크롤링 연습(jsoup) 처리
+	@ResponseBody
+	@RequestMapping(value = "/crawling/jsoup2", method = RequestMethod.POST)  // ajax로 하면 객체로 받아올 수 있음, 한글처리 필요x
+	public ArrayList<CrawlingVO> jsoup2Post() throws IOException {
+		Connection conn = Jsoup.connect("https://news.naver.com/");
+		
+		Document document = conn.get();
+		
+		Elements selects = null;
+
+		ArrayList<String> titleVos = new ArrayList<String>();
+		selects = document.select("div.cjs_t");
+		for(Element select : selects) {
+			titleVos.add(select.html());
+		}
+		
+		ArrayList<String> imageVos = new ArrayList<String>();
+		selects = document.select("div.cjs_news_mw");
+		for(Element select : selects) {
+			imageVos.add(select.html().replace("data-onshow-",""));
+		}
+		
+		ArrayList<String> broadcastVos = new ArrayList<String>();
+		selects = document.select("h4.channel");
+		for(Element select : selects) {
+			broadcastVos.add(select.html());
+		}
+		
+		ArrayList<CrawlingVO> vos = new ArrayList<CrawlingVO>();
+		CrawlingVO vo = null;
+		for(int i=0; i<titleVos.size(); i++) {
+			vo = new CrawlingVO();
+			vo.setItem1(titleVos.get(i));
+			vo.setItem2(imageVos.get(i));
+			vo.setItem3(broadcastVos.get(i));
+			vos.add(vo);
+		}
+		
+		return vos;  // 이렇게 안쓰면 HashMap으로 쓰면 됨.
+	}
+	
+	// 크롤링 연습(jsoup) 처리
+	@ResponseBody
+	@RequestMapping(value = "/crawling/jsoup3", method = RequestMethod.POST)
+	public ArrayList<CrawlingVO> jsoup3Post() throws IOException {
+		Connection conn = Jsoup.connect("https://entertain.daum.net/");
+		
+		Document document = conn.get();
+		
+		Elements selects = null;
+		
+		ArrayList<String> titleVos = new ArrayList<String>();
+		selects = document.select("ul.list_news a.link_txt");
+		for(Element select : selects) {
+			titleVos.add(select.html());
+		}
+		
+		ArrayList<String> imageVos = new ArrayList<String>();
+		selects = document.select("ul.list_news a.link_thumb");
+		for(Element select : selects) {
+			imageVos.add(select.html().replace("data-onshow-",""));
+		}
+		
+		ArrayList<String> broadcastVos = new ArrayList<String>();
+		selects = document.select("ul.list_news span.info_thumb");
+		for(Element select : selects) {
+			broadcastVos.add(select.html());
+		}
+		
+		ArrayList<CrawlingVO> vos = new ArrayList<CrawlingVO>();
+		CrawlingVO vo = null;
+		for(int i=0; i<broadcastVos.size(); i++) {
+			vo = new CrawlingVO();
+			vo.setItem1(titleVos.get(i));
+			vo.setItem2(imageVos.get(i));
+			vo.setItem3(broadcastVos.get(i));
+			vos.add(vo);
+		}
+		
+		return vos;
+	}
+	
+	// 크롤링연습 처리4(jsoup) - 네이버 검색어를 이용한 검색처리
+	@ResponseBody
+	@RequestMapping(value = "/crawling/jsoup4", method = RequestMethod.POST)
+	public ArrayList<String> jsoup4Post(String search, String searchSelector) throws IOException {
+		Connection conn = Jsoup.connect(search);
+		
+		Document document = conn.get();
+		
+		// 하나만 넘긴다고 가정
+		Elements selects = document.select(searchSelector);
+		
+		ArrayList<String> vos = new ArrayList<String>();
+		
+		int i = 0;
+		for(Element select : selects) {
+			i++;
+			System.out.println(i + " : " + select.html());  // html 안 써도 됨
+			vos.add(i + " : " + select.html().replace("data-lazy", ""));
+		}
+		
+		return vos;
+	}
+	
+	// 셀레니움 연습(selenium)
+	@RequestMapping(value = "/crawling/selenium", method = RequestMethod.GET)
+	public String seleniumGet() {
+		return "study/crawling/selenium";
+	}
+	
+	// 크롤링연습 처리(selenium) - CGV 상영작 크롤링
+	@ResponseBody  // ajax는 넣어야함
+	@RequestMapping(value = "/crawling/selenium", method = RequestMethod.POST)
+	public List<HashMap<String, Object>> seleniumPost(HttpServletRequest request) {
+		List<HashMap<String, Object>> vos = new ArrayList<HashMap<String,Object>>();
+		
+		try {
+			String realPath = request.getSession().getServletContext().getRealPath("/resources/crawling/");
+			System.setProperty("webdriver.chrome.driver", realPath + "chromedriver.exe");
+			
+			WebDriver driver = new ChromeDriver();
+			driver.get("http://www.cgv.co.kr/movies/");
+			
+			// 현재 상영작만 보기
+			WebElement btnMore = driver.findElement(By.id("chk_nowshow"));
+			btnMore.click();
+			
+			// 더보기 버튼을 클릭한다.
+			btnMore = driver.findElement(By.className("link-more"));
+			btnMore.click();
+			
+			// 화면이 더 열리는 동안 시간을 지연시켜준다.
+			try { Thread.sleep(2000); } catch (Exception e) {}
+			
+			// 낱개의 vos객체(elements)를 HashMap에 등록후 List객체로 처리해서 프론트로 넘겨준다.
+			List<WebElement> elements = driver.findElements(By.cssSelector("div.sect-movie-chart ol li"));
+			for(WebElement  element : elements) {
+				HashMap<String, Object> map = new HashMap<String, Object>();
+				String image = "<img src='"+element.findElement(By.tagName("img")).getAttribute("src")+"' width='200px' />";  // 그림에 접근해서 src 속성을 가져옴
+				String link = element.findElement(By.tagName("a")).getAttribute("href");
+				String title = "<a href='"+link+"' target='_blank'>" +element.findElement(By.className("title")).getText() + "</a>";  // jsoup에서는 text()
+				String percent = element.findElement(By.className("percent")).getText();
+				map.put("image", image);
+				map.put("link", link);
+				map.put("title", title);
+				map.put("percent", percent);
+				vos.add(map);
+			}
+			driver.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		//System.out.println("vos : " + vos);
+		return vos;
+	}
+	
+	// 크롤링연습 처리(selenium) - SRT 열차 조회하기
+	@ResponseBody
+	@RequestMapping(value = "/crawling/train", method = RequestMethod.POST)
+	public List<HashMap<String, Object>> trainPost(HttpServletRequest request, String stationStart, String stationStop) {
+		List<HashMap<String, Object>> array = new ArrayList<HashMap<String,Object>>();
+		try {
+			String realPath = request.getSession().getServletContext().getRealPath("/resources/crawling/");
+			System.setProperty("webdriver.chrome.driver", realPath + "chromedriver.exe");
+			
+			WebDriver driver = new ChromeDriver();
+			driver.get("http://srtplay.com/train/schedule");  // f12 element 숨겨진 곳 마우스 오른쪽 Copy XPath
+			
+			WebElement btnMore = driver.findElement(By.xpath("//*[@id=\"station-start\"]/span"));  // 출발역 버튼 출력
+			btnMore.click();
+      try { Thread.sleep(2000);} catch (InterruptedException e) {}  // 2초간 쉬어(처음엔 쉬어주는 것이 좋음)
+      
+      btnMore = driver.findElement(By.xpath("//*[@id=\"station-pos-input\"]"));  // input창을 클릭함
+      btnMore.sendKeys(stationStart);  // 출발역 입력함
+      btnMore = driver.findElement(By.xpath("//*[@id=\"stationListArea\"]/li/label/div/div[2]"));
+      btnMore.click();
+      btnMore = driver.findElement(By.xpath("//*[@id=\"stationDiv\"]/div/div[3]/div/button"));
+      btnMore.click();
+      try { Thread.sleep(2000);} catch (InterruptedException e) {}
+      
+      btnMore = driver.findElement(By.xpath("//*[@id=\"station-arrive\"]/span"));
+      btnMore.click();
+      try { Thread.sleep(2000);} catch (InterruptedException e) {}  // 뜨는동아 2초전도 머물음
+      btnMore = driver.findElement(By.id("station-pos-input"));
+      
+      btnMore.sendKeys(stationStop);  // 입력창 클릭해서 출발역 입력
+      btnMore = driver.findElement(By.xpath("//*[@id=\"stationListArea\"]/li/label/div/div[2]"));
+      btnMore.click();
+      btnMore = driver.findElement(By.xpath("//*[@id=\"stationDiv\"]/div/div[3]/div/button"));
+      btnMore.click();
+      try { Thread.sleep(2000);} catch (InterruptedException e) {}  // 출발과 도착을 다 눌러서 2초간 쉼
+      
+      btnMore = driver.findElement(By.xpath("//*[@id=\"sr-train-schedule-btn\"]/div/button"));
+      btnMore.click();
+      try { Thread.sleep(2000);} catch (InterruptedException e) {}
+      
+      List<WebElement> timeElements = driver.findElements(By.cssSelector(".table-body ul.time-list li"));
+ 			
+      HashMap<String, Object> map = null;
+      
+			for(WebElement element : timeElements){
+				map = new HashMap<String, Object>();
+				String train=element.findElement(By.className("train")).getText();
+				String start=element.findElement(By.className("start")).getText();
+				String arrive=element.findElement(By.className("arrive")).getText();
+				String time=element.findElement(By.className("time")).getText();
+				String price=element.findElement(By.className("price")).getText();
+				map.put("train", train);
+				map.put("start", start);
+				map.put("arrive", arrive);
+				map.put("time", time);
+				map.put("price", price);
+				array.add(map);
+			}
+			
+	    // 요금조회하기 버튼을 클릭한다.(처리 안됨 - 스크린샷으로 대체)
+      btnMore = driver.findElement(By.xpath("//*[@id=\"scheduleDiv\"]/div[2]/div/ul/li[1]/div/div[5]/button"));
+      //System.out.println("요금 조회버튼클릭");
+      btnMore.click();
+      try { Thread.sleep(2000);} catch (InterruptedException e) {}
+      
+      // 지정경로에 브라우저 화면 스크린샷 저장처리
+  		realPath = request.getSession().getServletContext().getRealPath("/resources/data/ckeditor/");
+      File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+      FileUtils.copyFile(scrFile, new File(realPath + "screenshot.png"));
+			
+      driver.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return array;
+	}
+	
+	// 크롤링연습 처리(selenium) - 네이버 게임 목록 조회하기
+	@ResponseBody
+	@RequestMapping(value = "/crawling/naverGameSearch", method = RequestMethod.POST)
+	public List<CrawlingVO> naverGameSearchPost(HttpServletRequest request, int page) {
+		List<CrawlingVO> vos = new ArrayList<CrawlingVO>();
+		try {
+			String realPath = request.getSession().getServletContext().getRealPath("/resources/crawling/");
+			System.setProperty("webdriver.chrome.driver", realPath + "chromedriver.exe");
+			
+			WebDriver driver = new ChromeDriver();
+			driver.get("https://search.naver.com/search.naver?where=nexearch&sm=top_hty&fbm=0&ie=utf8&query=게임");
+			
+			WebElement btnMore = null;
+			
+			Connection conn = Jsoup.connect("https://search.naver.com/search.naver?where=nexearch&sm=top_hty&fbm=0&ie=utf8&query=게임");
+			Document document = conn.get();
+			
+			Elements selects = null;
+			ArrayList<String> titleVos = new ArrayList<String>();
+			ArrayList<String> jangreVos = new ArrayList<String>();
+			ArrayList<String> platformVos = new ArrayList<String>();
+			ArrayList<String> chulsiilVos = new ArrayList<String>();
+			ArrayList<String> thumbnailVos = new ArrayList<String>();
+			
+			for(int i=0; i<page; i++) {
+				// 페이지마다 새로고침된 HTML을 가져와서 Jsoup으로 파싱
+				document = Jsoup.parse(driver.getPageSource());
+				
+				//selects =	document.select("a.title");
+				selects =	document.selectXpath("//*[@id=\"mflick\"]/div/div/div/div/strong/a");
+				for(Element select : selects) {
+					//titleVos.add(select.html());
+					//titleVos.add("<a href='"+select.tagName("a").attribute("href")+"' target='_blank'>"+select.text()+"</a>");
+					titleVos.add("<a href='https://search.naver.com/search.naver?"+select.tagName("a").attribute("href").toString().substring(select.tagName("a").attribute("href").toString().indexOf("?")+1)+"' target='_blank'>"+select.text()+"</a>");
+				}
+				//System.out.println();
+				
+				selects =	document.selectXpath("//*[@id=\"mflick\"]/div/div/div/div/dl/dd[1]");
+				for(Element select : selects) {
+					jangreVos.add(select.text());
+				}
+				
+				selects =	document.selectXpath("//*[@id=\"mflick\"]/div/div/div/div/dl/dd[2]");
+				for(Element select : selects) {
+					platformVos.add(select.text());
+				}
+				
+				selects =	document.selectXpath("//*[@id=\"mflick\"]/div/div/div/div/dl/dd[3]");
+				for(Element select : selects) {
+					chulsiilVos.add(select.text());
+				}
+				
+				selects =	document.selectXpath("//*[@id=\"mflick\"]/div/div/div/div/div/a");
+				for(Element select : selects) {
+					thumbnailVos.add(select.html());
+				}
+				
+				btnMore = driver.findElement(By.xpath("//*[@id=\"main_pack\"]/section[5]/div[2]/div/div/div[4]/div/a[2]"));
+	      btnMore.click();
+	      try { Thread.sleep(2000);} catch (InterruptedException e) {}
+			}
+			driver.close();
+			
+			for(int i=0; i<jangreVos.size(); i++) {
+				CrawlingVO vo = new CrawlingVO();
+				vo.setItem1(titleVos.get(i));
+				vo.setItem2(jangreVos.get(i));
+				vo.setItem3(platformVos.get(i));
+				vo.setItem4(chulsiilVos.get(i));
+				vo.setItem5(thumbnailVos.get(i));
+				vos.add(vo);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		//System.out.println("vos : " + vos);
+		return vos;
+	}
+	
+	@RequestMapping(value = "/password/password", method = RequestMethod.GET)
+	public String passwordGet() {
+		return "study/password/password";
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/password/sha256", method = RequestMethod.POST, produces="application/text; charset=utf8")
+	public String sha256Post(String pwd) {
+		UUID uid = UUID.randomUUID();
+		String salt = uid.toString().substring(0,8);
+		
+		SecurityUtil security = new SecurityUtil();
+		String encPwd = security.encryptSHA256(salt + pwd);
+		
+		pwd = "salt키 : " + salt + " / 암호화된 비밀번호 : " + encPwd;
+		
+		return pwd;
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/password/aria", method = RequestMethod.POST, produces="application/text; charset=utf8")
+	public String ariaPost(String pwd) throws InvalidKeyException, UnsupportedEncodingException {
+		UUID uid = UUID.randomUUID();
+		String salt = uid.toString().substring(0,8);
+		
+		String encPwd = "";
+		String decPwd = "";
+		
+		encPwd = ARIAUtil.ariaEncrypt(salt + pwd);
+		decPwd = ARIAUtil.ariaDecrypt(encPwd);
+		
+		pwd = "salt키 : " + salt + " / 암호화비번 : " + encPwd + " / 복호화비번 : " + decPwd.substring(8);
+		
+		return pwd;
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/password/bCryptPassword", method = RequestMethod.POST, produces="application/text; charset=utf8")
+	public String bCryptPasswordPost(String pwd) {
+		String encPwd = "";
+		encPwd = passwordEncoder.encode(pwd);
+		
+		pwd = "암호화된 비밀번호 : " + encPwd;
+		
+		return pwd;
+	}
+	
+	// wordcloud 연습
+	@RequestMapping(value = "/wordcloud/wordcloudForm", method = RequestMethod.GET)
+	public String wordcloudGet() {
+		return "study/wordcloud/wordcloudForm";
+	}
+	
+	// wordcloud 연습정리1
+	@ResponseBody
+	@RequestMapping(value = "/wordcloud/analyzer1", method = RequestMethod.POST)
+	public Map<String, Integer> analyzer1Post(String content) {
+		return studyService.analyzer(content);
+	}
+	
+	// wordcloud 연습정리2
+	@ResponseBody
+	@RequestMapping(value = "/wordcloud/analyzer2", method = RequestMethod.POST)
+	public Map<String, Integer> analyzer2Post(HttpServletRequest request) {
+		String realPath = request.getSession().getServletContext().getRealPath("/resources/data/study/sample.txt");  // 여기서 study부터 들어가면 x
+		String content = "";
+		
+		try (BufferedReader br = new BufferedReader(new FileReader(realPath))) {  // 웹에서 가져오는 건 많이 했으니 자바에서 자료에 줄단위로 가져오는 방법 씀 => io => 예외처리  // 자바 io  // 폴더명, 파일명 같이 넣야함 => realPath에 넣어놓음  // 알아서 파일단위로 읽어옴
+			String line;
+			while ((line = br.readLine()) != null) {  // 어디 쓰는게 아니라 읽어오는 것  // null이 아닌동안 한줄씩 읽어주세요
+				content += line + " ";
+				//System.out.println("line" + line);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return studyService.analyzer(content);
+	}
+	
+	// wordcloud 연습정리3
+	@ResponseBody
+	@RequestMapping(value = "/wordcloud/analyzer3", method = RequestMethod.POST)
+	public Map<String, Integer> analyzer3Post(HttpServletRequest request,
+			String url, String selector, 
+			String excludeWord
+		) throws IOException {
+		Connection conn = Jsoup.connect(url);  // 연결된것
+		
+		Document document = conn.get();// 사이트 접속해서 실행  // 화면에 보이는걸 변수에 담음
+		Elements selectors = document.select(selector);  // selector로 하나씩 검색해서 꺼냄
+		
+		int i = 0;
+		String str = "";
+		for(Element select : selectors) {
+			i++;
+			System.out.println(i + " : " + select.html());
+			str += select.html() + "\n";
+		}
+		
+		// 제외할 문자 처리하기
+		String[] tempStrs = excludeWord.split("/");  // [속보]/[특종]/[단독]
+		for(int k=0; k<tempStrs.length; k++) {
+			str = str.replace(tempStrs[k], "");  // str에 들어있는 문자 중에서 특정 단어 넣은 것을 찾아서 빈 것으로 대체함
+		}
+		
+		// 파일로 저장하기
+		String realPath = request.getSession().getServletContext().getRealPath("/resources/data/study/sample2.txt");
+		try (FileWriter writer = new FileWriter(realPath)) {
+			writer.write(str);
+			System.out.println("파일 생성 Ok");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return studyService.analyzer(str);
+	}
+	
+	// 워드클라우드 생성하여 이미지로 보관하기
+	@RequestMapping(value = "/wordcloud/wordcloudShow", method = RequestMethod.GET)  // 주소로 보냈으므로 당연히 GET
+	public String wordcloudShowGet(HttpServletRequest request, Model model) throws IOException, FontFormatException {  // 그림을 담아야 하니 model로 보냄
+		FrequencyAnalyzer frequencyAnalyzer = new FrequencyAnalyzer();  // 생성 안하고 위에 autowired 걸어도 됨 // 이건 자바에서 쓰는방식 여긴 스프링
+		frequencyAnalyzer.setWordFrequenciesToReturn(300);  // 반환개수 // 200~300이 적당(지정한 것 보다 적으면 안된것 만큼 가져옴)
+		frequencyAnalyzer.setMinWordLength(2);  // 형태소
+		frequencyAnalyzer.setWordTokenizer(new WhiteSpaceWordTokenizer());  // 토큰단위로 분석해서 만들어 주세요
+		
+		List<WordFrequency> wordFrequencies = frequencyAnalyzer.load(getInputStream(request.getSession().getServletContext().getRealPath("/resources/data/study/sample2.txt")));  // 그림으로 저장.. 일정 기간마다 저장해서 보여줘도 되고 지금은 덮어쓰는 것
+		
+		Dimension dimension = new Dimension(500, 500);  // 워드클라우드 크기(픽셀)  // 자바 그래픽 기술  // 백터형식으로 만들어짐 평면좌표 주면 됨  // 500에 500짜리 백터 형식으로 만듬
+		WordCloud wordCloud = new WordCloud(dimension, CollisionMode.PIXEL_PERFECT);  // 단어 사이의 충돌을 감지해서 최대한 조밀하게 처리할 것 // 밀도를 꽉 차게 만들어란 명령어  // 충돌하는걸 최대한 완벽하게 꽉차게
+		wordCloud.setPadding(2);  // 단어 사이의 약간의 여백
+		wordCloud.setBackground(new CircleBackground(250));  // 워드클라우드으ㅢ 배경모양을 결정(반지름이 250인 원형)  // 원의 반지름을 줘서 원의 크기 지정  // 여기서 지원해주는 모양이 틀림(사각, 물고기 등)
+		wordCloud.setColorPalette(new ColorPalette(new Color(0x4055F1),new Color(0x408DF1),new Color(0x40AAF1),new Color(0x40C5F1),new Color(0x40D3F1),new Color(0x4055F1),new Color(0xcccccc),new Color(0xd1b2c3),new Color(0xe1e2e3)));  // 16진수 0x 영어 못씀 6자리  // 5개는 기본적으로 줌 처음 3개가 메인이고 뒤로 갈수록 은은하게 작은
+		wordCloud.setFontScalar(new LinearFontScalar(10, 60));  // 최소, 최대
+		
+		// 한글 폰트 설정
+		Font font = Font.createFont(Font.TRUETYPE_FONT, this.getClass().getClassLoader().getResourceAsStream("fonts/NanumGothic-Bold.ttf"));  // 나를 지칭해 주는 resources // 외부 폰트 사용했기에 무조건 예외처리 //한글 깨짐, 한글 폰트 넣어줘야함(윈도우 폰트 안먹음)  // 한글 안쓰면 없어도 됨
+		wordCloud.setKumoFont(new KumoFont(font));  // 기본 폰트를 내가 올린 폰트로 쓰겠다 지정
+		
+		wordCloud.build(wordFrequencies);  // 분석한 걸로 만들어 주세요
+		wordCloud.writeToFile(request.getSession().getServletContext().getRealPath("resources/data/study/wordcloud.png"));  // 그림 파일로 만들어 주세요
+		
+		model.addAttribute("imagePath", "resources/data/study/wordcloud.png");
+		return "study/wordcloud/wordcloudShow";
+	}
+	
+	private InputStream getInputStream(String path) throws IOException {
+		return new FileInputStream(new File(path));
+	}
+	
+	@RequestMapping(value = "/random/randomForm", method = RequestMethod.GET)
+	public String randomFormGet() {
+		return "study/random/randomForm";
+	}
+	
+	// randomNumeric : 숫자를 랜덤하게 처리(숫자 8자리)..
+	@ResponseBody
+	@RequestMapping(value = "/random/randomNumeric", method = RequestMethod.POST)
+	public String randomNumericPost() {
+		// (int) ((Math.random()*(최대값-최소값+1)) + 최소값
+		return ((int) (Math.random()*(99999999-10000000+1)) + 10000000) + "";  // 1000만 ~ 9999만
+	}
+	
+	// randomUUID : 숫자와 문자를 소문자형식으로 랜덤하게 처리(16진수 32자리 문자)...
+	@ResponseBody
+	@RequestMapping(value = "/random/randomUUID", method = RequestMethod.POST)
+	public String randomUUIDPost() {
+		return (UUID.randomUUID()) + "";
+	}
+	
+	// randomAlphaNumericCheck : 숫자와 문자를 대/소문자 섞어서 랜덤하게 처리(일반 영숫자 xx자리 문자)...
+	@ResponseBody
+	@RequestMapping(value = "/random/randomAlphaNumeric", method = RequestMethod.POST)
+	public String randomAlphaNumericPost() {
+		//String res = RandomStringUtils.randomAlphanumeric(64);  // 원하는만큼 가능
+		return RandomStringUtils.randomAlphanumeric(64);
+	}
+
+	// 카카오맵 화면보기
+	@RequestMapping(value = "/kakao/kakaomap", method = RequestMethod.GET)
+	public String kakaomapGet() {
+		return "study/kakao/kakaomap";
+	}
+	
+	// 카카오맵 마커표시/저장 폼보기
+	@RequestMapping(value = "/kakao/kakaoEx1", method = RequestMethod.GET)
+	public String kakaoEx1Get() {
+		return "study/kakao/kakaoEx1";
+	}
+	
+	// 카카오맵 마커표시/저장 처리
+	@ResponseBody
+	@RequestMapping(value = "/kakao/kakaoEx1", method = RequestMethod.POST)
+	public String kakaoEx1Post(KakaoAddressVO vo) {
+		KakaoAddressVO searchVO = studyService.getKakaoAddressSearch(vo.getAddress());
+		
+		if(searchVO != null) return "0";
+		
+		studyService.setKakaoAddressInput(vo);
+		
+		return "1";
+	}
+
+//	// 카카오맵 MyDB에 저장된 지명검색
+//	@RequestMapping(value = "/kakao/kakaoEx2", method = RequestMethod.GET)
+//	public String kakaoEx2Get(Model model) {
+//		List<KakaoAddressVO> addressVos = studyService.getKakaoAddressList();
+//		
+//		model.addAttribute("addressVos", addressVos);
+//	
+//		return "study/kakao/kakaoEx2";
+//	}
+	
+	// 카카오맵 연습2(MyDB에 저장된 주소목록 가져오기 / 지점검색하기 추가)
+	@RequestMapping(value = "/kakao/kakaoEx2", method = RequestMethod.GET)
+	public String kakaoEx2Get(Model model,
+			@RequestParam(name="address", defaultValue = "", required = false) String address) {
+		KakaoAddressVO vo = new KakaoAddressVO();
+		List<KakaoAddressVO> addressVos = studyService.getKakaoAddressList();
+		
+		if(address.equals("")) {
+			vo.setAddress("청주 그린컴퓨터");  // 여기를 홈으로 설정
+			vo.setLatitude(36.63518067764835);
+			vo.setLongitude(127.45950765979747);
+		}
+		else {
+		  vo = studyService.getKakaoAddressSearch(address);
+		}
+		model.addAttribute("addressVos", addressVos);
+		model.addAttribute("vo", vo);
+		
+		return "study/kakao/kakaoEx2";
+	}
+	
+	// 카카오맵 MyDb에 저장된 검색위치 삭제하기
+	@ResponseBody
+	@RequestMapping(value = "/kakao/kakaoAddressDelete", method = RequestMethod.POST)
+	public String kakaoAddressDeletePost(String address) {
+		return studyService.setKakaoAddressDelete(address) + "";
+	}
+	
+	// 카카오맵 : kakaoDB에 저장된 키워드 검색후 MyDB에 저장하기
+	@RequestMapping(value = "/kakao/kakaoEx3", method = RequestMethod.GET)
+	public String kakaoEx3Get(Model model,
+			@RequestParam(name="address", defaultValue = "", required = false) String address
+		) {
+		model.addAttribute("address",address);
+		return "study/kakao/kakaoEx3";
+	}
+	
+	@RequestMapping(value = "/kakao/kakaoEx7", method = RequestMethod.GET)
+	public String kakaoEx7Get() {
+			return "study/kakao/kakaoEx7";
 	}
 }
