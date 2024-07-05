@@ -78,7 +78,7 @@
 		        <a href="${ctp}/study/chart2/chart" class="w3-bar-item w3-button">차트연습2</a>
 		        <a href="#" class="w3-bar-item w3-button">스케줄링(Quartz)</a>
 	        	<a href="${ctp}/study/weather/weatherForm" class="w3-bar-item w3-button">날씨API</a>
-		        <a href="${ctp}/study/captcha/captcha" class="w3-bar-item w3-button">캡차연습</a>
+		        <a href="${ctp}/study/captcha/captchaForm" class="w3-bar-item w3-button">캡차연습</a>
 		        <a href="${ctp}/study/qrCode/qrCodeForm" class="w3-bar-item w3-button">QR Code연습</a>
 		        <a href="${ctp}/errorPage/errorMain" class="w3-bar-item w3-button">Error 연습</a>
 		        <a href="${ctp}/study/thumbnail/thumbnailForm" class="w3-bar-item w3-button">썸네일 연습</a>
