@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 
 import com.spring.javaclassS.vo.CrimeVO;
 import com.spring.javaclassS.vo.KakaoAddressVO;
+import com.spring.javaclassS.vo.PetCafeVO;
 import com.spring.javaclassS.vo.UserVO;
 
 public interface StudyDAO {
@@ -32,5 +33,7 @@ public interface StudyDAO {
 	public List<KakaoAddressVO> getKakaoAddressList();
 
 	public int setKakaoAddressDelete(String address);
+
+	public void setPetCafe(PetCafeVO vo);
 
 }

@@ -47,6 +47,10 @@ public interface StudyService {
 
 	public int setKakaoAddressDelete(String address);
 
+	public String fileCsvToMysql(MultipartFile fName);
+
+	public String setCsvTableDelete(String csvTable);
+
 
 	//public HashMap<String, UserVO> getUserMidMap();
 

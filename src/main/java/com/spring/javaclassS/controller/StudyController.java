@@ -1041,4 +1041,24 @@ public class StudyController {
 	public String kakaoEx7Get() {
 			return "study/kakao/kakaoEx7";
 	}
+	
+	// CSV파일을 MySQL파일로 변환하기폼보기
+	@RequestMapping(value = "/csv/csvForm", method = RequestMethod.GET)
+	public String csvFormGet() {
+		return "study/csv/csvForm";
+	}
+	
+	// CSV파일을 MySQL파일로 변환하기
+	@ResponseBody
+	@RequestMapping(value = "/csv/csvForm", method = RequestMethod.POST, produces="application/text; charset=utf8")
+	public String csvFormPost(MultipartFile fName, HttpServletRequest request) throws IOException {
+		return studyService.fileCsvToMysql(fName);
+	}
+	
+	// CSV파일을 MySQL파일로 삭제하기
+	@ResponseBody
+	@RequestMapping(value = "/csv/csvDeleteTable", method = RequestMethod.POST)
+	public String csvDeleteTablePost(String csvTable) throws IOException {
+		return studyService.setCsvTableDelete(csvTable) + "";
+	}
 }
