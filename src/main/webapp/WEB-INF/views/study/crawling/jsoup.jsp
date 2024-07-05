@@ -155,7 +155,7 @@
     	});
     }
     
-    // 네어버 검색어로 그림 검색결과 가져오기
+    // '네어버' 검색어로 그림 검색결과 가져오기
     function crawling5() {
     	let searchString = document.getElementById("searchString").value;
     	let page = document.getElementById("page").value;
@@ -168,7 +168,7 @@
     	
     	let search = "https://search.naver.com/search.naver?nso=&page="+page+"&query="+searchString+"&sm=tab_pge&start="+(page*15+1)+"&where=web";
     	//let searchSelector = "div.thumb_single._parent";
-    	let searchSelector = "div.thumb_link";
+    	let searchSelector = "a.thumb_link";
     	
     	$.ajax({
     		url  : "${ctp}/study/crawling/jsoup4",
@@ -192,7 +192,68 @@
     		}
     	});
     }
+
+    // '멜론' 차트 검색하기
+    function crawlingCheck() {
+      $("#spinnerIcon").show();
+
+      $.ajax({
+        type  : "post",
+        url   : "${ctp}/study/crawling/melonCrawling",
+        success:function(vos) {
+        	console.log("vos",vos);
+          $("#demo").show();
+          if(vos != "") {
+        	  let str = '';
+        	  str += '<table class="table table-bordered text-center"><tr class="table-dark text-dark"><th>순위</th><th>앨범사진</th><th>타이틀곡</th><th>가수</th></tr>';
+						for(let i=0; i<vos.length; i++) {
+							str += '<tr>';
+							str += '<td>'+vos[i].item1+'위</td>';
+							str += '<td>'+vos[i].item2+'</td>'
+							str += '<td>'+vos[i].item3+'</td>';
+							str += '<td>'+vos[i].item4+'</td>';
+							str += '</tr>';
+						}
+						$("#demo").html(str);
+            $("#spinnerIcon").hide();
+          }
+          else $("#demo").html("검색자료가 없습니다.");
+
+        },
+        error : function() {
+          alert("전송오류!");
+        }
+      });
+    }
+    
+    
+    // 화살표클릭시 화면 상단으로 부드럽게 이동하기
+    $(window).scroll(function(){
+    	if($(this).scrollTop() > 100) {
+    		$("#topBtn").addClass("on");
+    	}
+    	else {
+    		$("#topBtn").removeClass("on");
+    	}
+    	
+    	$("#topBtn").click(function(){
+    		window.scrollTo({top:0, behavior: "smooth"});
+    	});
+    });
   </script>
+  <style>
+		h6 {
+		  position: fixed;
+		  right: 1rem;
+		  bottom: -50px;
+		  transition: 0.7s ease;
+		}
+   	.on {
+		  opacity: 0.8;
+		  cursor: pointer;
+		  bottom: 0;
+		}
+  </style>
 </head>
 <body>
   <jsp:include page="/WEB-INF/views/include/nav.jsp" />
@@ -225,18 +286,17 @@
 		</div>
 		<div><input type="button" value="크롤링2(네이버 헤드라인뉴스)" onclick="crawling2()" class="btn btn-success mb-3"></div>
 		<div><input type="button" value="크롤링3(다음 연예뉴스)" onclick="crawling3()" class="btn btn-info"></div>
-	</form>
-	<hr>
-		<div class="input-group mb-3">
-			<div class="input-group-text">네이버 검색어로 검색(검색어)</div>
-			<input type="text" name="searchString" id="searchString" value="인사이드아웃2" class="form-control">
-		</div>
-		<div class="input-group mb-3">
-			<div class="input-group-text">네이버 검색어로 검색(페이지번호)</div>
-			<input type="text" name="page" id="page" value="2" class="form-control">
-			<div class="input-group-append"><input type="button" value="크롤링4" onclick="crawling4()" class="btn btn-secondary"></div>
-		</div>
-		<hr/>
+    <hr/>
+    <div class="input-group mb-3">
+	    <div class="input-group-text">네이버 검색어로 검색(검색어)</div>
+	    <input type="text" name="searchString" id="searchString" value="인사이드아웃2" class="form-control"/>
+    </div>
+    <div class="input-group mb-3">
+	    <div class="input-group-text">네이버 검색어로 검색(페이지번호)</div>
+	    <input type="text" name="page" id="page" value="2" class="form-control"/>
+	    <div class="input-group-append"><input type="button" value="크롤링4" onclick="crawling4()" class="btn btn-info"/></div>
+    </div>
+    <hr/>
     <div class="input-group mb-3">
 	    <div class="input-group-text">네이버 검색어로 검색(이미지)</div>
 	    <input type="text" name="searchString" id="searchString" value="인사이드아웃2" class="form-control"/>
@@ -246,9 +306,20 @@
 	    <input type="text" name="page" id="page" value="2" class="form-control"/>
 	    <div class="input-group-append"><input type="button" value="크롤링5" onclick="crawling5()" class="btn btn-info"/></div>
     </div>
-	<div id="demo"></div>
+    <hr/>
+    <div class="input-group mb-3">
+      <!-- <div class="input-group-prepend"><input type="button" value="새로고침" onclick="location.reload()" class="btn btn-info" /></div> -->
+      <span class="input-group-text" style="width:50%">멜론차트</span>
+      <div class="input-group-append mr-4"><input type="button" value="웹크롤링6" onclick="crawlingCheck()" class="btn btn-success" /></div>
+      <div class="input-group-append"><span id="spinnerIcon" style="display:none"><span class="spinner-border"></span>검색중입니다.<span class="spinner-border"></span></span></div>
+    </div>
+  </form>
+  <hr/>
+  <div id="demo"></div>
 </div>
-<p><br><p>
-  <jsp:include page="/WEB-INF/views/include/footer.jsp" />
+<p><br/></p>
+<jsp:include page="/WEB-INF/views/include/footer.jsp" />
+<!-- 위로가기 버튼 -->
+<h6 id="topBtn" class="text-right mr-3"><img src="${ctp}/images/arrowTop.gif" title="위로이동"/></h6>
 </body>
 </html>
