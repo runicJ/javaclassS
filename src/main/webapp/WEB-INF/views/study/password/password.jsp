@@ -5,7 +5,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>sha256.jsp</title>
+  <title>password.jsp</title>
   <jsp:include page="/WEB-INF/views/include/bs4.jsp" />
   <script>
     'use strict';

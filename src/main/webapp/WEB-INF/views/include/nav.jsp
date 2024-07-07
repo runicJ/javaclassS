@@ -57,10 +57,10 @@
 	      <button class="w3-padding-large w3-button" title="More">Study1 <i class="fa fa-caret-down"></i></button>     
 	      <div class="w3-dropdown-content w3-bar-block w3-card-4">
 	        <a href="${ctp}/user/userList" class="w3-bar-item w3-button">UserList</a>
-	        <a href="${ctp}/dbtest/dbtestList" class="w3-bar-item w3-button">DB Test</a>
+	        <a href="${ctp}/user/dbtestList" class="w3-bar-item w3-button">DB Test</a>
 	        <a href="${ctp}/study/ajax/ajaxForm" class="w3-bar-item w3-button">Ajax Test</a>
 	        <a href="${ctp}/study/restapi/restapi" class="w3-bar-item w3-button">REST API</a>
-	        <a href="${ctp}/password/password" class="w3-bar-item w3-button">암호화</a>
+	        <a href="${ctp}/study/password/password" class="w3-bar-item w3-button">암호화</a>
 	        <a href="${ctp}/study/mail/mailForm" class="w3-bar-item w3-button">메일연습</a>
 	        <a href="${ctp}/study/fileUpload/fileUpload" class="w3-bar-item w3-button">파일업로드연습</a>
 	        <a href="${ctp}/study/crawling/jsoup" class="w3-bar-item w3-button">크롤링(jsoup)</a>
