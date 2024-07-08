@@ -3,12 +3,15 @@ package com.spring.javaclassS.common;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -105,5 +108,14 @@ public class JavaclassProvide {
 		mailSender.send(message);
 		
 		return "1";
+	}
+	
+	public String newNameCreate(int len) {
+		Date today = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmm");  // mm 소문자로 하면 분  // 랜덤하게 꺼낼 것
+		String newName = sdf.format(today);  // 연월일시분까지의 문자  // 두글자의 알파뱃과 숫자 랜덤하게 붙임
+		newName += RandomStringUtils.randomAlphanumeric(len) + "_";  // _구분 // 두글자로 만듦  // 호출할때 길이를 넘김(길이를 맘대로 자를수 있음 uuid쓰면 subString 써야해서)
+		
+		return newName;
 	}
 }

@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -68,7 +69,77 @@ public class MemberController {
 		return "member/memberLogin";
 	}
 	
-//카카오 로그인
+	// QR 로그인 폼(새창으로 띄우기)
+	@RequestMapping(value = "/qrLogin", method = RequestMethod.GET)
+	public String memberLoginGet(Model model, String mid, HttpServletRequest request) {
+		String realPath = request.getSession().getServletContext().getRealPath("/resources/data/qrCode/");
+		String qrCodeToken = RandomStringUtils.randomAlphanumeric(16);
+		String qrCodeName = memberService.setQrCodeCreate(realPath, mid, qrCodeToken);
+		model.addAttribute("mid", mid);
+		model.addAttribute("qrCodeName", qrCodeName);
+		model.addAttribute("qrCodeToken", qrCodeToken);
+		return "member/qrLogin";
+	}
+	
+	// QR 로그인(QR코드 확인후 호출시 실행)
+	@RequestMapping(value = "/qrLoginConfirm/{mid}/{qrCodeToken}/{today}", method = RequestMethod.GET)
+	public String qrLoginConfirmGet(
+			@PathVariable String mid,
+			@PathVariable String qrCodeToken,
+			@PathVariable String today) {
+		MemberVO vo = memberService.getMemberIdCheck(mid);
+		if(vo == null) return "redirect:/message/qrLoginMemberNo";
+		memberService.setQrCodeLogin(mid, qrCodeToken, today);
+		return "member/qrLoginConfirm";
+	}
+	
+	// QR 로그인(QR코드 확인후 윈도우 새창(QR코드창)에서 '로그인 확인'버튼클릭시 실행)
+	@RequestMapping(value = "/qrLoginCheck/{mid}/{qrCodeToken}", method = RequestMethod.GET)
+	public String qrLoginCheckGet(Model model, HttpSession session,
+			@PathVariable String mid,
+			@PathVariable String qrCodeToken) {
+		String strToday = memberService.getQrCodeLoginCheck(mid, qrCodeToken);
+		if(strToday == null) return "redirect:/message/qrLoginMemberNo";
+		
+		Date today = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmm");
+		long intToday = Long.parseLong(sdf.format(today));
+		long intStrToday = Long.parseLong(strToday);
+		System.out.println("intStrToday - intToday : " + (intStrToday - intToday));
+		if((intStrToday - intToday) > 1) return "redirect:/message/qrLoginTimeOver";
+		
+		
+		// 로그인 확인후 필요한 정보를 세션에 저장후 memberMain창으로 보낸다.
+		MemberVO vo = memberService.getMemberIdCheck(mid);
+		
+		// 로그인 인증완료시 처리할 부분(1.세션, 3.기타 설정값....)
+		// 1.세션처리
+		String strLevel = "";
+		if(vo.getLevel() == 0) strLevel = "관리자";
+		else if(vo.getLevel() == 1) strLevel = "우수회원";
+		else if(vo.getLevel() == 2) strLevel = "정회원";
+		else if(vo.getLevel() == 3) strLevel = "준회원";
+		
+		session.setAttribute("sMid", vo.getMid());
+		session.setAttribute("sNickName", vo.getNickName());
+		session.setAttribute("sLevel", vo.getLevel());
+		session.setAttribute("strLevel", strLevel);
+		
+		// 2.쿠키 저장/삭제
+		
+		// 3. 기타처리(DB에 처리해야할것들(방문카운트, 포인트,... 등)
+		// 방문포인트 : 1회방문시 point 10점할당, 1일 최대 50점까지 할당가능
+		// 숙제...
+		int point = 10;
+		
+		// 방문카운트
+		memberService.setMemberInforUpdate(vo.getMid(), point);
+		
+		// 로그인 완료후 모든 처리가 끝나면 필요한 메세지처리후 memberMain으로 보낸다.
+		return "redirect:/message/memberLoginOk?mid="+vo.getMid();
+	}
+	
+	//카카오 로그인
 	@RequestMapping(value = "/kakaoLogin", method = RequestMethod.GET)
 	public String kakaoLoginGet(String nickName , String email, String accessToken,
 			HttpServletRequest request,

@@ -134,6 +134,24 @@
     }
     
     //Kakao.init('f8adb2181213318e34c8e8f99a4eb70c');
+    
+    // QR 로그인
+    function qrLogin() {
+    	let mid = myform.mid.value;
+    	if(mid == "") {
+    		alert("아이디를 입력하세요\n아이디 분실시는 QR로그인할수 없습니다.");
+    		return false;
+    	}
+    	let url = "${ctp}/member/qrLogin?mid="+mid;
+      let windowName = "childWindow";
+      let windowWidth = 250;
+      let windowHeight = 400;
+      let x = (window.screen.width / 2) - (windowWidth / 2);
+      let y = (window.screen.height / 2) - (windowHeight / 2);
+      let opt = "width="+windowWidth+"px, height="+windowHeight+"px, left="+x+", top="+y;
+
+      newWin = window.open(url, windowName, opt);
+    }
   </script>
 </head>
 <body>
@@ -164,6 +182,7 @@
 					  <img src="https://k.kakaocdn.net/14/dn/btroDszwNrM/I6efHub1SN5KCJqLm1Ovx1/o.jpg" width="222" alt="카카오 로그인 버튼" />
 					</a>
 					<p id="token-result"></p> -->
+					<input type="button" value="QR 로그인" onclick="javascript:qrLogin()" class="btn btn-outline-primary mr-4"/>
         </td>
       </tr>
     </table>

@@ -64,6 +64,10 @@
 		select * from kakaoAddress order by address;
 	</select>
 	
+	<select id="getQrCodeSearch" resultType="com.spring.javaclassS.vo.QrCodeVO">
+		select * from qrCode where qrCodeName = #{qrCodeName};
+	</select>
+	
 	
 	<insert id="setSaveCrimeDate">
 		insert into crime values (default,#{vo.year},#{vo.police},#{vo.robbery},#{vo.theft},#{vo.murder},#{vo.violence});
@@ -71,6 +75,10 @@
 	
 	<insert id="setKakaoAddressInput">
 		insert into kakaoAddress values (#{vo.address},#{vo.latitude},#{vo.longitude});
+	</insert>
+	
+	<insert id="setQrCodeCreate">
+		insert into qrCode values (default,#{vo.mid},#{vo.name},#{vo.email},#{vo.movieName},#{vo.movieDate},#{vo.movieTime},#{vo.movieAdult},#{vo.movieChild},#{vo.publishDate},#{vo.qrCodeName});
 	</insert>
 	
 	

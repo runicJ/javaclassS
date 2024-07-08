@@ -1,6 +1,8 @@
 package com.spring.javaclassS.service;
 
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -10,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,11 +22,19 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageConfig;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
+import com.google.zxing.qrcode.encoder.QRCode;
 import com.spring.javaclassS.common.JavaclassProvide;
 import com.spring.javaclassS.dao.StudyDAO;
 import com.spring.javaclassS.vo.CrimeVO;
 import com.spring.javaclassS.vo.KakaoAddressVO;
 import com.spring.javaclassS.vo.PetCafeVO;
+import com.spring.javaclassS.vo.QrCodeVO;
 import com.spring.javaclassS.vo.UserVO;
 
 @Service
@@ -478,7 +489,187 @@ public class StudyServiceImpl implements StudyService {
 
 	@Override
 	public String setCsvTableDelete(String csvTable) {
-		// TODO Auto-generated method stub
-		return null;
+		return studyDAO.setCsvTableDelete(csvTable);
+	}
+
+	@Override
+	public String setQrCodeCreate(String realPath) {
+		String qrCodeName = javaclassProvide.newNameCreate(2);  // 외부꺼 가져오면 예외처리 하라고 함
+		String qrCodeImage = "";  // qrCode 모양을 만듦
+		try {  // io에 관련된 것이므로 예외처리
+			// QRCode 안의 한글 인코딩, 안하면 이상하게 나옴
+			qrCodeImage = "생성된 QR코드명 : " + qrCodeName;
+			qrCodeImage = new String(qrCodeImage.getBytes("UTF-8"), "ISO-8859-1");  // 인코딩 하는 방법 여러개 이게 제일 편함(String 이용)
+			
+			// qr 코드 만들기
+			QRCodeWriter qrCodeWriter = new QRCodeWriter();
+			BitMatrix bitMatrix = qrCodeWriter.encode(qrCodeImage, BarcodeFormat.QR_CODE, 200, 200); // 점의 밀도 형식  // 바코드 만드는 형식과 똑같이 만듦(구글에서 제공 BarcodeFormat)  // 크기(폭, 높이)
+			
+			//MatrixToImageConfig matrixToImageConfig = new MatrixToImageConfig();  // 기본컬러(글자색:검정,배경색:흰색) => 색을 바꾸려면 여기서 바꾸면 됨 // 점을 그림으로 바꾸는 class
+			//int qrCodeColor = 0xFF0000FF;  // 16진수 여기선 0x에서 FF까지 붙여줘야함
+			int qrCodeColor = 0xFF000000;
+			int qrCodeBackColor = 0xFFFFFFFF;
+			
+			MatrixToImageConfig matrixToImageConfig = new MatrixToImageConfig(qrCodeColor, qrCodeBackColor);
+			BufferedImage buffredImage = MatrixToImageWriter.toBufferedImage(bitMatrix, matrixToImageConfig);  // 랜더링 처리한 qr코드 이미지를 실제 그림으로 꺼냄 // 이미지로 만들어 주겠다 // buffer 이용하는 것이 안정적이라 함
+			
+			// 랜더링된 QR코드 이미지를 실제 그림파일로 만들어낸다.(캡챠에서 함)  // 이미지로 형상화해서 만듦
+			ImageIO.write(buffredImage, "png", new File(realPath + qrCodeName + ".png") );  // 두번째 확장자, 세번째 파일객체
+		} catch (IOException e) {  // Exception으로 하면 모든 에러를 받아서 어디서 문제가 생겼는지 알 수 없는 경우가 있음(각각 해야함)
+			e.printStackTrace();
+		} catch (WriterException e) {
+			e.printStackTrace();
+		}
+		return qrCodeName;
+	}
+
+	@Override
+	public String setQrCodeCreate1(String realPath, QrCodeVO vo) {
+		String qrCodeName = javaclassProvide.newNameCreate(2);
+		String qrCodeImage = "";
+		try {
+			// QRCode 안의 한글 인코딩
+			qrCodeName += vo.getMid() + "_" + vo.getName() + "_" + vo.getEmail();  // 파일명의 개념, qr코드 이름
+			qrCodeImage = "생성날짜 : " + qrCodeName.substring(0,4) + "년, " + qrCodeName.substring(4,6) + "월, " + qrCodeName.substring(6,8) + "일\n";  // <br>태그가 아님(br은 웹에서 보는 것) \n은 모바일로 보는 것
+			qrCodeImage += "아이디	: " + vo.getMid() + "\n";  // qr코드에 들어가는 것
+			qrCodeImage += "성명	: " + vo.getName() + "\n";
+			qrCodeImage += "이메일	: " + vo.getEmail();
+			qrCodeImage = new String(qrCodeImage.getBytes("UTF-8"), "ISO-8859-1"); // 한글을 넣기에 꼭 인코딩 해줘야 함 하나로 묶어서 씀
+			
+			// qr 코드 만들기
+			QRCodeWriter qrCodeWriter = new QRCodeWriter();
+			BitMatrix bitMatrix = qrCodeWriter.encode(qrCodeImage, BarcodeFormat.QR_CODE, 200, 200); // 점의 밀도 형식  // 바코드 만드는 형식과 똑같이 만듦(구글에서 제공 BarcodeFormat)  // 크기(폭, 높이)
+			
+			//MatrixToImageConfig matrixToImageConfig = new MatrixToImageConfig();  // 기본컬러(글자색:검정,배경색:흰색) => 색을 바꾸려면 여기서 바꾸면 됨 // 점을 그림으로 바꾸는 class
+			int qrCodeColor = 0xFF000000;
+			int qrCodeBackColor = 0xFFFFFFFF;
+			
+			MatrixToImageConfig matrixToImageConfig = new MatrixToImageConfig(qrCodeColor, qrCodeBackColor);
+			BufferedImage buffredImage = MatrixToImageWriter.toBufferedImage(bitMatrix, matrixToImageConfig);  // 랜더링 처리한 qr코드 이미지를 실제 그림으로 꺼냄 // 이미지로 만들어 주겠다 // buffer 이용하는 것이 안정적이라 함
+			
+			// 랜더링된 QR코드 이미지를 실제 그림파일로 만들어낸다.
+			ImageIO.write(buffredImage, "png", new File(realPath + qrCodeName + ".png") );
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (WriterException e) {
+			e.printStackTrace();
+		}
+		return qrCodeName;
+	}
+
+	@Override
+	public String setQrCodeCreate2(String realPath, QrCodeVO vo) {
+		String qrCodeName = javaclassProvide.newNameCreate(2);
+		String qrCodeImage = "";
+		try {
+			// QRCode 안의 한글 인코딩
+			qrCodeName += vo.getMoveUrl();
+			qrCodeImage = vo.getMoveUrl();
+			qrCodeImage = new String(qrCodeImage.getBytes("UTF-8"), "ISO-8859-1"); // 한글을 넣기에 꼭 인코딩 해줘야 함 하나로 묶어서 씀
+			
+			// qr 코드 만들기
+			QRCodeWriter qrCodeWriter = new QRCodeWriter();
+			BitMatrix bitMatrix = qrCodeWriter.encode(qrCodeImage, BarcodeFormat.QR_CODE, 200, 200); // 점의 밀도 형식  // 바코드 만드는 형식과 똑같이 만듦(구글에서 제공 BarcodeFormat)  // 크기(폭, 높이)
+			
+			//MatrixToImageConfig matrixToImageConfig = new MatrixToImageConfig();  // 기본컬러(글자색:검정,배경색:흰색) => 색을 바꾸려면 여기서 바꾸면 됨 // 점을 그림으로 바꾸는 class
+			int qrCodeColor = 0xFF000000;
+			int qrCodeBackColor = 0xFFFFFFFF;
+			
+			MatrixToImageConfig matrixToImageConfig = new MatrixToImageConfig(qrCodeColor, qrCodeBackColor);
+			BufferedImage buffredImage = MatrixToImageWriter.toBufferedImage(bitMatrix, matrixToImageConfig);  // 랜더링 처리한 qr코드 이미지를 실제 그림으로 꺼냄 // 이미지로 만들어 주겠다 // buffer 이용하는 것이 안정적이라 함
+			
+			// 랜더링된 QR코드 이미지를 실제 그림파일로 만들어낸다.
+			ImageIO.write(buffredImage, "png", new File(realPath + qrCodeName + ".png") );
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (WriterException e) {
+			e.printStackTrace();
+		}
+		return qrCodeName;
+	}
+
+	@Override
+	public String setQrCodeCreate3(String realPath, QrCodeVO vo) {
+		String qrCodeName = javaclassProvide.newNameCreate(2);
+		String qrCodeImage = "";
+		try {
+			// QRCode 안의 한글 인코딩
+			qrCodeName += vo.getMid() + "_" + vo.getMovieName() + "_" + vo.getMovieDate() + "_" + vo.getMovieTime().replace(":", "") + "_" + vo.getMovieAdult() + "_" + vo.getMovieChild();  // ':' 안먹음 시간 주의하기
+			qrCodeImage = "구매자 ID : " + vo.getMid();
+			qrCodeImage += "영화명 : " + vo.getMovieName() + "\n";
+			qrCodeImage += "상영일자 : " + vo.getMovieDate() + "\n";
+			qrCodeImage += "상영시간 : " + vo.getMovieTime() + "\n";
+			qrCodeImage += "성인 : " + vo.getMovieAdult() + "\n";
+			qrCodeImage += "소인 : " + vo.getMovieChild();  // => 메일로 보내기
+			qrCodeImage = new String(qrCodeImage.getBytes("UTF-8"), "ISO-8859-1"); // 한글을 넣기에 꼭 인코딩 해줘야 함 하나로 묶어서 씀
+			
+			// qr 코드 만들기
+			QRCodeWriter qrCodeWriter = new QRCodeWriter();
+			BitMatrix bitMatrix = qrCodeWriter.encode(qrCodeImage, BarcodeFormat.QR_CODE, 200, 200); // 점의 밀도 형식  // 바코드 만드는 형식과 똑같이 만듦(구글에서 제공 BarcodeFormat)  // 크기(폭, 높이)
+			
+			//MatrixToImageConfig matrixToImageConfig = new MatrixToImageConfig();  // 기본컬러(글자색:검정,배경색:흰색) => 색을 바꾸려면 여기서 바꾸면 됨 // 점을 그림으로 바꾸는 class
+			int qrCodeColor = 0xFF000000;
+			int qrCodeBackColor = 0xFFFFFFFF;
+			
+			MatrixToImageConfig matrixToImageConfig = new MatrixToImageConfig(qrCodeColor, qrCodeBackColor);
+			BufferedImage buffredImage = MatrixToImageWriter.toBufferedImage(bitMatrix, matrixToImageConfig);  // 랜더링 처리한 qr코드 이미지를 실제 그림으로 꺼냄 // 이미지로 만들어 주겠다 // buffer 이용하는 것이 안정적이라 함
+			
+			// 랜더링된 QR코드 이미지를 실제 그림파일로 만들어낸다.
+			ImageIO.write(buffredImage, "png", new File(realPath + qrCodeName + ".png") );
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (WriterException e) {
+			e.printStackTrace();
+		}
+		return qrCodeName;
+	}
+
+	@Override
+	public String setQrCodeCreate4(String realPath, QrCodeVO vo) {
+		String qrCodeName = javaclassProvide.newNameCreate(2);
+		String qrCodeImage = "";
+		try {
+			String strToday = qrCodeName.substring(0,qrCodeName.length()-3);
+			
+			// QRCode 안의 한글 인코딩
+			qrCodeName += vo.getMid() + "_" + vo.getMovieName() + "_" + vo.getMovieDate() + "_" + vo.getMovieTime().replace(":", "") + "_" + vo.getMovieAdult() + "_" + vo.getMovieChild();  // ':' 안먹음 시간 주의하기
+			qrCodeImage = "구매자 ID : " + vo.getMid() + "\n";
+			qrCodeImage += "영화명 : " + vo.getMovieName() + "\n";
+			qrCodeImage += "상영일자 : " + vo.getMovieDate() + "\n";
+			qrCodeImage += "상영시간 : " + vo.getMovieTime() + "\n";
+			qrCodeImage += "성인 : " + vo.getMovieAdult() + "\n";
+			qrCodeImage += "소인 : " + vo.getMovieChild();  // => 메일로 보내기
+			qrCodeImage = new String(qrCodeImage.getBytes("UTF-8"), "ISO-8859-1");
+			
+			// qr 코드 만들기
+			QRCodeWriter qrCodeWriter = new QRCodeWriter();
+			BitMatrix bitMatrix = qrCodeWriter.encode(qrCodeImage, BarcodeFormat.QR_CODE, 200, 200); // 점의 밀도 형식  // 바코드 만드는 형식과 똑같이 만듦(구글에서 제공 BarcodeFormat)  // 크기(폭, 높이)
+			
+			//MatrixToImageConfig matrixToImageConfig = new MatrixToImageConfig();  // 기본컬러(글자색:검정,배경색:흰색) => 색을 바꾸려면 여기서 바꾸면 됨 // 점을 그림으로 바꾸는 class
+			int qrCodeColor = 0xFF000000;
+			int qrCodeBackColor = 0xFFFFFFFF;
+			
+			MatrixToImageConfig matrixToImageConfig = new MatrixToImageConfig(qrCodeColor, qrCodeBackColor);
+			BufferedImage buffredImage = MatrixToImageWriter.toBufferedImage(bitMatrix, matrixToImageConfig);  // 랜더링 처리한 qr코드 이미지를 실제 그림으로 꺼냄 // 이미지로 만들어 주겠다 // buffer 이용하는 것이 안정적이라 함
+			
+			// 랜더링된 QR코드 이미지를 실제 그림파일로 만들어낸다.
+			ImageIO.write(buffredImage, "png", new File(realPath + qrCodeName + ".png") );
+			
+			// QR코드 생성후, 생성된 정보를 DB에 저장시켜준다.
+			vo.setPublishDate(strToday);
+			vo.setQrCodeName(qrCodeName);
+			studyDAO.setQrCodeCreate(vo);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (WriterException e) {
+			e.printStackTrace();
+		}
+		
+		return qrCodeName;
+	}
+
+	@Override
+	public QrCodeVO getQrCodeSearch(String qrCode) {
+		return studyDAO.getQrCodeSearch(qrCode);
 	}
 }
