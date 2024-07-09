@@ -1264,4 +1264,29 @@ public class StudyController {
 	public QrCodeVO qrCodeSearchPost(String qrCode) {
 		return studyService.getQrCodeSearch(qrCode);  // 생성 x db만 검색
 	}
+	
+	// 썸네일 연습 폼보기
+	@RequestMapping(value = "/thumbnail/thumbnailForm", method = RequestMethod.GET)
+	public String thumbnailFormGet() {
+		return "study/thumbnail/thumbnailForm";
+	}
+	
+	// 썸네일 연습 사진처리
+	@ResponseBody
+	@RequestMapping(value = "/thumbnail/thumbnailForm", method = RequestMethod.POST)
+	public String thumbnailFormPost(MultipartFile file) {
+		return studyService.setThumbnailCreate(file);
+	}
+	
+	// 썸네일 연습 폼보기
+	@RequestMapping(value = "/thumbnail/thumbnailResult", method = RequestMethod.GET)
+	public String thumbnailResultGet(HttpServletRequest request, Model model) {
+		String realPath = request.getSession().getServletContext().getRealPath("/resources/data/thumbnail/");
+		String[] files = new File(realPath).list();
+		
+		model.addAttribute("files",files);
+		model.addAttribute("fileCnt",(files.length/2)); // 같은 파일이 2개씩 가므로
+		
+		return "study/thumbnail/thumbnailResult";
+	}
 }

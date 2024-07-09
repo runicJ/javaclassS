@@ -59,10 +59,12 @@
 	    </form>
 	    --%>
 	    
-	    <c:if test="${!empty sLogin}">
+	    <%-- <c:if test="${!empty sLogin}"> --%>
+	    <c:if test="${sLoginNew == 'OK'}">
 	    	현재 임시비밀번호를 발급하여 메일로 전송처리 되어 있습니다.<br/>
 	    	개인정보를 확인하시고, 비밀번호를 새로 변경해 주세요<br/>
 	    </c:if>
+	    <div>현재 로그인한곳 : ${sLogin}</div>
 	  </div>
 	  <div class="col text-center">
 	    <b>신규 메세지(<font color='red'><b>${wmCnt}</b></font>건)</b>

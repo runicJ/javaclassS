@@ -64,6 +64,8 @@ public interface StudyService {
 
 	public QrCodeVO getQrCodeSearch(String qrCode);
 
+	public String setThumbnailCreate(MultipartFile file);
+
 	//public HashMap<String, UserVO> getUserMidMap();
 
 //	public int setDeleteCrimeData(int year);
