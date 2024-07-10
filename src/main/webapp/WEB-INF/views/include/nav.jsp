@@ -74,7 +74,7 @@
 		      <div class="w3-dropdown-content w3-bar-block w3-card-4">
 		        <a href="${ctp}/study/random/randomForm" class="w3-bar-item w3-button">랜덤알파뉴메릭</a>
 		        <a href="${ctp}/study/kakao/kakaomap" class="w3-bar-item w3-button">카카오맵</a>
-		        <a href="${ctp}/study/chart/chart" class="w3-bar-item w3-button">차트연습1</a>
+		        <a href="${ctp}/study/chart/chartForm" class="w3-bar-item w3-button">차트연습1</a>
 		        <a href="${ctp}/study/chart2/chart" class="w3-bar-item w3-button">차트연습2</a>
 		        <a href="#" class="w3-bar-item w3-button">스케줄링(Quartz)</a>
 	        	<a href="${ctp}/study/weather/weatherForm" class="w3-bar-item w3-button">날씨API</a>

@@ -1289,4 +1289,11 @@ public class StudyController {
 		
 		return "study/thumbnail/thumbnailResult";
 	}
+	
+	@RequestMapping(value = "/chart/chartForm", method = RequestMethod.GET)
+	public String chartForm(Model model,
+			@RequestParam(name="part", defaultValue="barVChart", required=false) String part) {  // 안넘어올때 대비해서 requestparam 사용
+		model.addAttribute("part", part);
+		return "study/chart/chartForm";
+	}
 }
