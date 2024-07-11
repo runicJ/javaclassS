@@ -5,10 +5,10 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>pie3DChart.jsp</title>
+  <title>pieDonutChart.jsp</title>
   <jsp:include page="/WEB-INF/views/include/bs4.jsp" />
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-  <script type="text/javascript">
+	<script type="text/javascript">
     google.charts.load("current", {packages:["corechart"]});
     google.charts.setOnLoadCallback(drawChart);
     function drawChart() {
@@ -23,10 +23,10 @@
 
       var options = {
         title: 'My Daily Activities',
-        is3D: true,
+        pieHole: 0.4,
       };
 
-      var chart = new google.visualization.PieChart(document.getElementById('piechart_3d'));
+      var chart = new google.visualization.PieChart(document.getElementById('donutchart'));
       chart.draw(data, options);
     }
   </script>
@@ -36,7 +36,7 @@
 <jsp:include page="/WEB-INF/views/include/slide2.jsp" />
 <p><br/></p>
 <div class="container">
-  <div id="piechart_3d" style="width: 900px; height: 500px;"></div>
+  <div id="donutchart" style="width: 900px; height: 500px;"></div>
 </div>
 <p><br/></p>
 <jsp:include page="/WEB-INF/views/include/footer.jsp" />

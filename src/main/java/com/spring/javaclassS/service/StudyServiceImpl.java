@@ -28,9 +28,9 @@ import com.google.zxing.client.j2se.MatrixToImageConfig;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
-import com.google.zxing.qrcode.encoder.QRCode;
 import com.spring.javaclassS.common.JavaclassProvide;
 import com.spring.javaclassS.dao.StudyDAO;
+import com.spring.javaclassS.vo.ChartVO;
 import com.spring.javaclassS.vo.CrimeVO;
 import com.spring.javaclassS.vo.KakaoAddressVO;
 import com.spring.javaclassS.vo.PetCafeVO;
@@ -702,5 +702,10 @@ public class StudyServiceImpl implements StudyService {
 		}
 		
 		return res;
+	}
+	
+	@Override
+	public List<ChartVO> getRecentlyVisitCount(int i) {
+		return studyDAO.getRecentlyVisitCount(i);
 	}
 }

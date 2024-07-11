@@ -11,20 +11,19 @@
   <script type="text/javascript">
     google.charts.load('current', {'packages':['bar']});
     google.charts.setOnLoadCallback(drawChart);
-
     function drawChart() {
       var data = google.visualization.arrayToDataTable([
-        ['Year', '냉장고', '세탁기', '에어컨'],
-        ['2019', 500, 1000, 300],
-        ['2020', 1170, 460, 250],
-        ['2021', 660, 1120, 300],
-        ['2022', 1030, 540, 350]
+        ['Year', '${vo.legend1}', '${vo.legend2}', '${vo.legend3}'],
+        ['${vo.x1}', ${vo.x1Value1}, ${vo.x1Value2}, ${vo.x1Value3}],
+        ['${vo.x2}', ${vo.x2Value1}, ${vo.x2Value2}, ${vo.x2Value3}],
+        ['${vo.x3}', ${vo.x3Value1}, ${vo.x3Value2}, ${vo.x3Value3}],
+        ['${vo.x4}', ${vo.x4Value1}, ${vo.x4Value2}, ${vo.x4Value3}]
       ]);
 
       var options = {
         chart: {
-          title: '우수대리점 년도별 판매 현황',
-          subtitle: '(각 분기별 합계 : 단위(백대))',
+          title: '${vo.title}',
+          subtitle: '${vo.subTitle}',
         }
       };
 
@@ -35,13 +34,10 @@
   </script>
 </head>
 <body>
-<jsp:include page="/WEB-INF/views/include/nav.jsp" />
-<jsp:include page="/WEB-INF/views/include/slide2.jsp" />
 <p><br/></p>
 <div class="container">
   <div id="columnchart_material" style="width: 800px; height: 500px;"></div>
 </div>
 <p><br/></p>
-<jsp:include page="/WEB-INF/views/include/footer.jsp" />
 </body>
 </html>

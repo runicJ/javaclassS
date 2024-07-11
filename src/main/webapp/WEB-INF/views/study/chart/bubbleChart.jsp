@@ -4,42 +4,46 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>bubbleChart.jsp</title>
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript">
-      google.charts.load('current', {'packages':['corechart']});
-      google.charts.setOnLoadCallback(drawChart);
+  <meta charset="UTF-8">
+  <title>bubbleChart.jsp</title>
+  <jsp:include page="/WEB-INF/views/include/bs4.jsp" />
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+	<script type="text/javascript">
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
 
-      function drawChart() {
-        var data = google.visualization.arrayToDataTable([
-          ['Age', 'Weight'],
-          [ 8,      12],
-          [ 4,      5.5],
-          [ 11,     14],
-          [ 4,      5],
-          [ 3,      3.5],
-          [ 6.5,    7]
-        ]);
+    function drawChart() {
+      var data = google.visualization.arrayToDataTable([
+        ['Age', 'Weight'],
+        [ 8,      12],
+        [ 4,      5.5],
+        [ 11,     14],
+        [ 4,      5],
+        [ 3,      3.5],
+        [ 6.5,    7]
+      ]);
 
-        var options = {
-          title: 'Age vs. Weight comparison',
-          hAxis: {title: 'Age', minValue: 0, maxValue: 15},
-          vAxis: {title: 'Weight', minValue: 0, maxValue: 15},
-          legend: 'none'
-        };
+      var options = {
+        title: 'Age vs. Weight comparison',
+        hAxis: {title: 'Age', minValue: 0, maxValue: 15},
+        vAxis: {title: 'Weight', minValue: 0, maxValue: 15},
+        legend: 'none'
+      };
 
-        var chart = new google.visualization.ScatterChart(document.getElementById('chart_div'));
+      var chart = new google.visualization.ScatterChart(document.getElementById('chart_div'));
 
-        chart.draw(data, options);
-      }
-    </script>
+      chart.draw(data, options);
+    }
+  </script>
 </head>
 <body>
+<jsp:include page="/WEB-INF/views/include/nav.jsp" />
+<jsp:include page="/WEB-INF/views/include/slide2.jsp" />
 <p><br/></p>
 <div class="container">
-    <div id="chart_div" style="width: 900px; height: 500px;"></div>
+  <div id="chart_div" style="width: 900px; height: 500px;"></div>
 </div>
-<p><br></p>
+<p><br/></p>
+<jsp:include page="/WEB-INF/views/include/footer.jsp" />
 </body>
 </html>

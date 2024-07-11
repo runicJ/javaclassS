@@ -4,12 +4,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>lineChart.jsp</title>
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript">
-      google.charts.load('current', {'packages':['line']});
-      google.charts.setOnLoadCallback(drawChart);
+  <meta charset="UTF-8">
+  <title>lineChart.jsp</title>
+  <jsp:include page="/WEB-INF/views/include/bs4.jsp" />
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript">
+    google.charts.load('current', {'packages':['line']});
+    google.charts.setOnLoadCallback(drawChart);
 
     function drawChart() {
 
@@ -57,10 +58,13 @@
   </script>
 </head>
 <body>
+<jsp:include page="/WEB-INF/views/include/nav.jsp" />
+<jsp:include page="/WEB-INF/views/include/slide2.jsp" />
 <p><br/></p>
 <div class="container">
   <div id="line_top_x"></div>
 </div>
-<p><br></p>
+<p><br/></p>
+<jsp:include page="/WEB-INF/views/include/footer.jsp" />
 </body>
 </html>
