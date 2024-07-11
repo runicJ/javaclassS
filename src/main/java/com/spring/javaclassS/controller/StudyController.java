@@ -28,6 +28,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -48,7 +49,11 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -76,6 +81,7 @@ import com.spring.javaclassS.vo.CrimeVO;
 import com.spring.javaclassS.vo.KakaoAddressVO;
 import com.spring.javaclassS.vo.MailVO;
 import com.spring.javaclassS.vo.QrCodeVO;
+import com.spring.javaclassS.vo.TransactionVO;
 import com.spring.javaclassS.vo.UserVO;
 
 @Controller
@@ -1405,5 +1411,80 @@ public class StudyController {
 		
 		//model.addAttribute("vo", vo);
 		return "study/chart2/chart2Form";
+	}
+	
+	// BackEnd Check를 위한 validator 연습하기 폼
+	@RequestMapping(value = "/validator/validatorForm", method = RequestMethod.GET)
+	public String validatorFormGet(Model model) {
+		List<TransactionVO> vos = studyService.getTransactionList();
+		
+		model.addAttribute("vos", vos);
+		return "study/validator/validatorForm";
+	}
+	// BackEnd Check를 위한 validator 연습하기
+	@RequestMapping(value = "/validator/validatorForm", method = RequestMethod.POST)
+	public String validatorFormPost(@Valid TransactionVO vo, BindingResult bindingResult) {
+
+		if(bindingResult.hasFieldErrors()) {
+			System.out.println("error 발생");
+			System.out.println("에러 : " + bindingResult);
+			return "redirect:/message/backendCheckNo";
+		}
+		
+		int res = studyService.setTransactionUserInput(vo);
+		
+		if(res != 0) return "redirect:/message/transactionUserInputOk?tempFlag=validator";
+		else return "redirect:/message/transactionUserInputNo";
+	}
+	
+	// Transaction(트랜잭션)을 위한 연습 폼
+	@RequestMapping(value = "/transaction/transactionForm", method = RequestMethod.GET)
+	public String transactionFormGet(Model model) {
+		List<TransactionVO> vos = studyService.getTransactionList();
+		List<TransactionVO> vos2 = studyService.getTransactionList2();
+		
+		model.addAttribute("vos", vos);
+		model.addAttribute("vos2", vos2);
+		return "study/transaction/transactionForm";
+	}
+	
+	@Transactional
+	@RequestMapping(value = "/transaction/transactionForm", method = RequestMethod.POST)
+	public String transactionFormPost(@Validated TransactionVO vo, BindingResult bindingResult) {
+		if(bindingResult.hasFieldErrors()) {
+			System.out.println("에러 : " + bindingResult);
+			return "redirect:/message/backendCheckNo";
+		}
+		
+		studyService.setTransactionUser1Input(vo);
+		studyService.setTransactionUser2Input(vo);
+		
+		return "redirect:/message/transactionUserInputOk?tempFlag=transaction";
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/transaction/transaction2", method = RequestMethod.POST, produces="application/text; charset=utf8")
+	public String transaction2Post(@Validated TransactionVO vo, BindingResult bindingResult, Model model) {
+		System.out.println("error : " + bindingResult.hasErrors());
+		
+		if(bindingResult.hasFieldErrors()) {	// bindingResult.hasFieldErrors() 결과값이 true가 나오면 오류가 있다는 것이다.
+			List<ObjectError> list = bindingResult.getAllErrors();
+			System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+			
+			String[] temp = null;
+			for(ObjectError e : list) {
+				System.out.println("메세지 : " + e.getDefaultMessage());
+				temp = e.getDefaultMessage().split("/");
+				if(temp[1].equals("midEmpty") || temp[1].equals("midSizeNo") || temp[1].equals("nameEmpty") || temp[1].equals("nameSizeNo") || temp[1].equals("ageRangeNo")) break;
+			}
+			System.out.println("temp : " + temp[0]);
+			System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+//			메세지컨트롤러를 이용할경우는 아래2줄로 처리...
+//			model.addAttribute("tempFlag", temp[0]);
+//			return "redirect:/message/backendCheckNo";
+			return temp[0];
+		}
+		
+		return studyService.setTransactionUserTotalInput(vo) + "";
 	}
 }

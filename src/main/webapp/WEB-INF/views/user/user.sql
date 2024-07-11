@@ -16,3 +16,8 @@ insert into user values(default, 'kms1234', '김말숙', default, '인천');
 insert into user values(default, 'lkj1234', '이기자', 25, default);
 
 select * from user;
+
+create table user2 (
+	mid varchar(4) not null,
+	job varchar(10)
+);

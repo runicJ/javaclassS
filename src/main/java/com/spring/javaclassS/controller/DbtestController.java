@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.spring.javaclassS.service.DbtestService;
 import com.spring.javaclassS.vo.UserVO;
@@ -40,10 +41,11 @@ public class DbtestController {
 	}
 	
 	@RequestMapping(value = "/dbtestDelete", method = RequestMethod.GET)
-	public String dbtestDeleteGet(int idx) {
+	public String dbtestDeleteGet(int idx,
+			@RequestParam(name="tempFlag", defaultValue="", required=false) String tempFlag) {
 		int res = dbtestService.setDbtestDelete(idx);
 		
-		if(res != 0) return "redirect:/message/dbtestDeleteOk";
+		if(res != 0) return "redirect:/message/dbtestDeleteOk"+tempFlag;
 		else return "redirect:/message/dbtestDeleteNo";
 	}
 	
