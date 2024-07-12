@@ -97,4 +97,10 @@ public class HomeController {
 		downFile.delete();  // => zip파일 지우는 것
 	}
 	
+	// 채팅창 띄우기
+	@RequestMapping(value = "/webSocket/webSocket", method = RequestMethod.GET)
+	public String webSocketGet() {
+    return "webSocket/webSocket";
+	}
+	
 }
