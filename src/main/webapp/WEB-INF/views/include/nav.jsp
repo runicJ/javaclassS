@@ -65,7 +65,6 @@
 	        <a href="${ctp}/study/fileUpload/fileUpload" class="w3-bar-item w3-button">파일업로드연습</a>
 	        <a href="${ctp}/study/crawling/jsoup" class="w3-bar-item w3-button">크롤링(jsoup)</a>
 	        <a href="${ctp}/study/crawling/selenium" class="w3-bar-item w3-button">크롤링(selenium)</a>
-	        <a href="${ctp}/study/crawling/train" class="w3-bar-item w3-button">크롤링(열차시간검색)</a>
 	        <a href="${ctp}/study/wordcloud/wordcloudForm" class="w3-bar-item w3-button">워드클라우드</a>
 	      </div>
 	    </div>
@@ -74,16 +73,16 @@
 		      <div class="w3-dropdown-content w3-bar-block w3-card-4">
 		        <a href="${ctp}/study/random/randomForm" class="w3-bar-item w3-button">랜덤알파뉴메릭</a>
 		        <a href="${ctp}/study/kakao/kakaomap" class="w3-bar-item w3-button">카카오맵</a>
-		        <a href="${ctp}/study/chart/chartForm" class="w3-bar-item w3-button">차트연습1</a>
-		        <a href="${ctp}/study/chart2/chart" class="w3-bar-item w3-button">차트연습2</a>
-		        <a href="#" class="w3-bar-item w3-button">스케줄링(Quartz)</a>
 	        	<a href="${ctp}/study/weather/weatherForm" class="w3-bar-item w3-button">날씨API</a>
 		        <a href="${ctp}/study/captcha/captchaForm" class="w3-bar-item w3-button">캡차연습</a>
 		        <a href="${ctp}/study/qrCode/qrCodeForm" class="w3-bar-item w3-button">QR Code연습</a>
-		        <a href="${ctp}/errorPage/errorMain" class="w3-bar-item w3-button">Error 연습</a>
 		        <a href="${ctp}/study/thumbnail/thumbnailForm" class="w3-bar-item w3-button">썸네일 연습</a>
+		        <a href="${ctp}/study/chart/chartForm" class="w3-bar-item w3-button">웹 차트1</a>
+		        <a href="${ctp}/study/chart2/chart2Form" class="w3-bar-item w3-button">웹 차트2</a>
 		        <a href="${ctp}/study/validator/validatorForm" class="w3-bar-item w3-button">Validator</a>
 		        <a href="${ctp}/study/transaction/transactionForm" class="w3-bar-item w3-button">트랜잭션연습</a>
+		        <a href="#" class="w3-bar-item w3-button">스케줄링(Quartz)</a>
+		        <a href="${ctp}/errorPage/errorMain" class="w3-bar-item w3-button">Error 연습</a>
 		      </div>
 	      </div>
 		    <div class="w3-dropdown-hover w3-hide-small">
@@ -92,7 +91,7 @@
 		        <a href="${ctp}/" class="w3-bar-item w3-button">일정관리</a>
 		        <a href="${ctp}/" class="w3-bar-item w3-button">Photo Gallery</a>
 		        <a href="${ctp}/" class="w3-bar-item w3-button">DB 채팅</a>
-		        <a href="${ctp}/" class="w3-bar-item w3-button">웹소켓 채팅</a>
+		        <a href="${ctp}/webSocket/webSocket" class="w3-bar-item w3-button">웹소켓 채팅</a>
 		        <a href="${ctp}/member/memberList" class="w3-bar-item w3-button">회원리스트</a>
 		        <a href="${ctp}/member/memberPwdCheck/p" class="w3-bar-item w3-button">비밀번호변경</a>
 		        <a href="${ctp}/member/memberPwdCheck/i" class="w3-bar-item w3-button">회원정보수정</a>

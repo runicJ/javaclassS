@@ -641,14 +641,14 @@ public class StudyController {
 		return vos;
 	}
 	
-	// 셀레니움 연습(selenium)
+	// 크롤링연습(selenium)
 	@RequestMapping(value = "/crawling/selenium", method = RequestMethod.GET)
 	public String seleniumGet() {
 		return "study/crawling/selenium";
 	}
 	
 	// 크롤링연습 처리(selenium) - CGV 상영작 크롤링
-	@ResponseBody  // ajax는 넣어야함
+	@ResponseBody
 	@RequestMapping(value = "/crawling/selenium", method = RequestMethod.POST)
 	public List<HashMap<String, Object>> seleniumPost(HttpServletRequest request) {
 		List<HashMap<String, Object>> vos = new ArrayList<HashMap<String,Object>>();
@@ -675,9 +675,9 @@ public class StudyController {
 			List<WebElement> elements = driver.findElements(By.cssSelector("div.sect-movie-chart ol li"));
 			for(WebElement  element : elements) {
 				HashMap<String, Object> map = new HashMap<String, Object>();
-				String image = "<img src='"+element.findElement(By.tagName("img")).getAttribute("src")+"' width='200px' />";  // 그림에 접근해서 src 속성을 가져옴
+				String image = "<img src='"+ element.findElement(By.tagName("img")).getAttribute("src") +"' width='200px' />";
 				String link = element.findElement(By.tagName("a")).getAttribute("href");
-				String title = "<a href='"+link+"' target='_blank'>" +element.findElement(By.className("title")).getText() + "</a>";  // jsoup에서는 text()
+				String title = "<a href='"+link+"' target='_blank'>" + element.findElement(By.className("title")).getText() + "</a>";
 				String percent = element.findElement(By.className("percent")).getText();
 				map.put("image", image);
 				map.put("link", link);
@@ -689,7 +689,7 @@ public class StudyController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		//System.out.println("vos : " + vos);
+		System.out.println("vos : " + vos);
 		return vos;
 	}
 	
@@ -703,14 +703,14 @@ public class StudyController {
 			System.setProperty("webdriver.chrome.driver", realPath + "chromedriver.exe");
 			
 			WebDriver driver = new ChromeDriver();
-			driver.get("http://srtplay.com/train/schedule");  // f12 element 숨겨진 곳 마우스 오른쪽 Copy XPath
-			
-			WebElement btnMore = driver.findElement(By.xpath("//*[@id=\"station-start\"]/span"));  // 출발역 버튼 출력
+			driver.get("http://srtplay.com/train/schedule");
+
+			WebElement btnMore = driver.findElement(By.xpath("//*[@id=\"station-start\"]/span"));
 			btnMore.click();
-      try { Thread.sleep(2000);} catch (InterruptedException e) {}  // 2초간 쉬어(처음엔 쉬어주는 것이 좋음)
+      try { Thread.sleep(2000);} catch (InterruptedException e) {}
       
-      btnMore = driver.findElement(By.xpath("//*[@id=\"station-pos-input\"]"));  // input창을 클릭함
-      btnMore.sendKeys(stationStart);  // 출발역 입력함
+      btnMore = driver.findElement(By.xpath("//*[@id=\"station-pos-input\"]"));
+      btnMore.sendKeys(stationStart);
       btnMore = driver.findElement(By.xpath("//*[@id=\"stationListArea\"]/li/label/div/div[2]"));
       btnMore.click();
       btnMore = driver.findElement(By.xpath("//*[@id=\"stationDiv\"]/div/div[3]/div/button"));
@@ -719,16 +719,16 @@ public class StudyController {
       
       btnMore = driver.findElement(By.xpath("//*[@id=\"station-arrive\"]/span"));
       btnMore.click();
-      try { Thread.sleep(2000);} catch (InterruptedException e) {}  // 뜨는동아 2초전도 머물음
+      try { Thread.sleep(2000);} catch (InterruptedException e) {}
       btnMore = driver.findElement(By.id("station-pos-input"));
       
-      btnMore.sendKeys(stationStop);  // 입력창 클릭해서 출발역 입력
+      btnMore.sendKeys(stationStop);
       btnMore = driver.findElement(By.xpath("//*[@id=\"stationListArea\"]/li/label/div/div[2]"));
       btnMore.click();
       btnMore = driver.findElement(By.xpath("//*[@id=\"stationDiv\"]/div/div[3]/div/button"));
       btnMore.click();
-      try { Thread.sleep(2000);} catch (InterruptedException e) {}  // 출발과 도착을 다 눌러서 2초간 쉼
-      
+      try { Thread.sleep(2000);} catch (InterruptedException e) {}
+
       btnMore = driver.findElement(By.xpath("//*[@id=\"sr-train-schedule-btn\"]/div/button"));
       btnMore.click();
       try { Thread.sleep(2000);} catch (InterruptedException e) {}
@@ -752,7 +752,7 @@ public class StudyController {
 				array.add(map);
 			}
 			
-	    // 요금조회하기 버튼을 클릭한다.(처리 안됨 - 스크린샷으로 대체)
+      // 요금조회하기 버튼을 클릭한다.(처리 안됨 - 스크린샷으로 대체)
       btnMore = driver.findElement(By.xpath("//*[@id=\"scheduleDiv\"]/div[2]/div/ul/li[1]/div/div[5]/button"));
       //System.out.println("요금 조회버튼클릭");
       btnMore.click();
@@ -770,6 +770,7 @@ public class StudyController {
 		return array;
 	}
 	
+	/*
 	// 크롤링연습 처리(selenium) - 네이버 게임 목록 조회하기
 	@ResponseBody
 	@RequestMapping(value = "/crawling/naverGameSearch", method = RequestMethod.POST)
@@ -795,8 +796,8 @@ public class StudyController {
 			ArrayList<String> thumbnailVos = new ArrayList<String>();
 			
 			for(int i=0; i<page; i++) {
-				// 페이지마다 새로고침된 HTML을 가져와서 Jsoup으로 파싱
-				document = Jsoup.parse(driver.getPageSource());
+  			// 페이지마다 새로고침된 HTML을 가져와서 Jsoup으로 파싱
+        document = Jsoup.parse(driver.getPageSource());
 				
 				//selects =	document.select("a.title");
 				selects =	document.selectXpath("//*[@id=\"mflick\"]/div/div/div/div/strong/a");
@@ -845,8 +846,49 @@ public class StudyController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		//System.out.println("vos : " + vos);
 		return vos;
+	}
+	*/
+  //크롤링연습 처리(selenium) - 네이버 게임 목록 조회하기
+	@ResponseBody
+	@RequestMapping(value = "/crawling/naverGameSearch", method = RequestMethod.POST)
+	public List<CrawlingVO> naverGameSearchPost(HttpServletRequest request, int page) {
+    List<CrawlingVO> vos = new ArrayList<CrawlingVO>();
+    try {
+      String realPath = request.getSession().getServletContext().getRealPath("/resources/crawling/");
+      System.setProperty("webdriver.chrome.driver", realPath + "chromedriver.exe");
+      WebDriver driver = new ChromeDriver();
+      driver.get("https://search.naver.com/search.naver?where=nexearch&sm=top_hty&fbm=0&ie=utf8&query=게임");
+      WebElement btnMore = null;
+      for(int i=0; i<page; i++) {
+        // 페이지마다 새로고침된 HTML을 가져와서 Jsoup으로 파싱
+        Document document = Jsoup.parse(driver.getPageSource());
+        Elements titles = document.selectXpath("//*[@id=\"mflick\"]/div/div/div[" + (i+1) + "]/div/strong/a");
+        Elements jangres = document.selectXpath("//*[@id=\"mflick\"]/div/div/div[" + (i+1) + "]/div/dl/dd[1]");
+        Elements platforms = document.selectXpath("//*[@id=\"mflick\"]/div/div/div[" + (i+1) + "]/div/dl/dd[2]");
+        Elements chulsiils = document.selectXpath("//*[@id=\"mflick\"]/div/div/div[" + (i+1) + "]/div/dl/dd[3]");
+        Elements thumbnails = document.selectXpath("//*[@id=\"mflick\"]/div/div/div[" + (i+1) + "]/div/div/a");
+        for (int j = 0; j < titles.size(); j++) {
+          CrawlingVO vo = new CrawlingVO();
+          vo.setItem1(titles.get(j).text());
+          vo.setItem2(jangres.get(j).text());
+          vo.setItem3(platforms.get(j).text());
+          vo.setItem4(chulsiils.get(j).text());
+          vo.setItem5(thumbnails.get(j).outerHtml());
+          vos.add(vo);
+        }
+        // 페이지 넘기기 버튼 클릭
+        if (i < page - 1) {
+          btnMore = driver.findElement(By.xpath("//*[@id=\"main_pack\"]/section[5]/div[2]/div/div/div[4]/div/a[2]"));
+          btnMore.click();
+          try { Thread.sleep(2000);} catch (InterruptedException e) {}
+        }
+      }
+      driver.close();
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return vos;
 	}
 	
 	@RequestMapping(value = "/password/password", method = RequestMethod.GET)
@@ -902,14 +944,14 @@ public class StudyController {
 		return "study/wordcloud/wordcloudForm";
 	}
 	
-	// wordcloud 연습정리1
+//wordcloud 연습처리1
 	@ResponseBody
 	@RequestMapping(value = "/wordcloud/analyzer1", method = RequestMethod.POST)
 	public Map<String, Integer> analyzer1Post(String content) {
 		return studyService.analyzer(content);
 	}
 	
-	// wordcloud 연습정리2
+	// wordcloud 연습처리2(서버에 저장된 파일로 형태소 분석 처리하기)
 	@ResponseBody
 	@RequestMapping(value = "/wordcloud/analyzer2", method = RequestMethod.POST)
 	public Map<String, Integer> analyzer2Post(HttpServletRequest request) {
@@ -929,7 +971,7 @@ public class StudyController {
 		return studyService.analyzer(content);
 	}
 	
-	// wordcloud 연습정리3
+	//wordcloud 연습처리3(네이버 검색 결과로 형태소 분석처리하기)
 	@ResponseBody
 	@RequestMapping(value = "/wordcloud/analyzer3", method = RequestMethod.POST)
 	public Map<String, Integer> analyzer3Post(HttpServletRequest request,
