@@ -266,23 +266,23 @@
 		<!-- BackEnd 체크를 위한 validator 라이브러리(data검증:유효성검사) -->
 		<!-- https://mvnrepository.com/artifact/org.hibernate.validator/hibernate-validator -->
 		<dependency>
-				<!-- 객체지향 관계형 데이터베이스 지원 hibernate -->
+			<!-- 객체지향 관계형 데이터베이스 지원 hibernate -->
 		    <groupId>org.hibernate.validator</groupId>
 		    <artifactId>hibernate-validator</artifactId>
     		<version>6.2.0.Final</version>
 		</dependency>
 		
 		<!-- WebSocket(Spring WebSocket)을 사용하기위한 라이브러리 주입하기(2개) -->
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-websocket</artifactId>
-      <version>${org.springframework-version}</version>
-    </dependency>
-    <dependency>
-      <groupId>javax.websocket</groupId>
-      <artifactId>javax.websocket-api</artifactId>
-      <version>1.1</version>
-    </dependency>
+	    <dependency>
+	      <groupId>org.springframework</groupId>
+	      <artifactId>spring-websocket</artifactId>
+	      <version>${org.springframework-version}</version>
+	    </dependency>
+	    <dependency>
+	      <groupId>javax.websocket</groupId>
+	      <artifactId>javax.websocket-api</artifactId>
+	      <version>1.1</version>
+	    </dependency>
 		
 	</dependencies>
     <build>
