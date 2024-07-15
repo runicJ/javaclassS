@@ -43,6 +43,16 @@
 	  }
 	  
 	 //window.Kakao.init('f8adb2181213318e34c8e8f99a4eb70c'); // 사용하려는 앱의 JavaScript 키 입력
+	 
+ 	// 네이버 로그아웃
+  function naverLogout() {
+	  var url = "${ctp}/member/naverLogout";
+		var childWindow = window.open(url, "naverWindow", "width=50, height=50, top=0, left=0");
+		setTimeout(() => {
+	  	if(childWindow != null) childWindow.close();		  
+	    location.href = "${ctp}/member/memberLogout";
+	  }, 1500);
+  }
 </script>
 	<div class="w3-top">
 	  <div class="w3-bar w3-black w3-card">
@@ -98,6 +108,17 @@
 		        <a href="javascript:userDelCheck()" class="w3-bar-item w3-button">회원탈퇴</a>
 		        <c:if test="${sLevel == 0}"><a href="${ctp}/admin/adminMain" class="w3-bar-item w3-button">관리자메뉴</a></c:if>
 		      </div>
+		    </div>
+  	    <div class="w3-dropdown-hover w3-hide-small">
+		      <button class="w3-padding-large w3-button" title="More">Shopping mall <i class="fa fa-caret-down"></i></button>     
+			      <div class="w3-dropdown-content w3-bar-block w3-card-4">
+			        <a href="${ctp}/dbShop/dbProductList" class="w3-bar-item w3-button">상품리스트</a>
+			        <a href="${ctp}/dbShop/dbCartList" class="w3-bar-item w3-button">장바구니</a>
+			        <a href="${ctp}/dbShop/dbMyOrder" class="w3-bar-item w3-button">주문(배송)현황</a>
+			        <a href="${ctp}/dbShop/payment/payment" class="w3-bar-item w3-button">결재연습</a>
+			        <a href="${ctp}/" class="w3-bar-item w3-button">QnA</a>
+			        <a href="${ctp}/" class="w3-bar-item w3-button">1:1문의</a>
+			      </div>
 		    </div>
 	    </c:if>
 	    <c:if test="${empty sLevel}">

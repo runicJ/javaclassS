@@ -10,5 +10,6 @@
   <i class="fa fa-twitter w3-hover-opacity"></i>
   <i class="fa fa-linkedin w3-hover-opacity"></i>
   <p class="w3-medium">Created by <a href="${ctp}/" target="_blank">Dodo</a></p>
+  <p class="text-center"><%=request.getSession().getServletContext().getRealPath("/") %>
 </footer>
   <script src="${ctp}/js/slide.js"></script>

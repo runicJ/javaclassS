@@ -78,7 +78,7 @@ public class JavaclassProvide {
 //		
 //	}
 	
-	//메일 전송하기(아이디찾기, 비밀번호 찾기)
+	//메일 전송하기(아이디찾기, 비밀번호 찾기, 스케줄러를 통한 메일 전송)
 	public String mailSend(String toMail, String title, String pwd) throws MessagingException {
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();  // 그냥 못씀 강제 형변환 해서 request 써야함
 		String content = "";
@@ -94,7 +94,8 @@ public class JavaclassProvide {
  		
  		// 메시지 보관함의 내용(content)에, 발신자의 필요한 정보를 추가로 담아서 전송처리한다.
 		content = content.replace("\n", "<br>");  // 우리는 textarea에 내용을 담지만 보내면 웹에서 text로 봄(한줄로 출력되기에 줄바꿈 처리 위해서 첫줄 '=' 사용)
-		content += "<br><hr><h3> 임시비밀번호 : "+pwd+"</h3><hr><br>";
+//		content += "<br><hr><h3> 임시비밀번호 : "+pwd+"</h3><hr><br>";
+		content += "<br><hr><h3>"+pwd+"</h3><hr><br>";
 		content += "<p><img src=\"cid:main.jpg\" width='500px'></p>";
 		content += "<p>방문하기 : <a href='http://49.142.157.251:9090/cjgreen'>javaclass</a></p>";
 		content += "<hr>";
