@@ -1,6 +1,8 @@
 package com.spring.javaclassS.common;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -111,12 +113,38 @@ public class JavaclassProvide {
 		return "1";
 	}
 	
+	// 파일명에 지정된 자리수만큼 난수를 붙여서 새로운 파일명으로 만들어 반환하기
 	public String newNameCreate(int len) {
 		Date today = new Date();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmm");  // mm 소문자로 하면 분  // 랜덤하게 꺼낼 것
-		String newName = sdf.format(today);  // 연월일시분까지의 문자  // 두글자의 알파뱃과 숫자 랜덤하게 붙임
-		newName += RandomStringUtils.randomAlphanumeric(len) + "_";  // _구분 // 두글자로 만듦  // 호출할때 길이를 넘김(길이를 맘대로 자를수 있음 uuid쓰면 subString 써야해서)
-		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmm");
+		String newName = sdf.format(today);
+		newName += RandomStringUtils.randomAlphanumeric(len) + "_";
 		return newName;
 	}
+	
+	// oriFilePath경로에 있는 파일을 copyFilePath경로로 복사시켜주기.
+  @SuppressWarnings("unused")
+	public void fileCopyCheck(String oriFilePath, String copyFilePath) {
+    File oriFile = new File(oriFilePath);
+    File copyFile = new File(copyFilePath);
+
+    try {
+      FileInputStream  fis = new FileInputStream(oriFile);
+      FileOutputStream fos = new FileOutputStream(copyFile);
+
+      byte[] buffer = new byte[2048];
+      int count = 0;
+      while((count = fis.read(buffer)) != -1) {
+        fos.write(buffer, 0, count);
+      }
+      fos.flush();
+      fos.close();
+      fis.close();
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+	
 }
