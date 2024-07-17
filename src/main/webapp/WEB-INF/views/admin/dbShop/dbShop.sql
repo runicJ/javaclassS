@@ -50,3 +50,16 @@ create table dbProduct (
   foreign key(categoryMiddleCode) references categoryMiddle(categoryMiddleCode),
   foreign key(categorySubCode) references categorySub(categorySubCode)
 );
+
+/* 상품 옵션 */
+create table dbOption (
+  idx    int not null auto_increment, /* 옵션 고유번호 */
+  productIdx int not null,						/* product테이블(상품)의 고유번호 - 외래키로 지정 */
+  optionName varchar(50) not null, 		/* 옵션 이름 */
+  optionPrice int not null default 0, /* 옵션 가격 */
+  primary key(idx),
+  foreign key(productIdx) references dbProduct(idx)
+);
+
+desc dbOption;
+select * from dbOption where productIdx = 1 order by optionName;

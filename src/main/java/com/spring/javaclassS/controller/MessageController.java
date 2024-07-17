@@ -207,6 +207,22 @@ public class MessageController {
 			model.addAttribute("msg", "저장실패~~ 입력된 자료를 확인해보세요.(BackEnd Check)");
 			model.addAttribute("url", "/study/validator/validatorForm");
 		}
+		else if(msgFlag.equals("dbProductInputOk")) {
+			model.addAttribute("msg", "상품이 등록되었습니다.");
+			model.addAttribute("url", "dbShop/dbShopList");
+		}
+		else if(msgFlag.equals("dbProductInputNo")) {
+			model.addAttribute("msg", "상품 등록 실패~~");
+			model.addAttribute("url", "dbShop/dbProduct");
+		}
+		else if(msgFlag.equals("dbOptionInputOk")) {
+			model.addAttribute("msg", "옵션항목이 등록되었습니다.");
+			model.addAttribute("url", "dbShop/dbOption?productName="+tempFlag);
+		}
+		else if(msgFlag.equals("dbOptionInputNo")) {
+			model.addAttribute("msg", "옵션항목 등록 실패~~");
+			model.addAttribute("url", "dbShop/dbOption?productName="+tempFlag);
+		}
 		
 //		if(msgFlag.equals("userDeleteOk")) {
 //			model.addAttribute("msg", "회원 자료가 삭제 되었습니다.");
