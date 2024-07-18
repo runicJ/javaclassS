@@ -152,18 +152,18 @@
     </div>
     <div class="col p-3 text-right">
       <!-- 상품 기본정보 -->
-      <div class="text-left"><h3>${productVo.detail}</h3></div>
+      <div class="text-left"><h3>${productVo.detail}</h4></div>
       <div>
         <h3><font color="orange"><fmt:formatNumber value="${productVo.mainPrice}"/>원</font></h3>
-        <h4>${productVo.productName}</h4>
+        <h4>${productVo.productName}</h3>
       </div>
 
 			<!-- 옵션항목처리(옵션값은 '옵션고유번호:옵션명_옵션가격' 형식으로 처리하고 있다.) -->
       <div class="form-group">
         <form name="optionForm">
-          <select size="1" class="form-control" id="selectOption">  <!-- 옵션(고유번호:상품명_가격) -->
+          <select size="1" class="form-control" id="selectOption">
             <option value="" disabled selected>상품옵션선택</option>
-            <option value="0:기본품목_${productVo.mainPrice}">기본품목</option>  <!-- 기본품도 옵션선택으로(옵션이 아니므로 0번) -->
+            <option value="0:기본품목_${productVo.mainPrice}">기본품목</option>
             <c:forEach var="vo" items="${optionVos}">
               <option value="${vo.idx}:${vo.optionName}_${vo.optionPrice}">${vo.optionName}</option>
             </c:forEach>
