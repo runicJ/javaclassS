@@ -152,10 +152,10 @@
     </div>
     <div class="col p-3 text-right">
       <!-- 상품 기본정보 -->
-      <div class="text-left"><h3>${productVo.detail}</h4></div>
+      <div class="text-left"><h3>${productVo.detail}</h3></div>
       <div>
         <h3><font color="orange"><fmt:formatNumber value="${productVo.mainPrice}"/>원</font></h3>
-        <h4>${productVo.productName}</h3>
+        <h4>${productVo.productName}</h4>
       </div>
 
 			<!-- 옵션항목처리(옵션값은 '옵션고유번호:옵션명_옵션가격' 형식으로 처리하고 있다.) -->

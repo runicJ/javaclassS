@@ -320,7 +320,7 @@ public class DbShopController {
 				strNums += nums[i];
 				if(i < nums.length - 1) strNums += ",";	// 구매상품이 2건 이상일때 기존상품 수량과의 구별을 위해 ','를 추가하고 있다.
 			}
-			if(strNums.indexOf(",") != -1) strNums = strNums.substring(0,strNums.length()-1);	// 여러개 상품을 구매했어ㄸ다고하면, 구매 했었던 상품 수량의 마지막 쉼표 제거하기
+			if(strNums.indexOf(",") != -1) strNums = strNums.substring(0,strNums.length()-1);	// 여러개 상품을 구매했었다고하면, 구매 했었던 상품 수량의 마지막 쉼표 제거하기
 			vo.setOptionNum(strNums);	// 새롭게 정비한 수량을 다시 vo에 set시켜준다.
 			res = dbShopService.dbShopCartUpdate(vo);	// 수량이 변경되었기에 기존 장바구니에서 지금 변경내역으로 update처리한다.
 		}
