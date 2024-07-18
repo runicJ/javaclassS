@@ -63,3 +63,22 @@ create table dbOption (
 
 desc dbOption;
 select * from dbOption where productIdx = 1 order by optionName;
+
+/* 상품 카트 */
+create table dbCart (
+	idx int not null auto_increment primary key,
+	cartDate datetime default now(),
+	mid varchar(20) not null,
+	productIdx int not null,
+	productName varchar(50) not null,
+	mainPrice int not null,
+	thumbImg varchar(200) not null,
+	optionIdx varchar(50) not null,
+	optionName varchar(50) not null,
+	optionPrice varchar(50) not null default 0,
+	optionNum varchar(50) not null,
+	totalPrice int not null,
+	foreign key(productIdx) references dbProduct(idx)
+);
+
+drop table dbCart;
