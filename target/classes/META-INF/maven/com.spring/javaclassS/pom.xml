@@ -263,6 +263,13 @@
 		    <version>0.4.20</version>
 		</dependency>
 		
+		<!-- imgscalr-lib(이미지 크기를 변경(잘라냄)시켜서 저장하는 라이브러리) 썸네일과 비슷한 작업처리이다. -->
+		<dependency>
+		  <groupId>org.imgscalr</groupId>
+		  <artifactId>imgscalr-lib</artifactId>
+		  <version>4.2</version>
+		</dependency>
+		
 		<!-- BackEnd 체크를 위한 validator 라이브러리(data검증:유효성검사) -->
 		<!-- https://mvnrepository.com/artifact/org.hibernate.validator/hibernate-validator -->
 		<dependency>
@@ -270,6 +277,14 @@
 		    <groupId>org.hibernate.validator</groupId>
 		    <artifactId>hibernate-validator</artifactId>
     		<version>6.2.0.Final</version>
+		</dependency>
+		
+		<!-- Transaction(트랜잭션)처리를 위한 라이브러리(스프링 프레임워크의 버젼과 통일시켜준다.) -->
+		<!-- https://mvnrepository.com/artifact/org.springframework/spring-tx -->
+		<dependency>
+	    <groupId>org.springframework</groupId>
+	    <artifactId>spring-tx</artifactId>
+	    <version>4.3.14.RELEASE</version>
 		</dependency>
 		
 		<!-- WebSocket(Spring WebSocket)을 사용하기위한 라이브러리 주입하기(2개) -->

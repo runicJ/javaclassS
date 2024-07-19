@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.spring.javaclassS.dao.PhotoGalleryDAO">
+	<select id="getPhotoGalleryList" resultType="com.spring.javaclassS.vo.PhotoGalleryVO">
+    select * from photoGallery2 <if test='part !="전체"'>part=#{part}</if> order by ${choice} desc limit #{startIndexNo},#{pageSize};
+	</select>
 	
+	
+	<insert id="photoGalleryInput">
+	  insert into photoGallery2 values (default,#{vo.mid},#{vo.part},#{vo.title},#{vo.content},#{vo.thumbnail},#{vo.photoCount},#{vo.hostIp},default,default,default);
+	</insert>
 	
 </mapper>

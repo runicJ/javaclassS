@@ -116,10 +116,10 @@
 	  <c:forEach var="vo" items="${vos}" varStatus="st">
 	    <!-- <div class="card" style="width:25%;"> -->
 	    <div class="card mb-5" style="width:220px;">
-		    <%-- <div class="card-body m-0 p-2"><img src="${ctp}/images/photoGallery/${vo.fSName}" width="100%" height="150px" title="${vo.title}" class="m-0" /></div> --%> 
+		    <%-- <div class="card-body m-0 p-2"><img src="${ctp}/photoGallery/${vo.FSName}" width="100%" height="150px" title="${vo.title}" class="m-0" /></div> --%> 
 		    <div class="card-body m-0 p-2 text-center">
-		      <a href="PhotoGallerContent.ptg?idx=${vo.idx}">
-		        <img src="${ctp}/images/photoGallery/${vo.FSName}" width="200px" height="150px" title="${vo.title}" class="m-0" />
+		      <a href="photoGallerContent?idx=${vo.idx}">
+		        <img src="${ctp}/photoGallery/${vo.thumbnail}" width="200px" height="150px" title="${vo.title}" class="m-0" />
 		      </a>
 		    </div> 
 		    <div class="card-footer">

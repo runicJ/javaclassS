@@ -1,7 +1,7 @@
 show tables;
 
 create table photoGallery2 (
-  idx   int not null,									/* 고유번호(강제로 1씩 증가처리) */
+  idx   int not null auto_increment,	/* 고유번호 */
   mid   varchar(20) not null,					/* 포토갤러리에 올린이 아이디 */
   part  varchar(10)  not null,				/* 분류(풍경/인물/학습/사물/기타) */		
   title varchar(100) not null,				/* 제목 */
@@ -13,23 +13,23 @@ create table photoGallery2 (
   goodCount  	int not null default 0, /* 좋아요수 */
   readNum			int not null default 0,	/* 조회수 */
   primary key(idx),
-  foreign key(mid) references member(mid)
+  foreign key(mid) references member2(mid)
 );
+drop table photoGallery2;
 
-
-create table photoReply (
+create table photoReply2 (
   idx  int not null auto_increment,
   mid   varchar(20) not null,				/* 포토갤러리에 댓글 올린이 아이디 */
   photoIdx int not null,						/* 포토갤러리 고유번호 */
   content  text not null,						/* 포토갤러리 댓글 내용 */
   prDate   datetime default now(),	/* 댓글 입력일자 */
   primary key(idx),
-  foreign key(photoIdx) references photoGallery(idx),
-  foreign key(mid) references member(mid)
+  foreign key(photoIdx) references photoGallery2(idx),
+  foreign key(mid) references member2(mid)
 );
-drop table photoReply;
-select * from photoReply;
+drop table photoReply2;
+select * from photoReply2;
 
-create table photoSingle (
+create table photoSingle2 (
   photo  varchar(50) not null
 );

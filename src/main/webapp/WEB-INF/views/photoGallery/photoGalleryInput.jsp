@@ -14,7 +14,7 @@
     function fCheck() {
     	let title = document.getElementById("title").value;
     	// ckeditor 입력 내용 받기 = CKEDITOR.instances.textarea태그의id.getData();
-    	if(CKEDITOR.instances.content.getData() =='' || CKEDITOR.instances.content.getData().length ==0){
+    	if(CKEDITOR.instances.content.getData() == '' || CKEDITOR.instances.content.getData().length == 0) {
   	    alert("사진을 등록해주세요.");
   	    $("#content").focus();
     	}
@@ -35,7 +35,7 @@
 <div class="container">
   <h2>사진파일 업로드</h2>
   <hr/>
-  <form name="myform" method="post" action="PhotoGalleryInputOk" enctype="multipart/form-data">
+  <form name="myform" method="post">
     <div class="input-group mb-2">
       <div class="input-group-prepend input-group-text">분 류</div>
       <select name="part" id="part" class="form-control">
