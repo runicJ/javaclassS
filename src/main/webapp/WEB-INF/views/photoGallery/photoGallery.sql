@@ -28,7 +28,9 @@ create table photoReply2 (
   foreign key(mid) references member2(mid)
 );
 drop table photoReply2;
+desc photoReply2;
 select * from photoReply2;
+select pg.*,(select count(*) from photoReply2 where photoIdx = 9) as replyCnt from photoGallery2 pg where idx = 9;
 
 create table photoSingle2 (
   photo  varchar(50) not null

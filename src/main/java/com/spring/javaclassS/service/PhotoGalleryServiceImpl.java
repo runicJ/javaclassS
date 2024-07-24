@@ -3,13 +3,18 @@ package com.spring.javaclassS.service;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
 
 import org.imgscalr.Scalr;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.spring.javaclassS.common.JavaclassProvide;
 import com.spring.javaclassS.dao.PhotoGalleryDAO;
@@ -133,6 +138,110 @@ public class PhotoGalleryServiceImpl implements PhotoGalleryService {
 	@Override
 	public List<PhotoGalleryVO> getPhotoGalleryList(int startIndexNo, int pageSize, String part, String choice) {
 		return photoGalleryDAO.getPhotoGalleryList(startIndexNo, pageSize, part, choice);
+	}
+
+	@Override
+	public void setPhotoGalleryReadNumPlus(int idx) {
+		photoGalleryDAO.setPhotoGalleryReadNumPlus(idx);
+	}
+
+	@Override
+	public PhotoGalleryVO getPhotoGalleryIdxSearch(int idx) {
+		return photoGalleryDAO.getPhotoGalleryIdxSearch(idx);
+	}
+
+	@Override
+	public ArrayList<PhotoGalleryVO> getPhotoGalleryReply(int idx) {
+		return photoGalleryDAO.getPhotoGalleryReply(idx);
+	}
+
+	@Override
+	public List<String> getPhotoGalleryPhotoList(String content) {
+		List<String> photoList = new ArrayList<String>();
+		
+		if(content.indexOf("src=\"/") == -1) return photoList; // content안에 그림파일이 없으면 작업을 수행하지 않는다.
+		//            0         1         2         3         4         5         6
+		//            01234567890123456789012345678901234567890123456789012345678901234567890
+		//<img alt="" src="/javaclassS/data/photoGallery/210201125255+0900_m13.jpg" style="height:400px; width:600px" />
+		
+		int position = 35;
+		
+		String nextImg = content.substring(content.indexOf("src=\"/")+position);
+		
+		while(true) {
+			String imgFile = nextImg.substring(0, nextImg.indexOf("\""));  // 순수한 그림파일만 가져온다.
+			photoList.add(imgFile);
+			if(nextImg.indexOf("src=\"/") == -1) break;
+			else nextImg = nextImg.substring(nextImg.indexOf("src=\"/")+position);
+		}
+		return photoList;
+	}
+
+	@Override
+	public int setPhotoGalleryReplyInput(PhotoGalleryVO vo) {
+		return photoGalleryDAO.setPhotoGalleryReplyInput(vo);
+	}
+
+	@Override
+	public int setPhotoGalleryReplyDelete(int idx) {
+		return photoGalleryDAO.setPhotoGalleryReplyDelete(idx);
+	}
+
+	@Override
+	public void setPhotoGalleryGoodPlus(int idx) {
+		photoGalleryDAO.setPhotoGalleryGoodPlus(idx);
+	}
+
+	@Transactional
+	@Override
+	public int setPhotoGalleryDelete(int idx) {
+		PhotoGalleryVO vo = photoGalleryDAO.getPhotoGalleryIdxSearch(idx);
+		
+		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+		String realPath = request.getSession().getServletContext().getRealPath("/resources/data/photoGallery/");
+
+		//            0         1         2         3         4         5         6
+		//            01234567890123456789012345678901234567890123456789012345678901234567890
+		//<img alt="" src="/javaclassS/data/photoGallery/210201125255+0900_m13.jpg" style="height:400px; width:600px" />
+		
+		int position = 35;	// photoCount는 그림파일 개수
+		
+		String nextImg = vo.getContent().substring(vo.getContent().indexOf("src=\"/")+position);
+		
+		while(true) {
+			String imgFile = nextImg.substring(0, nextImg.indexOf("\""));  // 순수한 그림파일만 가져온다.
+			
+			// 서버에 존재하는 파일을 삭제한다.
+			new File(realPath + imgFile).delete();
+			
+			if(nextImg.indexOf("src=\"/") == -1) break;
+			else nextImg = nextImg.substring(nextImg.indexOf("src=\"/")+position);
+		}
+		// 서버의 그림파일을 모두 삭제하였으면 현재 내역을 DB에서 포토갤러리의 정보를 삭제한다.
+		return photoGalleryDAO.setPhotoGalleryDelete(idx);
+	}
+
+	@Override
+	public List<PhotoGalleryVO> setPhotoGallerySingle(int startIndexNo, int pageSize) {
+		List<PhotoGalleryVO> vos = new ArrayList<PhotoGalleryVO>();
+		int[] idxs = photoGalleryDAO.getPhotoGalleryIdxList(startIndexNo, pageSize);
+		
+		PhotoGalleryVO photoVo = null;
+		PhotoGalleryVO vo = null;
+		for(int idx : idxs) {
+			photoVo = photoGalleryDAO.setPhotoGallerySingle(idx);
+			//System.out.println(idx + ".photoVo" + photoVo);
+			
+			vo = new PhotoGalleryVO();
+			vo.setIdx(photoVo.getIdx());
+			vo.setPart(photoVo.getPart());
+			vo.setTitle(photoVo.getTitle());
+			vo.setPhotoCount(photoVo.getPhotoCount());
+			vo.setContent(photoVo.getContent());
+			vos.add(vo);
+		}
+		//System.out.println("vos : " + vos.get(0));
+		return vos;
 	}
 	
 }

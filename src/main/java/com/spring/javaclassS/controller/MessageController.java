@@ -243,6 +243,14 @@ public class MessageController {
 			model.addAttribute("msg", "결재가 성공적으로 완료되었습니다.");
 			model.addAttribute("url", "/dbShop/paymentResultOk");
 		}
+		else if(msgFlag.equals("photoGalleryDeleteOk")) {
+			model.addAttribute("msg", "게시물이 삭제 되었습니다.");
+			model.addAttribute("url", "/photoGallery/photoGalleryList");
+		}
+		else if(msgFlag.equals("photoGalleryDeleteNo")) {
+			model.addAttribute("msg", "게시물이 삭제 실패~~");
+			model.addAttribute("url", "/photoGallery/photoGalleryList");
+		}
 		
 //		if(msgFlag.equals("userDeleteOk")) {
 //			model.addAttribute("msg", "회원 자료가 삭제 되었습니다.");

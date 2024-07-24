@@ -12,12 +12,12 @@
 	
 	<script>
 		var IMP = window.IMP; 
-    IMP.init("imp78204880");
+    IMP.init("imp87432616");
 		
 		IMP.request_pay({
 		    pg : 'html5_inicis.INIpayTest',
 		    pay_method : 'card',
-		    merchant_uid : 'javaclassS14_' + new Date().getTime(),
+		    merchant_uid : 'javaclassS20_' + new Date().getTime(),
 		    name : '${payMentVO.name}',
 		    amount : ${payMentVO.amount},
 		    buyer_email : '${payMentVO.buyer_email}',

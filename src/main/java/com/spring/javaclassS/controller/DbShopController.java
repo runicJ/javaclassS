@@ -29,6 +29,7 @@ import com.spring.javaclassS.vo.DbOrderVO;
 import com.spring.javaclassS.vo.DbPayMentVO;
 import com.spring.javaclassS.vo.DbProductVO;
 import com.spring.javaclassS.vo.MemberVO;
+import com.spring.javaclassS.vo.PageVO;
 
 @Controller
 @RequestMapping("/dbShop")
@@ -499,6 +500,57 @@ public class DbShopController {
 		model.addAttribute("vo", vo);
 		
 		return "dbShop/dbOrderBaesong";
+	}
+	
+	// 나의 주문 내역 보기
+	@RequestMapping(value="/dbMyOrder", method=RequestMethod.GET)
+	public String dbMyOrderGet(HttpServletRequest request, HttpSession session, Model model,
+			String startJumun, 
+			String endJumun, 
+			@RequestParam(name="pag", defaultValue="1", required=false) int pag,
+			@RequestParam(name="pageSize", defaultValue="5", required=false) int pageSize,
+  	  @RequestParam(name="conditionOrderStatus", defaultValue="전체", required=false) String conditionOrderStatus) {
+		
+		String mid = (String) session.getAttribute("sMid");
+		int level = (int) session.getAttribute("sLevel");
+		if(level == 0) mid = "전체";
+		
+		PageVO pageVO = pageProcess.totRecCnt(pag, pageSize, "dbMyOrder", mid, "");
+		
+		// 오늘 구매한 내역을 초기화면에 보여준다.
+		List<DbBaesongVO> vos = dbShopService.getMyOrderList(pageVO.getStartIndexNo(), pageSize, mid);
+		
+		model.addAttribute("vos", vos);				
+		model.addAttribute("startJumun", startJumun);
+		model.addAttribute("endJumun", endJumun);
+		model.addAttribute("conditionOrderStatus", conditionOrderStatus);
+		model.addAttribute("pageVO", pageVO);
+		
+		return "dbShop/dbMyOrder";
+	}
+	
+	// 현재 주문 상태 보여주기
+	@RequestMapping(value="/myOrderStatus", method=RequestMethod.GET)
+	public String myOrderStatusGet(Model model, HttpServletRequest request, HttpSession session, 
+			String startJumun, String endJumun, 
+			@RequestParam(name="pag", defaultValue="1", required=false) int pag,
+			@RequestParam(name="pageSize", defaultValue="5", required=false) int pageSize,
+  	  @RequestParam(name="conditionOrderStatus", defaultValue="전체", required=false) String conditionOrderStatus) {
+		String mid = (String) session.getAttribute("sMid");
+		int level = (int) session.getAttribute("sLevel");
+		
+		if(level == 0) mid = "전체";
+		String searchString = startJumun + "@" + endJumun + "@" + conditionOrderStatus;
+		PageVO pageVO = pageProcess.totRecCnt(pag, pageSize, "myOrderStatus", mid, searchString);  // 4번째인자에 '아이디/조건'(을)를 넘겨서 part를 아이디로 검색처리하게 한다.
+		
+		List<DbBaesongVO> vos = dbShopService.getMyOrderStatus(pageVO.getStartIndexNo(), pageSize, mid, startJumun, endJumun, conditionOrderStatus);
+		model.addAttribute("vos", vos);				
+		model.addAttribute("startJumun", startJumun);
+		model.addAttribute("endJumun", endJumun);
+		model.addAttribute("conditionOrderStatus", conditionOrderStatus);
+		model.addAttribute("pageVO", pageVO);
+		
+		return "dbShop/dbMyOrder";
 	}
 	
 }
