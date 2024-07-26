@@ -132,6 +132,34 @@
     select * from dbBaesong where orderIdx = #{orderIdx};
   </select>
   
+  <select id="getMyOrderList" resultType="com.spring.javaclassS.vo.DbBaesongVO">
+    <if test='mid == "전체"'>
+      SELECT oder.*,baesong.* from dbOrder oder join dbBaesong baesong using(orderIdx) 
+      where date(orderDate) = substring(now(),1,10) order by baesong.idx desc limit #{startIndexNo},#{pageSize};
+    </if>
+    <if test='mid != "전체"'>
+      SELECT oder.*,baesong.* from dbOrder oder join dbBaesong baesong using(orderIdx) 
+      where baesong.mid=#{mid} and date(orderDate) = substring(now(),1,10) order by baesong.idx desc limit #{startIndexNo},#{pageSize};
+    </if>
+  </select>
+  
+  <select id="getMyOrderStatus" resultType="com.spring.javaclassS.vo.DbBaesongVO">
+    <if test="mid == '전체' and conditionOrderStatus == '전체'">
+      select o.*,b.* from dbOrder o join dbBaesong b using(orderIdx) where <![CDATA[ date(orderDate) >= date(#{startJumun}) and date(orderDate) <= date(#{endJumun}) order by orderDate desc ]]> limit #{startIndexNo},#{pageSize};
+    </if>
+    <if test="mid == '전체' and conditionOrderStatus != '전체'">
+      select o.*,b.* from dbOrder o join dbBaesong b using(orderIdx) where <![CDATA[ date(orderDate) >= date(#{startJumun}) and date(orderDate) <= date(#{endJumun}) and b.orderStatus=#{conditionOrderStatus} order by orderDate desc ]]> limit #{startIndexNo},#{pageSize};
+    </if>
+    <if test="mid != '전체' and conditionOrderStatus == '전체'">
+      select o.*,b.* from dbOrder o join dbBaesong b using(orderIdx) where b.mid = #{mid} <![CDATA[ and date(orderDate) >= date(#{startJumun}) and date(orderDate) <= date(#{endJumun}) order by orderDate desc ]]> limit #{startIndexNo},#{pageSize};
+    </if>
+    <if test="mid != '전체' and conditionOrderStatus != '전체'">
+      select o.*,b.* from dbOrder o join dbBaesong b using(orderIdx) where b.mid = #{mid} <![CDATA[ and date(orderDate) >= date(#{startJumun}) and date(orderDate) <= date(#{endJumun}) and b.orderStatus=#{conditionOrderStatus} order by orderDate desc ]]> limit #{startIndexNo},#{pageSize};
+    </if>
+  </select>
+  
+  
+  
 	
 	
   <insert id="setCategoryMainInput">

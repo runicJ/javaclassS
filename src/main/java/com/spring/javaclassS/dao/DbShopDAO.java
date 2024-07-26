@@ -96,4 +96,8 @@ public interface DbShopDAO {
 
 	public List<DbBaesongVO> getOrderBaesong(@Param("orderIdx") String orderIdx);
 
+	public List<DbBaesongVO> getMyOrderList(@Param("startIndexNo") int startIndexNo, @Param("pageSize") int pageSize, @Param("mid") String mid);
+
+	public List<DbBaesongVO> getMyOrderStatus(@Param("startIndexNo") int startIndexNo, @Param("pageSize") int pageSize, @Param("mid") String mid, @Param("startJumun") String startJumun, @Param("endJumun") String endJumun, @Param("conditionOrderStatus") String conditionOrderStatus);
+
 }

@@ -39,7 +39,7 @@
 		  <!-- 상품주문을 위한 옵션정보 출력 -->
 		  <div class="form-group">
 		    <form name="optionForm">  <!-- 옵션의 정보를 보여주기위한 form -->
-		      <select size="1" class="form-control" id="selectOption">
+		      <select size="1" class="form-control" id="selectOption">	<!-- 옵션(고유번호:상품명_가격) -->
 		        <option value="" disabled selected>상품옵션선택</option>
 		        <option value="0:기본품목_${productVO.mainPrice}">기본품목</option>
 		        <c:forEach var="vo" items="${optionVOS}">

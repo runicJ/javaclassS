@@ -168,7 +168,7 @@
           <select name="paymentCard" id="paymentCard">
             <option value="">카드선택</option>
             <option>국민카드</option>
-            <option>현대카드</option>
+            <option selected>현대카드</option>
             <option>신한카드</option>
             <option>농협카드</option>
             <option>BC카드</option>
@@ -177,7 +177,7 @@
             <option>LG카드</option>
           </select>
         </p>
-        <p>카드번호 : <input type="text" name="payMethodCard" id="payMethodCard"/></p>
+        <p>카드번호 : <input type="text" name="payMethodCard" id="payMethodCard" value="1234-1234-1234"/></p>
       </div>
       <div id="bank" class="container tab-pane fade"><br>
         <h3>은행결재(무통장입금)</h3>

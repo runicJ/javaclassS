@@ -14,7 +14,7 @@
     	let part = $("#part").val();
     	let choice = $("#choice").val();
     	
-    	location.href = "photoGallery?part="+part+"&choice="+choice;
+    	location.href = "photoGalleryList?part="+part+"&choice="+choice;
     }
     
     
@@ -34,9 +34,13 @@
     			curPage++;
     			//getList(curPage);
     			$.ajax({
-  	    		url  : "photoGalleryPaging",
+  	    		url  : "photoGalleryListPaging",
   	    		type : "post",
-  	    		data : {pag : curPage},
+  	    		data : {
+  	    			pag : curPage,
+  	    			part : '${part}',
+  	    			choice: '${choice}'
+  	    		},
   	    		success:function(res) {
   	    			$("#list-wrap").append(res);
   	    		}
@@ -47,18 +51,44 @@
     });
     
     // 리스트 불러오기 함수(ajax처리)
-    function getList(curPage) {
+    /* function getList(curPage) {
     	$.ajax({
-    		url  : "${ctp}/photoGallery/photoGallery",
+    		url  : "${ctp}/photoGallery/photoGallerySimpleList",
     		type : "post",
     		data : {pag : curPage},
     		success:function(res) {
     			$("#list-wrap").append(res);
     		}
     	});
-    }
+    } */
+    
+    // 화살표클릭시 화면 상단으로 부드럽게 이동하기
+    $(window).scroll(function(){
+    	if($(this).scrollTop() > 100) {
+    		$("#topBtn").addClass("on");
+    	}
+    	else {
+    		$("#topBtn").removeClass("on");
+    	}
+    	
+    	$("#topBtn").click(function(){
+    		window.scrollTo({top:0, behavior: "smooth"});
+    	});
+    });
   </script>
   <style>
+		h6 {
+		  position: fixed;
+		  right: 1rem;
+		  bottom: -50px;
+		  transition: 0.7s ease;
+		}
+   	.on {
+		  opacity: 0.8;
+		  cursor: pointer;
+		  bottom: 0;
+		}
+	
     .container {
       width: 1000px;
       margin: 0 auto;
@@ -118,7 +148,7 @@
 	    <div class="card mb-5" style="width:220px;">
 		    <%-- <div class="card-body m-0 p-2"><img src="${ctp}/photoGallery/${vo.FSName}" width="100%" height="150px" title="${vo.title}" class="m-0" /></div> --%> 
 		    <div class="card-body m-0 p-2 text-center">
-		      <a href="photoGallerContent?idx=${vo.idx}">
+		      <a href="photoGalleryContent?idx=${vo.idx}">
 		        <img src="${ctp}/photoGallery/${vo.thumbnail}" width="200px" height="150px" title="${vo.title}" class="m-0" />
 		      </a>
 		    </div> 
@@ -136,5 +166,7 @@
 </div>
 <p style="clear:both;"><br/></p>
 <jsp:include page="/WEB-INF/views/include/footer.jsp" />
+<!-- 위로가기 버튼 -->
+<h6 id="topBtn" class="text-right mr-3"><img src="${ctp}/images/arrowTop.gif" title="위로이동"/></h6>
 </body>
 </html>

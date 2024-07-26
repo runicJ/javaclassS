@@ -101,4 +101,7 @@
     <factorypathentry kind="VARJAR" id="M2_REPO/com/mchange/mchange-commons-java/0.2.15/mchange-commons-java-0.2.15.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/com/mchange/c3p0/0.9.5.5/c3p0-0.9.5.5.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/com/zaxxer/HikariCP-java7/2.4.13/HikariCP-java7-2.4.13.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/googlecode/json-simple/json-simple/1.1/json-simple-1.1.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/org/json/json/20240303/json-20240303.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/com/google/code/gson/gson/2.8.8/gson-2.8.8.jar" enabled="true" runInBatchMode="false"/>
 </factorypath>

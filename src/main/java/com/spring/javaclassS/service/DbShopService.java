@@ -94,4 +94,8 @@ public interface DbShopService {
 
 	public List<DbBaesongVO> getOrderBaesong(String orderIdx);
 
+	public List<DbBaesongVO> getMyOrderList(int startIndexNo, int pageSize, String mid);
+
+	public List<DbBaesongVO> getMyOrderStatus(int startIndexNo, int pageSize, String mid, String startJumun, String endJumun, String conditionOrderStatus);
+
 }

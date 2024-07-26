@@ -17,7 +17,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -79,6 +81,7 @@ import com.spring.javaclassS.vo.ChartVO;
 import com.spring.javaclassS.vo.CrawlingVO;
 import com.spring.javaclassS.vo.CrimeVO;
 import com.spring.javaclassS.vo.DbPayMentVO;
+import com.spring.javaclassS.vo.ExchangeRateVO;
 import com.spring.javaclassS.vo.KakaoAddressVO;
 import com.spring.javaclassS.vo.MailVO;
 import com.spring.javaclassS.vo.QrCodeVO;
@@ -1553,5 +1556,40 @@ public class StudyController {
   	
   	session.removeAttribute("sPayMentVO");  // 결제가 끝나면 꼭 세션을 지워준다.
   	return "study/payment/paymentOk";
+  }
+  
+  // 환율계산하기 폼보기
+  @RequestMapping(value = "/exchangeRate/exchangeRate", method = RequestMethod.GET)
+  public String exchangeRateGet(Model model,
+  		@RequestParam(name="searchdate", defaultValue="",required=false) String searchdate) {
+  	if(searchdate.equals("")) {
+  		//searchdate = java.time.LocalDate.now();
+			Date today = new Date();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			searchdate = sdf.format(today);
+  	}
+  	List<ExchangeRateVO> unitVos = studyService.getExchangeRateUnit(searchdate);
+  	model.addAttribute("searchdate", searchdate);
+  	model.addAttribute("unitVos", unitVos);
+  	//System.out.println(unitVos);
+  	return "study/exchangeRate/exchangeRate";
+  }
+  
+  // 환율api에서 가져와서 지정된 날짜의 환율 보여주기
+  @ResponseBody
+  @RequestMapping(value="/exchangeRate/exchangeRate", method=RequestMethod.POST, produces="application/text; charset=utf-8")
+  public String exchangeRatePost(String searchdate,
+  		@RequestParam(name = "receiveCountry", defaultValue = "", required = false) String receiveCountry){
+    return studyService.getCurrencyRate(receiveCountry, searchdate);
+  }
+  
+  // 환율api에서 환률가져와서 송금달라입력시 해당 송금액을 원화로 계산한 결과를 리턴해주기
+  @ResponseBody
+  @RequestMapping(value="/exchangeRate/exchangeRateCompute", method=RequestMethod.POST, produces="application/text; charset=utf-8")
+  public String exchangeRateComputePost(String searchdate,
+  		@RequestParam(name = "receiveCountry", defaultValue = "", required = false) String receiveCountry,
+  		@RequestParam(name = "sendAmount", defaultValue = "0", required = false) String sendAmount
+  	){
+  	return studyService.getCurrencyRateCompute(receiveCountry, sendAmount, searchdate);
   }
 }

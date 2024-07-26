@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <c:set var="ctp" value="${pageContext.request.contextPath}" />
 <!DOCTYPE html>
 <html>
@@ -21,12 +22,12 @@
     	
     	// 스크롤이 아래로 내려갔을때 이벤트 처리..
     	if(currentScroll > lastScroll) {
-    		if(documentHeight < (nowHeight + (documentHeight*0.1))) {
+    		if(documentHeight < (nowHeight + (documentHeight*0.05))) {
     			console.log("다음페이지 가져오기");
     			curPage++;
     			//getList(curPage);
     			$.ajax({
-  	    		url  : "PhotoGallerySinglePaging.ptg",
+  	    		url  : "photoGallerySinglePaging",
   	    		type : "post",
   	    		data : {pag : curPage},
   	    		success:function(res) {
@@ -38,18 +39,37 @@
     	lastScroll = currentScroll;
     });
     
+    // 화살표클릭시 화면 상단으로 부드럽게 이동하기
+    $(window).scroll(function(){
+    	if($(this).scrollTop() > 100) {
+    		$("#topBtn").addClass("on");
+    	}
+    	else {
+    		$("#topBtn").removeClass("on");
+    	}
+    	
+    	$("#topBtn").click(function(){
+    		window.scrollTo({top:0, behavior: "smooth"});
+    	});
+    });
   </script>
   <style>
+		h6 {
+		  position: fixed;
+		  right: 1rem;
+		  bottom: -50px;
+		  transition: 0.7s ease;
+		}
+   	.on {
+		  opacity: 0.8;
+		  cursor: pointer;
+		  bottom: 0;
+		}
+  
     .container {
       width: 1000px;
       margin: 0 auto;
     }
-    /* 
-    .card {
-      float:left;
-      margin: 10px;
-    }
-     */
   </style>
 </head>
 <body>
@@ -65,25 +85,24 @@
       <td>
       </td>
       <td class="text-right">
-        <input type="button" value="사진올리기" onclick="location.href='PhotoGalleryInput.ptg';" class="btn btn-success"/>
-        <input type="button" value="여러장씩보기" onclick="location.href='PhotoGallery.ptg';" class="btn btn-info mr-2"/>
+        <input type="button" value="사진올리기" onclick="location.href='photoGalleryInput';" class="btn btn-success"/>
+        <input type="button" value="여러장씩보기" onclick="location.href='photoGalleryList';" class="btn btn-info mr-2"/>
       </td>
     </tr>
   </table>
   <section id="list-wrap">
-	  <c:forEach var="photo" items="${vos}" varStatus="st">
+	  <c:forEach var="vo" items="${vos}" varStatus="st">
 	    <div class="card mb-5" style="width:95%;">
-		    <div class="card-body m-0 p-2 text-center">
-		      <img src="${ctp}/images/photoGallery/${photo[1]}" width="90%" />
-		    </div> 
-		    <div class="card-footer">
-		      <div class="text-center" style="font-size:10px">${photo[0]} : ${photo[1]}</div>
-		    </div>
+		    <c:set var="content" value="${fn:replace(vo.content,'.png\"','.png\" width=100%')}"/>
+		    <b>번호:${vo.idx} / 분야:${vo.part} / 제목:${vo.title} / 사진수량:${vo.photoCount}</b><br/>
+		    ${fn:replace(content,'.jpg\"','.jpg\" width=100%')}<hr/>
 		  </div>
 	  </c:forEach>
   </section>
 </div>
 <p style="clear:both;"><br/></p>
 <jsp:include page="/WEB-INF/views/include/footer.jsp" />
+<!-- 위로가기 버튼 -->
+<h6 id="topBtn" class="text-right mr-3"><img src="${ctp}/images/arrowTop.gif" title="위로이동"/></h6>
 </body>
 </html>

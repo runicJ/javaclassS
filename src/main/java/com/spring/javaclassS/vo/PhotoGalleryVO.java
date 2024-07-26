@@ -16,5 +16,12 @@ public class PhotoGalleryVO {
 	private int goodCount;
 	private int readNum;
 	
-	private int replyCnt;
+	// photoReply2.sql
+	private int replyIdx;
+	//private String replyMid;
+	private int photoIdx;
+	//private String replyContent;
+	private String prDate;
+	
+	private int replyCnt;	// 댓글 개수
 }
