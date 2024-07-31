@@ -77,6 +77,7 @@ import com.spring.javaclassS.common.ARIAUtil;
 import com.spring.javaclassS.common.SecurityUtil;
 import com.spring.javaclassS.service.DbtestService;
 import com.spring.javaclassS.service.StudyService;
+import com.spring.javaclassS.vo.BicycleVO;
 import com.spring.javaclassS.vo.ChartVO;
 import com.spring.javaclassS.vo.CrawlingVO;
 import com.spring.javaclassS.vo.CrimeVO;
@@ -85,6 +86,7 @@ import com.spring.javaclassS.vo.ExchangeRateVO;
 import com.spring.javaclassS.vo.KakaoAddressVO;
 import com.spring.javaclassS.vo.MailVO;
 import com.spring.javaclassS.vo.QrCodeVO;
+import com.spring.javaclassS.vo.TagoExpressVO;
 import com.spring.javaclassS.vo.TransactionVO;
 import com.spring.javaclassS.vo.UserVO;
 
@@ -1084,51 +1086,42 @@ public class StudyController {
 		return "study/kakao/kakaoEx1";
 	}
 	
-	// 카카오맵 마커표시/저장 처리
+	// 카카오맵 마커표시 저장 /이미지 저장 처리
 	@ResponseBody
 	@RequestMapping(value = "/kakao/kakaoEx1", method = RequestMethod.POST)
-	public String kakaoEx1Post(KakaoAddressVO vo) {
+	public String kakaoEx1ImagePost(KakaoAddressVO vo) {
 		KakaoAddressVO searchVO = studyService.getKakaoAddressSearch(vo.getAddress());
-		
 		if(searchVO != null) return "0";
-		
 		studyService.setKakaoAddressInput(vo);
-		
 		return "1";
 	}
-
-//	// 카카오맵 MyDB에 저장된 지명검색
-//	@RequestMapping(value = "/kakao/kakaoEx2", method = RequestMethod.GET)
-//	public String kakaoEx2Get(Model model) {
-//		List<KakaoAddressVO> addressVos = studyService.getKakaoAddressList();
-//		
-//		model.addAttribute("addressVos", addressVos);
-//	
-//		return "study/kakao/kakaoEx2";
-//	}
 	
-	// 카카오맵 연습2(MyDB에 저장된 주소목록 가져오기 / 지점검색하기 추가)
+	// 카카오맵 MyDB에 저장된 지명검색
 	@RequestMapping(value = "/kakao/kakaoEx2", method = RequestMethod.GET)
 	public String kakaoEx2Get(Model model,
-			@RequestParam(name="address", defaultValue = "", required = false) String address) {
+			@RequestParam(name="address", defaultValue = "", required = false) String address
+		) {
+		//System.out.println("address : " + address);
 		KakaoAddressVO vo = new KakaoAddressVO();
+		
 		List<KakaoAddressVO> addressVos = studyService.getKakaoAddressList();
 		
 		if(address.equals("")) {
-			vo.setAddress("청주 그린컴퓨터");  // 여기를 홈으로 설정
-			vo.setLatitude(36.63518067764835);
-			vo.setLongitude(127.45950765979747);
+			vo.setAddress("청주그린컴퓨터");
+			vo.setLatitude(36.63508163115122);
+			vo.setLongitude(127.45948750459904);
 		}
 		else {
-		  vo = studyService.getKakaoAddressSearch(address);
+			vo = studyService.getKakaoAddressSearch(address);
 		}
+		
 		model.addAttribute("addressVos", addressVos);
 		model.addAttribute("vo", vo);
 		
 		return "study/kakao/kakaoEx2";
 	}
 	
-	// 카카오맵 MyDb에 저장된 검색위치 삭제하기
+	// 카카오맵 MyDB에 저장된 검색위치 삭제하기
 	@ResponseBody
 	@RequestMapping(value = "/kakao/kakaoAddressDelete", method = RequestMethod.POST)
 	public String kakaoAddressDeletePost(String address) {
@@ -1583,7 +1576,7 @@ public class StudyController {
     return studyService.getCurrencyRate(receiveCountry, searchdate);
   }
   
-  // 환율api에서 환률가져와서 송금달라입력시 해당 송금액을 원화로 계산한 결과를 리턴해주기
+  // 환율api에서 환율가져와서 송금달라입력시 해당 송금액을 원화로 계산한 결과를 리턴해주기
   @ResponseBody
   @RequestMapping(value="/exchangeRate/exchangeRateCompute", method=RequestMethod.POST, produces="application/text; charset=utf-8")
   public String exchangeRateComputePost(String searchdate,
@@ -1592,4 +1585,45 @@ public class StudyController {
   	){
   	return studyService.getCurrencyRateCompute(receiveCountry, sendAmount, searchdate);
   }
+	
+  // 전국 자전거 대여소(공공API) 폼보기
+  @RequestMapping(value = "/bicycle/bicycle", method = RequestMethod.GET)
+  public String bicycleGet() {
+  	return "study/bicycle/bicycle";
+  }
+  
+  // 전국 자전거 대여소 조회 처리1
+  @ResponseBody
+  @RequestMapping(value = "/bicycle/bicycle", method = RequestMethod.POST)
+  public List<BicycleVO> bicyclePost(int page) {
+  	return studyService.getBicycleData(page);
+  }
+  
+  // 서울시 공공자전거 실시간 대여정보 처리
+  @ResponseBody
+  @RequestMapping(value = "/bicycle/bicycle2", method = RequestMethod.POST)
+  public List<BicycleVO> bicycle2Post() {
+  	return studyService.getBicycleData2();
+  }
+  
+	
+  // 전국 고속버스 시간표검색 폼보기
+  @RequestMapping(value = "/tagoExpress/tagoExpress", method = RequestMethod.GET)
+  public String tagoExpressGet() {
+  	return "study/tagoExpress/tagoExpress";
+  }
+  
+  // 전국 고속버스 정보 조회 처리
+  @ResponseBody
+  @RequestMapping(value = "/tagoExpress/tagoExpress", method = RequestMethod.POST)
+  public List<TagoExpressVO> tagoExpressPost(int page) {
+  	return studyService.getTagoExpressData(page);
+  }
+  
+	// 달력내역 가져오기
+	@RequestMapping(value = "/calendar/calendar", method = RequestMethod.GET)
+	public String calendarGet() {
+		studyService.getCalendar();
+		return "study/calendar/calendar";
+	}
 }

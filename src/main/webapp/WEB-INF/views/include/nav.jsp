@@ -77,6 +77,8 @@
 	        <a href="${ctp}/study/crawling/selenium" class="w3-bar-item w3-button">크롤링(selenium)</a>
 	        <a href="${ctp}/study/wordcloud/wordcloudForm" class="w3-bar-item w3-button">WordCloud</a>
 	        <a href="${ctp}/study/exchangeRate/exchangeRate" class="w3-bar-item w3-button">환율계산하기</a>
+	        <a href="${ctp}/study/bicycle/bicycle" class="w3-bar-item w3-button">전국자전거대여소</a>
+	        <a href="${ctp}/study/tagoExpress/tagoExpress" class="w3-bar-item w3-button">고속버스운행정보</a>
 	      </div>
 	    </div>
 	    <div class="w3-dropdown-hover w3-hide-small">
@@ -92,6 +94,7 @@
 	        <a href="${ctp}/study/chart2/chart2Form" class="w3-bar-item w3-button">웹 차트 2</a>
 	        <a href="${ctp}/study/validator/validatorForm" class="w3-bar-item w3-button">Validator 연습</a>
 	        <a href="${ctp}/study/transaction/transactionForm" class="w3-bar-item w3-button">트랜잭션 연습</a>
+	        <a href="${ctp}/study/calendar/calendar" class="w3-bar-item w3-button">인터넷달력</a>
 	        <a href="#" class="w3-bar-item w3-button">스케줄러</a>
 	        <a href="${ctp}/study/csv/csvForm" class="w3-bar-item w3-button">CSV를MySQL로</a>
 	        <a href="${ctp}/study/slideBar/rangeSlider" class="w3-bar-item w3-button">Range Slider</a>
@@ -111,10 +114,11 @@
 	    <div class="w3-dropdown-hover w3-hide-small">
 	      <button onclick="location.href='${ctp}/member/memberMain';" class="w3-padding-large w3-button" title="More">MyPage <i class="fa fa-caret-down"></i></button>     
 	      <div class="w3-dropdown-content w3-bar-block w3-card-4">
-	        <a href="${ctp}/" class="w3-bar-item w3-button">일정관리</a>
+	        <a href="${ctp}/schedule/schedule" class="w3-bar-item w3-button">일정관리</a>
 	        <a href="${ctp}/photoGallery/photoGalleryList" class="w3-bar-item w3-button">Photo Gallery</a>
 	        <a href="${ctp}/" class="w3-bar-item w3-button">DB 채팅</a>
 	        <a href="${ctp}/webSocket/webSocket" class="w3-bar-item w3-button">웹소켓 채팅</a>
+	        <a href="${ctp}/webSocket/endPoint" class="w3-bar-item w3-button">1:1 채팅</a>
 	        <a href="${ctp}/member/memberList" class="w3-bar-item w3-button">회원리스트</a>
 	        <a href="${ctp}/member/memberPwdCheck/p" class="w3-bar-item w3-button">비밀번호변경</a>
 	        <a href="${ctp}/member/memberPwdCheck/i" class="w3-bar-item w3-button">회원정보수정</a>
