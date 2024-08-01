@@ -36,7 +36,7 @@ public interface StudyDAO {
 	public List<KakaoAddressVO> getKakaoAddressList();
 
 	public int setKakaoAddressDelete(@Param("address") String address);
-
+	
 	public void setPetCafe(@Param("vo") PetCafeVO vo);
 
 	public String setCsvTableDelete(@Param("csvTable") String csvTable);

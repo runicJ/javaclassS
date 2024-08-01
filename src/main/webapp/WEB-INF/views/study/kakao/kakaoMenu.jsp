@@ -8,6 +8,6 @@
     <a href="${ctp}/study/kakao/kakaoEx2" class="btn btn-primary">MyDB에 저장된 지명검색</a>
     <a href="${ctp}/study/kakao/kakaoEx3" class="btn btn-secondary">KakaoDB에 저장된 키워드검색</a>
     <a href="${ctp}/study/kakao/kakaoEx4" class="btn btn-info">주변검색</a>
-    <a href="${ctp}/study/kakao/kakaoEx5" class="btn btn-warning">거리계산</a>
+    <a href="${ctp}/study/kakao/kakaoEx5" class="btn btn-warning">마커클러스터러</a>
   </p>
 </div>
