@@ -103,4 +103,10 @@ public class HomeController {
     return "webSocket/webSocket";
 	}
 	
+	// 채팅창 띄우기
+	@RequestMapping(value = "/teaser/teaser", method = RequestMethod.GET)
+	public String teaserGet() {
+		return "teaser/teaser";
+	}
+	
 }

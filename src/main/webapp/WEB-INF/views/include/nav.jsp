@@ -95,6 +95,7 @@
 	        <a href="#" class="w3-bar-item w3-button">스케줄러</a>
 	        <a href="${ctp}/study/csv/csvForm" class="w3-bar-item w3-button">CSV를MySQL로</a>
 	        <a href="${ctp}/study/slideBar/rangeSlider" class="w3-bar-item w3-button">Range Slider</a>
+	        <a href="${ctp}/teaser/teaser" class="w3-bar-item w3-button">프로젝트 teaser 광고</a>
 	      </div>
 	    </div>
 	    <div class="w3-dropdown-hover w3-hide-small">

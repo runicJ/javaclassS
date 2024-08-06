@@ -21,6 +21,7 @@
 	<resources mapping="/css/**" location="/resources/css/" />
 	<resources mapping="/js/**" location="/resources/js/" />
 	<resources mapping="/images/**" location="/resources/images/" />
+	<resources mapping="/teaser/**" location="/resources/teaser/" />
 	<resources mapping="/data/**" location="/resources/data/" />
 	<resources mapping="/member/**" location="/resources/data/member/" />
 	<!-- realPath 경로와 다름, 이건 브라우저의 url상 /는 context -->
