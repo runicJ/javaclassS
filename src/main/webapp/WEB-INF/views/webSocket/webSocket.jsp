@@ -19,7 +19,7 @@
 	  $(document).ready(function(){
 		  
 			//채팅 서버 주소
-		  let url = "ws://192.168.50.27:9090/javaclassS/chatserver";
+		  let url = "ws://192.168.50.20:9090/javaclassS/chatserver";
 		  //let url = "ws://localhost:9090/${ctp}/chatserver";
 		     		
 		  // 웹 소켓
@@ -28,13 +28,13 @@
 		  // 연결버튼을 클릭하면 수행처리한다.
 		  $('#btnConnect').click(function() {
 		  	// 처음 접속시에 유저명 확인
-	     	if ($('#user').val().trim() != '') {  // 유저명이 공백이 아니면
-	  	   	ws = new WebSocket(url);  // 접속유저라면, 웹소켓에 연결(접속)한다.
+	     	if ($('#user').val().trim() != '') {
+	  	   	ws = new WebSocket(url);	// 접속유저라면, 웹소켓에 연결(접속)한다.
 	  	   			
 	  	   	// 소켓 이벤트 매핑처리(웹소켓에 연결되면 onopen 메소드 수행처리된다.)
 	  	   	ws.onopen = function (evt) {
 	  	   		//console.log($('#user').val(), '서버 연결 성공');
-	  	   		print($('#user').val(), '입장했습니다.');  // print 아래에 만든 메소드명
+	  	   		print($('#user').val(), '입장했습니다.');
 	  	   				
 	  	   		
 		  			ws.send('1#' + $('#user').val() + '#');
@@ -48,20 +48,20 @@
 		  			$('#msg').focus();
 		  		};
 	        
-		  		// 메시지를 보내면 서버에 다녀온 후 getBasicRemote().sendText()에서 가져온 메시지 처리.
-	  			ws.onmessage = function (evt) {  // 서버에 넘어온 값이 '2#user명: 메시지'...  '2#user명: 메시지#__@__'
-		  			let index = evt.data.indexOf("#", 2);  // 메시지와 색상코드가 있는지 찾고있다. // #을 찾음
-		  			let no = evt.data.substring(0, 1);  // 접속자가 1(처음접속자), 2(기존접속자), 3(종료접속자) 인지 판별
-		  			let user = evt.data.substring(2, index);  // 로그인 사용자의 유저명을 가져온다.
+		  		// 메세지를 보내면 서버에 다녀온후() getBasicRemote().sendText()에서 가져온 메세지 처리.
+	  			ws.onmessage = function (evt) {					// 서버에 넘어온값이 '2#user명: 메세지'...  '2#user명: 메세지#__@__'
+		  			let index = evt.data.indexOf("#", 2);	// 메세지와 색상코드가 있는지 찾고있다.
+		  			let no = evt.data.substring(0, 1);		// 접속자가 1(처음접속자), 2(기존접속자), 3(종료접속자) 인지 판별
+		  			let user = evt.data.substring(2, index);  // 로그인사용자의 '유저명'을 가져온다.
 		  			
-		  			if(index == -1) user = evt.data.substring(evt.data.indexOf("#")+1, evt.data.indexOf(":"));  // 색상코드없이 바로 넘어온 경우...	
-		  			let txt = evt.data.substring(evt.data.indexOf(":")+1);  // 메시지 발췌
+		  			if(index == -1) user = evt.data.substring(evt.data.indexOf("#")+1, evt.data.indexOf(":"));	// 색상코드없이 바로 넘어온 경우...	
+		  			let txt = evt.data.substring(evt.data.indexOf(":")+1);		// 메세지 발췌	  			
 		  	   				
 		  			if (no == '1') {	// 최초 접속자는 print2()메소드 호출
 		  				print2(user);
-		  			} else if (no == '2') {	 // 기존 접속자들은 채팅중이기에 print()에 '유저명','메시지'를 보낸다.
+		  			} else if (no == '2') {	// 기존접속자들은 채팅중이기에 print()에 '유저명','메세지'를 보낸다.
 		  				if (txt != '') print(user, txt);
-		  			} else if (no == '3') {	 // 종료 사용자는 print3()로 보낸다.
+		  			} else if (no == '3') {	// 종료사용자는 print3()으로 보낸다.
 		  				print3(user);
 		  			}
 		  			$('#list').scrollTop($('#list').prop('scrollHeight'));	// 스크롤바를 가장 아래쪽으로 내린다.
@@ -72,7 +72,7 @@
 		  			console.log('소켓이 닫힙니다.');
 		  		};
 	
-		  		// 웹소켓 에러 발생 시 실행 메소드
+		  	  // 웹소켓 에러발생시에 실행 메소드
 		  		ws.onerror = function (evt) {
 		  			console.log(evt.data);
 		  		};
@@ -82,7 +82,7 @@
 		  	}
 		  });
 		
-		  // 로그인 사용자가 메시지 전송시 처리(유저명, 메시지)
+		  // 로그인 사용자가 메세지 전송시 처리(유저명, 메세지)
 		  function print(user, txt) {
 		  	let temp = '';
 		  	
@@ -131,7 +131,7 @@
 		  	temp += ' <span style="font-size:11px;color:#777;">' + new Date().toLocaleTimeString() + '</span>';
 		  	temp += '</div>';
 		  			
-		  	$('#list').append(temp);  // list는 밑에 메시지 출력하는 부분
+		  	$('#list').append(temp);
 		  }
 	
 		  
@@ -141,17 +141,32 @@
 		  	}
 		  });
 		  
-		  
+		  // 메세지 보내기
 		  $('#msg').keydown(function() {
 		  	if (event.keyCode == 13) {
 		  		if(!event.shiftKey) {
 			  		if($('#msg').val().trim() == '') return false;
+			  		
+			  		// 메세지 내역을 DB에 저장시키기(ajax처리 했다.)
+			  		$.ajax({
+			  			url  : "${ctp}/webSocket/msgInput",
+			  			type : "post",
+			  			data : {
+			  				msg : $('#msg').val(),
+			  				userId : '${sMid}'
+			  			},
+			  			error:function() {
+			  				alert("전송오류!");
+			  			}
+			  		});
+			  		
+			  		// 메시지 내역을 DB에 저장시킨후 다시 채팅은 진행시킨다.
 			  		let chatColor = $("#chatColor").val();
 			  		
 			  		ws.send('2#' + $('#user').val() + '#' + $(this).val() + '@' + chatColor);
 			  		print($('#user').val(), '<font color="'+chatColor+'">'+$(this).val()+'</font>');
 			  		
-			  		event.preventDefault();	
+			  		event.preventDefault();	// 이전 스크립트 내용은 무시하고 아래의 내용을 처리하게 한다.
 			      $('#msg').val('');  		
 			  		$('#msg').focus();
 			  		$('#list').scrollTop($('#list').prop('scrollHeight'));	

@@ -56,12 +56,12 @@
 					 from crime where year = #{year} and police like concat(#{police},'%');
 	</select>
 
-	<select id="getKakaoAddressSearch" resultType="com.spring.javaclassS.vo.KakaoAddressVO">
-		select * from kakaoAddress where address = #{address};
+	<select id="getKakaoAddressSearch"  resultType="com.spring.javaclassS.vo.KakaoAddressVO">
+	  select * from kakaoAddress where address = #{address};
 	</select>
-
-	<select id="getKakaoAddressList" resultType="com.spring.javaclassS.vo.KakaoAddressVO">
-		select * from kakaoAddress order by address;
+	
+	<select id="getKakaoAddressList"  resultType="com.spring.javaclassS.vo.KakaoAddressVO">
+	  select * from kakaoAddress order by address;
 	</select>
 	
 	<select id="getQrCodeSearch" resultType="com.spring.javaclassS.vo.QrCodeVO">
@@ -91,7 +91,7 @@
 	</insert>
 	
 	<insert id="setKakaoAddressInput">
-		insert into kakaoAddress values (#{vo.address},#{vo.latitude},#{vo.longitude});
+	  insert into kakaoAddress values (#{vo.address}, #{vo.latitude}, #{vo.longitude});
 	</insert>
 	
 	<insert id="setQrCodeCreate">

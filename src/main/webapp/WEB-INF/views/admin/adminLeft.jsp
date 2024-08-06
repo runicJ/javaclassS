@@ -13,7 +13,7 @@
 		  background-color: #eee;
 		  color: #444;
 		  cursor: pointer;
-		  padding: 18px;
+		  padding: 10px;
 		  width: 100%;
 		  border: none;
 		  text-align: left;
@@ -27,11 +27,13 @@
 		}
 		
 		.panel {
-		  padding: 0 18px;
+		  text-align: center;
+		  padding: 0 10px;
 		  background-color: white;
 		  max-height: 0;
 		  overflow: hidden;
 		  transition: max-height 0.2s ease-out;
+		  font-size: 13px;
 		}
 	</style>
 </head>
@@ -63,21 +65,22 @@
     </div>
   </div>
   <div>
-    <button class="accordion"><b>기타관리</b></button>
-    <div class="panel">
-      <p><a href="${ctp}/admin/file/fileList" target="adminContent">파일관리</a></p>
-    </div>
-  </div>
-  <div>
     <button class="accordion"><b>상품관리</b></button>
     <div class="panel">
       <p><a href="${ctp}/dbShop/dbCategory" target="adminContent">상품분류등록</a></p>
       <p><a href="${ctp}/dbShop/dbProduct" target="adminContent">상품등록관리</a></p>
       <p><a href="${ctp}/dbShop/dbShopList" target="adminContent">상품등록조회</a></p>
       <p><a href="${ctp}/dbShop/dbOption" target="adminContent">옵션등록관리</a></p>
-      <p><a href="${ctp}/dbShop/adminOrder" target="adminContent">주문관리</a></p>
-      <p><a href="${ctp}/*" target="adminContent">1:1문의</a></p>
+      <p><a href="${ctp}/dbShop/adminOrderStatus" target="adminContent">주문관리</a></p>
+      <p><a href="${ctp}/" target="adminContent">1:1문의</a></p>
       <p><a href="${ctp}/dbShop/" target="adminContent">메인이미지관리</a></p>
+    </div>
+  </div>
+  <div>
+    <button class="accordion"><b>기타관리</b></button>
+    <div class="panel">
+      <p><a href="${ctp}/notify/notifyList" target="adminContent">공지사항관리</a></p>
+      <p><a href="${ctp}/admin/file/fileList" target="adminContent">임시파일관리</a></p>
     </div>
   </div>
   <hr/>
