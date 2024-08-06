@@ -8,6 +8,7 @@ import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.ServletOutputStream;
@@ -25,6 +26,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.spring.javaclassS.service.HomeService;
+import com.spring.javaclassS.service.NotifyService;
+import com.spring.javaclassS.vo.NotifyVO;
 import com.spring.javaclassS.vo.WebChattingVO;
 
 @Controller
@@ -32,6 +35,9 @@ public class HomeController {
 	
 	@Autowired
 	HomeService homeService;
+	
+	@Autowired
+	NotifyService notifyService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 	
@@ -45,6 +51,11 @@ public class HomeController {
 		String formattedDate = dateFormat.format(date);
 		
 		model.addAttribute("serverTime", formattedDate );
+		
+		// 첫화면에 공지사항 팝업으로 띄우기
+		List<NotifyVO> popupVos = notifyService.getNotifyPopup();
+		System.out.println(popupVos);
+		model.addAttribute("popupVos", popupVos);
 		
 		return "home";
 	}

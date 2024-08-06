@@ -1,119 +1,134 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <c:set var="ctp" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8">
   <title>fileList.jsp</title>
-  <jsp:include page="/WEB-INF/views/include/bs4.jsp" />
+  <jsp:include page="/WEB-INF/views/include/bs4.jsp"></jsp:include>
   <script>
-    'use strict';
-    
-    // 개별파일 삭제처리
-    function fileDelete(file) {
-    	let ans = confirm("선택한 파일을 삭제하시겠습니까?");
-    	if(!ans) return false;
+	  // 전체선택
+	  $(function(){
+	  	$("#checkAll").click(function(){
+	  		if($("#checkAll").prop("checked")) {
+		    		$(".chk").prop("checked", true);
+	  		}
+	  		else {
+		    		$(".chk").prop("checked", false);
+	  		}
+	  	});
+	  });
+	  
+	  // 선택항목 반전
+	  $(function(){
+	  	$("#reversekAll").click(function(){
+	  		$("#checkAll").prop("checked",false);
+	  		$(".chk").prop("checked", function(){
+	  			return !$(this).prop("checked");
+	  		});
+	  	});
+	  });
+	  
+	  // 선택항목 삭제하기(ajax처리하기)
+	  function selectDelCheck() {
+	  	let ans = confirm("선택된 모든 게시물을 삭제 하시겠습니까?");
+	  	if(!ans) return false;
+	  	let delItems = "";
+	  	for(let i=0; i<myform.chk.length; i++) {
+	  		if(myform.chk[i].checked == true) delItems += myform.chk[i].value + "/";
+	  	}
+	  	if(delItems == "") {
+	  		alert("한개 이상을 선택후 처리하세요.");
+	  		return false;
+	  	}
+			
+	  	$.ajax({
+	  		type : "post",
+	  		url  : "${ctp}/admin/fileSelectDelete",
+	  		data : {delItems : delItems},
+	  		success:function(res) {
+	  			if(res == "1") {
+	  				alert("선택된 파일을 삭제처리 하였습니다.");
+	  			  location.reload();
+	  			}
+	  		},
+	  		error  :function() {
+	  			alert("전송오류!!");
+	  		}
+	  	});
+	  }
+	  
+    // 화살표클릭시 화면 상단으로 부드럽게 이동하기
+    $(window).scroll(function(){
+    	if($(this).scrollTop() > 100) {
+    		$("#topBtn").addClass("on");
+    	}
+    	else {
+    		$("#topBtn").removeClass("on");
+    	}
     	
-    	$.ajax({
-    		url  : "${ctp}/study/fileUpload/fileDelete",
-    		type : "post",
-    		data : {file : file},
-    		success:function(res) {
-    			if(res != 0) {
-    				alert("파일이 삭제되었습니다.");
-    				location.reload();
-    			}
-    			else alert("파일 삭제 실패~");
-    		},
-    		error : function() {
-    			alert("전송오류!");
-    		}
+    	$("#topBtn").click(function(){
+    		window.scrollTo({top:0, behavior: "smooth"});
     	});
-    }
-    
-    // 전체파일 삭제처리
-    function fileDeleteAll() {
-    	let ans = confirm("모든 파일을 삭제하시겠습니까?");
-    	if(!ans) return false;
-    	
-    	$.ajax({
-    		url  : "${ctp}/study/fileUpload/fileDeleteAll",
-    		type : "post",
-    		success:function(res) {
-    			if(res != 0) {
-    				alert("파일이 삭제되었습니다.");
-    				location.reload();
-    			}
-    			else alert("파일 삭제 실패~");
-    		},
-    		error : function() {
-    			alert("전송오류!");
-    		}
-    	});
-    }
+    });
   </script>
+  <style>
+		h6 {
+		  position: fixed;
+		  right: 1rem;
+		  bottom: -50px;
+		  transition: 0.7s ease;
+		}
+   	.on {
+		  opacity: 0.8;
+		  cursor: pointer;
+		  bottom: 0;
+		}
+  </style>
 </head>
 <body>
-<jsp:include page="/WEB-INF/views/include/nav.jsp" />
-<jsp:include page="/WEB-INF/views/include/slide2.jsp" />
 <p><br/></p>
 <div class="container">
-  <h2>파일 업로드 연습</h2>
-  <form name="myform" method="post" enctype="multipart/form-data">
-    <p>올린이 :
-      <input type="text" name="mid" value="${sMid}"/>
-    </p>
-    <p>파일명 :
-      <input type="file" name="fName" id="fName" class="form-control-file border" accept=".jpg,.gif,.png,.zip,.ppt,.pptx,.hwp"/>
-    </p>
-    <p>
-      <input type="button" value="파일업로드" onclick="fCheck()" class="btn btn-success"/>
-      <input type="reset" value="다시선택" class="btn btn-warning"/>
-      <input type="button" value="멀티파일업로드로이동" onclick="location.href='${ctp}/study/fileUpload/multiFile';" class="btn btn-primary"/>
-      <input type="button" value="그림파일업로드로이동" onclick="location.href='${ctp}/study/fileUpload/multiFile2';" class="btn btn-secondary"/>
-    </p>
-  </form>
+  <h2>서버 파일 리스트</h2>
   <hr/>
-  <div id="downLoadFile">
-    <h3>서버에 저장된 파일정보(총 : ${fileCount}건)</h3>
-    <div class="row">
-      <div class="col">저장경로 : ${ctp}/resources/data/fileUpload/*.*</div>
-      <div class="col">
-        <input type="button" value="폴더내 모든파일 삭제" onclick="fileDeleteAll()" class="btn btn-danger"/>
-      </div>
-    </div>
-    <table class="table table-hover text-center">
-      <tr class="table-secondary">
-        <th>번호</th>
-        <th>파일명</th>
-        <th>파일형식</th>
-        <th>비고</th>
-      </tr>
-      <c:forEach var="file" items="${files}" varStatus="st">
-        <tr>
-          <td>${st.count}</td>
-          <td>${file}</td>
-          <td>
-            <c:set var="fNameArray" value="${fn:split(file,'.')}"/>
-            <c:set var="extName" value="${fn:toLowerCase(fNameArray[fn:length(fNameArray)-1])}" />
-            <c:if test="${extName == 'zip'}">압축파일</c:if>
-            <c:if test="${extName == 'ppt' || extName == 'pptx'}">파워포인트 파일</c:if>
-            <c:if test="${extName == 'hwp'}">한글파일</c:if>
-            <c:if test="${extName == 'jpg' || extName == 'gif' || extName == 'png'}">
-              <img src="${ctp}/fileUpload/${file}" width="150px" />
-            </c:if>
-          </td>
-          <td>
-            <input type="button" value="삭제" onclick="fileDelete('${file}')" class="btn btn-danger btn-sm"/>
-          </td>
-        </tr>
-      </c:forEach>
-    </table>
-  </div>
+  <p>서버의 파일 경로 : ${ctp}/data/ckeditor/~~~파일명</p>
+  <hr/>
+  <form name="myform">
+	  <table class="table table-hover text-center">
+	    <tr>
+	      <td colspan="4">
+	        <input type="checkbox" id="checkAll" onclick="checkAllCheck()"/>전체선택/해제 &nbsp;&nbsp;
+	        <input type="checkbox" id="reversekAll" onclick="reverseAllCheck()"/>선택반전 &nbsp;&nbsp;
+	        <input type="button" value="선택항목삭제" onclick="selectDelCheck()" class="btn btn-danger btn-sm"/>
+	      </td>
+	    </tr>
+	    <tr class="table-dark text-dark">
+	      <th>선택</th><th>번호</th><th>파일명</th><th>그림파일</th>
+	    </tr>
+		  <c:forEach var="file" items="${files}" varStatus="st">
+		    <tr>
+		      <td>
+		        <c:if test="${file != 'board'}">
+		          <c:if test="${file == 'qna'}"><font color='red'>폴더명</font></c:if>
+		          <c:if test="${file != 'qna'}">
+		        	  <input type="checkbox" name="chk" class="chk" value="${file}"/>
+		        	</c:if>
+		        </c:if>
+		      </td>
+		      <td>${st.count}</td>
+		      <td>${file}</td>
+		      <td>
+          	<img src="${ctp}/data/ckeditor/${file}" width="150px"/>
+		      </td>
+		    </tr>
+		  </c:forEach>
+		  <tr><td colspan="4" class="m-0 p-0"></td></tr>
+	  </table>
+  </form>
 </div>
 <p><br/></p>
-<jsp:include page="/WEB-INF/views/include/footer.jsp" />
+<!-- 위로가기 버튼 -->
+<h6 id="topBtn" class="text-right mr-3"><img src="${ctp}/images/arrowTop.gif" title="위로이동"/></h6>
 </body>
 </html>
